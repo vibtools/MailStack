@@ -14,7 +14,7 @@ case "$SOURCE" in
 esac
 [[ -f "$SOURCE/manage.py" && -f "$SOURCE/pyproject.toml" ]] || { printf 'Invalid release source.\n' >&2; exit 1; }
 grep -q '^version = "1.2.1"$' "$SOURCE/pyproject.toml" || { printf 'Release is not version 1.2.1.\n' >&2; exit 1; }
-grep -q '^Django==5\.2\.15$' "$SOURCE/requirements/locked.txt" || { printf 'Required Django 5.2.15 security pin is missing.\n' >&2; exit 1; }
+grep -q '^Django==5\.2\.16$' "$SOURCE/requirements/locked.txt" || { printf 'Required Django 5.2.16 security pin is missing.\n' >&2; exit 1; }
 grep -q '^bleach==6\.4\.0$' "$SOURCE/requirements/locked.txt" || { printf 'Required Bleach 6.4.0 security pin is missing.\n' >&2; exit 1; }
 grep -q '^python-dotenv==1\.2\.2$' "$SOURCE/requirements/locked.txt" || { printf 'Required python-dotenv 1.2.2 security pin is missing.\n' >&2; exit 1; }
 [[ -f "$SOURCE/RELEASE_MANIFEST.json" ]] || { printf 'Release manifest is missing.\n' >&2; exit 1; }

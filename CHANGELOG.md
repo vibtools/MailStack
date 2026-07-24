@@ -14,6 +14,7 @@ All notable repository-level changes are recorded here. Application history befo
 - Changed deterministic source release archive branding to `mailstack-<version>-source.zip`.
 - Added a compatibility-safe repository bootstrap, first-commit guidance, and GitHub metadata/topics specification.
 - Removed the stale root `SOURCE_MANIFEST.sha256`; verified release archives continue to generate their own manifest.
+- Upgraded the pinned Django LTS runtime from 5.2.15 to 5.2.16 to resolve the July 2026 Django security advisories and kept exact-version deployment verification aligned.
 
 ### Compatibility
 

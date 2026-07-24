@@ -4,7 +4,7 @@ MailStack source is licensed under `AGPL-3.0-or-later`. Runtime and development 
 
 | Dependency | Declared version | License family |
 |---|---:|---|
-| Django | 5.2.15 | BSD-3-Clause |
+| Django | 5.2.16 | BSD-3-Clause |
 | argon2-cffi / bindings | 25.1.0 | MIT |
 | Bleach | 6.4.0 | Apache-2.0 |
 | cffi | 2.0.0 | MIT |

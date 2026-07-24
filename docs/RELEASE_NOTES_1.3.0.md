@@ -11,6 +11,7 @@ Version 1.3.0 RC1 converts the verified private deployment source into a configu
 - MariaDB/Postfix/Dovecot/Nginx/systemd/environment templates
 - public-site rendering for the configured domain
 - complete AGPL-3.0 license text, licensing rationale and public governance/security documents
+- Django 5.2.16 LTS security maintenance pin with exact-version deployment and CI verification
 - GitHub CI, release workflow, Dependabot, CODEOWNERS, issue and pull-request templates
 - source secret scanning, documentation validation, forensic file/symbol inventory, template validation and installer/operations contract tests
 - SEO-oriented repository metadata, reusable project logo, deterministic source ZIP, manifest, checksum and verifier

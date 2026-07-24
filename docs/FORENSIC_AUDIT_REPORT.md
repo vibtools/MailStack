@@ -38,7 +38,7 @@ The deterministic machine-readable inventory at `docs/FORENSIC_FILE_INVENTORY.js
 
 ## Architecture
 
-- Django 5.2.15 team mailbox application
+- Django 5.2.16 team mailbox application
 - Gunicorn application service over a Unix socket
 - MariaDB application schema and virtual-mail schema
 - receive-only Postfix virtual mailbox delivery

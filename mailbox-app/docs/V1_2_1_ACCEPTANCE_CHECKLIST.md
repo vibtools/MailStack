@@ -2,7 +2,7 @@
 
 - [ ] Release SHA-256 and manifest verified
 - [ ] Online dependency vulnerability audit passes
-- [ ] Installed runtime reports Django 5.2.15 exactly
+- [ ] Installed runtime reports Django 5.2.16 exactly
 - [ ] Full backup checksum verified
 - [ ] `nginx -t` passes
 - [ ] All six critical services active

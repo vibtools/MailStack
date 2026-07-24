@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased — Django security maintenance
+
+- Upgraded Django from 5.2.15 to 5.2.16 for the July 2026 security fixes.
+- Updated production, lock, constraint, preflight, deployment, verification, test, documentation, and inventory contracts to the same exact version.
+
 ## 1.2.1 — Security dependency hotfix
 
 - Upgraded Bleach to 6.4.0 for URI sanitization security fixes.

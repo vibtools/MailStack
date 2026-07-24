@@ -2,7 +2,7 @@
 
 ## Result
 
-**Static/application security review: PASS**  
+**Static/application security review: PASS**
 **Live production security acceptance: pending controlled installation**
 
 ## Dependency remediation
