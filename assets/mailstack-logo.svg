@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title desc">
+  <title id="title">MailStack</title>
+  <desc id="desc">A secure stacked mail envelope icon using Vib Tools blue and cyan brand colors.</desc>
+  <defs>
+    <linearGradient id="mailstack-gradient" x1="8" y1="7" x2="57" y2="58" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#08E0DE"/>
+      <stop offset="0.52" stop-color="#087AFF"/>
+      <stop offset="1" stop-color="#0647ED"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="17" fill="#000713"/>
+  <path d="M15 14h34a5 5 0 0 1 5 5v5H10v-5a5 5 0 0 1 5-5Z" fill="#0647ED" opacity=".72"/>
+  <path d="M13 20h38a5 5 0 0 1 5 5v5H8v-5a5 5 0 0 1 5-5Z" fill="#087AFF" opacity=".78"/>
+  <rect x="7" y="26" width="50" height="31" rx="8" fill="url(#mailstack-gradient)"/>
+  <path d="m13 34 19 14 19-14M13 51V35m38 16V35" fill="none" stroke="#000713" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

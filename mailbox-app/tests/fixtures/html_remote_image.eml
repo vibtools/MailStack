@@ -1,0 +1,23 @@
+From: Sender <sender@example.test>
+To: mailbox1@example.com
+Subject: html_remote_image.eml
+Date: Fri, 26 Jun 2026 10:00:00 +0600
+Message-ID: <fixture@example.test>
+MIME-Version: 1.0
+Content-Type: multipart/alternative;
+ boundary="===============0325893456897294756=="
+
+--===============0325893456897294756==
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+
+Fallback.
+
+--===============0325893456897294756==
+Content-Type: text/html; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+
+<p>Text</p><img src="https://tracker.test/pixel.png">
+
+--===============0325893456897294756==--

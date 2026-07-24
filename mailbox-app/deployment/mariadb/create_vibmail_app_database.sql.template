@@ -1,0 +1,16 @@
+-- Replace __VIBMAIL_APP_PASSWORD__ with a strong random password before execution.
+-- Execute as MariaDB root over the local Unix socket.
+CREATE DATABASE IF NOT EXISTS `vibmail_app`
+  CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+CREATE USER IF NOT EXISTS 'vibmail_app'@'127.0.0.1'
+  IDENTIFIED BY '__VIBMAIL_APP_PASSWORD__';
+ALTER USER 'vibmail_app'@'127.0.0.1'
+  IDENTIFIED BY '__VIBMAIL_APP_PASSWORD__';
+
+GRANT ALL PRIVILEGES ON `vibmail_app`.* TO 'vibmail_app'@'127.0.0.1';
+GRANT SELECT ON `vibmail`.`mail_domains` TO 'vibmail_app'@'127.0.0.1';
+GRANT SELECT, INSERT, UPDATE ON `vibmail`.`mailboxes` TO 'vibmail_app'@'127.0.0.1';
+GRANT SELECT ON `vibmail`.`mail_aliases` TO 'vibmail_app'@'127.0.0.1';
+GRANT SELECT ON `vibmail`.`postfix_virtual_mailboxes` TO 'vibmail_app'@'127.0.0.1';
+FLUSH PRIVILEGES;

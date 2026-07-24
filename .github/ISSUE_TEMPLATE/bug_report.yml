@@ -1,0 +1,27 @@
+name: Bug report
+description: Report a reproducible defect without private data
+title: "[Bug]: "
+body:
+  - type: input
+    id: version
+    attributes:
+      label: MailStack version
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: Do not include secrets, mailbox content, private email addresses, or server credentials.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Reproduction steps
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Sanitized logs

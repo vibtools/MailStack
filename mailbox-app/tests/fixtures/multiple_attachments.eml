@@ -1,0 +1,31 @@
+From: Sender <sender@example.test>
+To: mailbox1@example.com
+Subject: Multiple attachments
+Date: Fri, 26 Jun 2026 10:00:00 +0600
+Message-ID: <fixture@example.test>
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="===============2423488404034780743=="
+
+--===============2423488404034780743==
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+
+Two attachments.
+
+--===============2423488404034780743==
+Content-Type: text/plain
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="alpha.txt"
+MIME-Version: 1.0
+
+YWxwaGE=
+
+--===============2423488404034780743==
+Content-Type: application/pdf
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="beta.pdf"
+MIME-Version: 1.0
+
+YmV0YQ==
+
+--===============2423488404034780743==--

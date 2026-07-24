@@ -1,0 +1,6 @@
+{% extends "base.html" %}
+{% block title %}Delete message · MailStack{% endblock %}
+{% block content %}
+<div class="page-header"><div><div class="eyebrow">Controlled deletion</div><h1>Delete message</h1></div></div>
+<section class="panel narrow"><div class="alert alert-warning">The message will disappear from MailStack, but its source Maildir file remains preserved and will not be re-imported.</div><p><strong>{{ email_message.subject|default:"(No subject)" }}</strong></p><p class="muted">{{ email_message.sender_address }} · {{ mailbox.email_address }}</p><form method="post">{% csrf_token %}<div class="actions"><button class="btn btn-danger" type="submit">Delete message</button><a class="btn" href="{% url 'messages:detail' mailbox.uuid email_message.uuid %}">Cancel</a></div></form></section>
+{% endblock %}

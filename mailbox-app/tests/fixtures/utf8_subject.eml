@@ -1,0 +1,10 @@
+From: Sender <sender@example.test>
+To: mailbox1@example.com
+Subject: =?utf-8?b?4Kas4Ka/4Ka34KefIOCmquCmsOCngOCmleCnjeCmt+Cmvg==?=
+Date: Fri, 26 Jun 2026 10:00:00 +0600
+Message-ID: <fixture@example.test>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+
+UTF-8 subject.

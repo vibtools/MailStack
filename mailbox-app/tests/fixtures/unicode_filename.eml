@@ -1,0 +1,25 @@
+From: Sender <sender@example.test>
+To: mailbox1@example.com
+Subject: unicode_filename.eml
+Date: Fri, 26 Jun 2026 10:00:00 +0600
+Message-ID: <fixture@example.test>
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="===============1779068237496230359=="
+
+--===============1779068237496230359==
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+
+Attachment filename test.
+
+--===============1779068237496230359==
+Content-Type: application/octet-stream
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment;
+ filename*0*=utf-8''%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A4%E0%A6%BF%E0%A6%AC;
+ filename*1*=%E0%A7%87%E0%A6%A6%E0%A6%A8.txt
+MIME-Version: 1.0
+
+Y29udGVudA==
+
+--===============1779068237496230359==--

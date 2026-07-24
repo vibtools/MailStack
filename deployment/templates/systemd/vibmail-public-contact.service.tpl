@@ -1,0 +1,43 @@
+[Unit]
+Description=MailStack Public Website Contact Service
+After=network.target postfix.service
+Wants=postfix.service
+
+[Service]
+Type=simple
+User=vibmail-contact
+Group=www-data
+SupplementaryGroups=postdrop
+WorkingDirectory=/opt/vibmail-public-site/current/contact_service
+EnvironmentFile=/etc/vibmail-public-contact/contact.env
+RuntimeDirectory=vibmail-public-contact
+RuntimeDirectoryMode=0750
+StateDirectory=vibmail-public-contact
+StateDirectoryMode=0700
+UMask=0027
+ExecStart=/opt/vibmail-public-site/venv/bin/gunicorn --no-control-socket --workers 2 --threads 2 --worker-class gthread --timeout 30 --graceful-timeout 20 --keep-alive 5 --max-requests 1000 --max-requests-jitter 100 --bind unix:/run/vibmail-public-contact/contact.sock --umask 0007 --access-logfile - --error-logfile - --capture-output contact_app:application
+ExecReload=/bin/kill -s HUP $MAINPID
+KillSignal=SIGTERM
+TimeoutStopSec=30
+Restart=on-failure
+RestartSec=3
+NoNewPrivileges=true
+PrivateTmp=true
+PrivateDevices=true
+ProtectSystem=full
+ProtectHome=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectKernelLogs=true
+ProtectControlGroups=true
+ProtectClock=true
+RestrictRealtime=true
+RestrictSUIDSGID=true
+LockPersonality=true
+CapabilityBoundingSet=
+AmbientCapabilities=
+RestrictAddressFamilies=AF_UNIX
+ReadWritePaths=/var/lib/vibmail-public-contact /run/vibmail-public-contact
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,6 @@
+exclude_dirs:
+  - tests
+  - migrations
+# B608 is covered by Ruff S608 plus strict SQL-identifier validation and unit tests.
+skips:
+  - B608

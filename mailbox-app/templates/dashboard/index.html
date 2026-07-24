@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Dashboard · MailStack{% endblock %}
+{% block content %}
+<div class="page-header"><div><div class="eyebrow">Receive-only operations</div><h1>Dashboard</h1><p class="muted">Operational summary for your authorized {{ mail_domain }} mailboxes.</p></div><a class="btn btn-primary" href="{% url 'mailboxes:create' %}">Create mailbox</a></div>
+<div class="stat-grid">
+  <article class="stat-card"><span>Total mailboxes</span><strong data-live-summary="total_mailboxes">{{ total_mailboxes }}</strong></article>
+  <article class="stat-card"><span>Active</span><strong data-live-summary="active_mailboxes">{{ active_mailboxes }}</strong></article>
+  <article class="stat-card"><span>Disabled</span><strong data-live-summary="disabled_mailboxes">{{ disabled_mailboxes }}</strong></article>
+  <article class="stat-card"><span>Received emails</span><strong data-live-summary="total_messages">{{ total_messages }}</strong></article>
+  <article class="stat-card"><span>Unread</span><strong data-live-summary="total_unread">{{ total_unread }}</strong></article>
+  <article class="stat-card"><span>Last received</span><strong class="small-value" data-live-summary="last_received">{{ last_received|date:"Y-m-d H:i"|default:"No email yet" }}</strong></article>
+</div>
+{% if is_admin %}
+<div class="status-grid">
+  <div class="status-item"><span class="status-dot {% if ingestion and ingestion.status == 'healthy' %}ok{% else %}warn{% endif %}"></span><div><strong>Ingestion service</strong><small>{{ ingestion.status|default:"No heartbeat yet" }}</small></div></div>
+  <div class="status-item"><span class="status-dot {% if mail_storage_ok %}ok{% else %}bad{% endif %}"></span><div><strong>Mail storage</strong><small>{% if mail_storage_ok %}Accessible{% else %}Unavailable{% endif %}</small></div></div>
+  <div class="status-item"><span class="status-dot {% if database_ok %}ok{% else %}bad{% endif %}"></span><div><strong>Database</strong><small>{% if database_ok %}Connected{% else %}Unavailable{% endif %}</small></div></div>
+</div>
+{% endif %}
+<div class="two-column">
+<section class="panel"><div class="panel-header"><h2>Recently received</h2></div><div class="list-stack" data-live-recent-messages>{% for item in recent_messages %}<a class="list-row" data-message-uuid="{{ item.uuid }}" href="{% url 'messages:detail' item.mailbox.uuid item.uuid %}"><span class="truncate"><strong>{{ item.subject|default:"(No subject)" }}</strong><small>{{ item.sender_address|default:"Unknown sender" }} · {{ item.mailbox.email_address }}</small></span><time>{{ item.received_at|date:"M d, H:i"|default:"Unknown date" }}</time></a>{% empty %}<div class="empty-state" data-empty> No messages have been indexed.</div>{% endfor %}</div></section>
+<section class="panel"><div class="panel-header"><h2>Recently created mailboxes</h2></div><div class="list-stack">{% for mailbox in recent_mailboxes %}<div class="list-row mailbox-summary-row"><span><button type="button" class="copy-address" data-copy-email="{{ mailbox.email_address }}" title="Copy email address">{{ mailbox.email_address }}</button><small>{{ mailbox.get_status_display }} · <span data-live-mailbox-total="{{ mailbox.uuid }}">{{ mailbox.total_messages }}</span> messages</small></span><a class="btn btn-small" href="{% url 'messages:inbox' mailbox.uuid %}">Open</a></div>{% empty %}<div class="empty-state">No mailboxes created yet.</div>{% endfor %}</div></section>
+</div>
+{% endblock %}

@@ -1,0 +1,7 @@
+From: broken@example.test
+To: mailbox1@example.com
+Subject: malformed
+Content-Type: multipart/mixed; boundary="missing"
+
+--wrong
+Broken

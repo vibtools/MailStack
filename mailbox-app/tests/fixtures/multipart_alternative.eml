@@ -1,0 +1,23 @@
+From: Sender <sender@example.test>
+To: mailbox1@example.com
+Subject: Multipart alternative
+Date: Fri, 26 Jun 2026 10:00:00 +0600
+Message-ID: <fixture@example.test>
+MIME-Version: 1.0
+Content-Type: multipart/alternative;
+ boundary="===============5968031751567830688=="
+
+--===============5968031751567830688==
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+
+Alternative plain.
+
+--===============5968031751567830688==
+Content-Type: text/html; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+
+<p>Alternative HTML.</p>
+
+--===============5968031751567830688==--

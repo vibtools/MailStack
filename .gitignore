@@ -1,0 +1,58 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+.venv/
+.audit-venv/
+venv/
+.tox/
+.nox/
+.hypothesis/
+*.egg-info/
+coverage.xml
+
+# Secrets and environment
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+credentials*.json
+secrets*.env
+
+# Runtime and user data
+*.sqlite
+*.sqlite3
+*.db
+*.sql
+*.log
+.runtime/
+Maildir/
+attachments/
+media/
+staticfiles/
+
+# Generated release and backup artifacts
+*.zip
+*.tar
+*.tar.gz
+*.tgz
+*.bak
+*.backup
+build/
+dist/
+release/
+artifacts/
+SOURCE_MANIFEST.sha256
+
+# Editors and OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

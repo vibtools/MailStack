@@ -1,0 +1,6 @@
+{% extends "base.html" %}
+{% block title %}Delete {{ mailbox.email_address }} · MailStack{% endblock %}
+{% block content %}
+<div class="page-header"><div><div class="eyebrow">Controlled deletion</div><h1>Delete mailbox</h1></div></div>
+<section class="panel narrow"><div class="alert alert-warning">This stops future delivery and hides the mailbox. Existing Maildir files, messages, and attachments remain preserved. The address cannot be reused.</div><p>Type <strong>{{ mailbox.email_address }}</strong> to confirm.</p><form method="post">{% csrf_token %}<div class="form-group"><label for="confirmation">Full mailbox address</label><input id="confirmation" name="confirmation" autocomplete="off" required></div><div class="actions"><button class="btn btn-danger" type="submit">Delete and reserve address</button><a class="btn" href="{% url 'mailboxes:list' %}">Cancel</a></div></form></section>
+{% endblock %}

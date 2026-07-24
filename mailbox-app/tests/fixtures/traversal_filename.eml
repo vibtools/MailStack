@@ -1,0 +1,23 @@
+From: Sender <sender@example.test>
+To: mailbox1@example.com
+Subject: traversal_filename.eml
+Date: Fri, 26 Jun 2026 10:00:00 +0600
+Message-ID: <fixture@example.test>
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="===============7788997602589275966=="
+
+--===============7788997602589275966==
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+
+Attachment filename test.
+
+--===============7788997602589275966==
+Content-Type: application/octet-stream
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="../../etc/passwd"
+MIME-Version: 1.0
+
+Y29udGVudA==
+
+--===============7788997602589275966==--

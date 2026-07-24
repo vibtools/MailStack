@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Contact MailStack — Request a Private or Team Mailbox</title>
+  <meta name="description" content="Contact MailStack to request a personal private mailbox, team mailbox or managed business mailbox setup.">
+  <meta name="robots" content="index,follow">
+  <meta name="theme-color" content="#07111f">
+  <link rel="canonical" href="https://__PUBLIC_HOSTNAME__/contact/">
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/assets/styles.css">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Contact MailStack">
+  <meta property="og:description" content="Request a private, team or business mailbox setup.">
+  <meta property="og:url" content="https://__PUBLIC_HOSTNAME__/contact/">
+</head>
+<body class="inner-page">
+  <a class="skip-link" href="#main-content">Skip to content</a>
+  <header class="site-header" data-header>
+    <div class="container nav-wrap">
+      <a class="brand" href="/" aria-label="MailStack home">
+        <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 48 48"><path d="M8 13.5A5.5 5.5 0 0 1 13.5 8h21A5.5 5.5 0 0 1 40 13.5v21a5.5 5.5 0 0 1-5.5 5.5h-21A5.5 5.5 0 0 1 8 34.5z"/><path class="brand-mark-line" d="m12.5 15 11.5 9 11.5-9M12.5 33V17m23 16V17"/></svg></span>
+        <span>MailStack</span>
+      </a>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="primary-navigation" data-nav-toggle><span class="sr-only">Open navigation</span><span></span><span></span><span></span></button>
+      <nav id="primary-navigation" class="primary-nav" aria-label="Primary navigation" data-nav>
+        <a href="/#services">Services</a><a href="/#features">Features</a><a href="/#security">Security</a><a href="/#faq">FAQ</a><a class="active-link" href="/contact/">Contact</a>
+        <a class="button button-small button-secondary" href="https://__APP_HOSTNAME__/accounts/login/">Client login</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main-content">
+    <section class="page-hero">
+      <div class="hero-orb hero-orb-one" aria-hidden="true"></div>
+      <div class="container page-hero-inner" data-reveal>
+        <div class="eyebrow"><span class="status-dot"></span>Mailbox consultation</div>
+        <h1>Tell us what your mailbox setup needs to accomplish.</h1>
+        <p>Share your requirements for a personal private mailbox, team access or a managed business setup. Our team will review the request and contact you.</p>
+      </div>
+    </section>
+
+    <section class="section contact-section">
+      <div class="container contact-layout">
+        <aside class="contact-sidebar" data-reveal>
+          <div class="contact-intro">
+            <span class="card-label">What happens next</span>
+            <h2>A clear path from inquiry to mailbox access</h2>
+            <p>We review each request to understand mailbox quantity, user access and operational requirements.</p>
+          </div>
+          <ol class="contact-steps">
+            <li><span>01</span><div><strong>Requirement review</strong><small>We assess the information submitted.</small></div></li>
+            <li><span>02</span><div><strong>Setup discussion</strong><small>We clarify mailbox and team access needs.</small></div></li>
+            <li><span>03</span><div><strong>Managed activation</strong><small>Approved mailboxes and accounts are provisioned.</small></div></li>
+          </ol>
+          <div class="contact-trust">
+            <div><span>✓</span><p><strong>Private handling</strong>Your inquiry is used only to respond to your mailbox request.</p></div>
+            <div><span>✓</span><p><strong>Direct review</strong>Requests are sent to the MailStack administration team.</p></div>
+          </div>
+        </aside>
+
+        <div class="form-card" data-reveal>
+          <div class="form-card-heading">
+            <span class="card-label">Contact MailStack</span>
+            <h2>Request mailbox information</h2>
+            <p>Fields marked with an asterisk are required.</p>
+          </div>
+
+          <form id="contact-form" class="contact-form" novalidate data-contact-form>
+            <input type="hidden" name="form_started_at" value="">
+            <div class="honeypot" aria-hidden="true">
+              <label for="website">Website</label>
+              <input id="website" name="website" type="text" tabindex="-1" autocomplete="off">
+            </div>
+
+            <div class="form-grid">
+              <div class="field">
+                <label for="full_name">Full name <span>*</span></label>
+                <input id="full_name" name="full_name" type="text" minlength="2" maxlength="100" autocomplete="name" required placeholder="Your full name">
+                <small class="field-error" data-error-for="full_name"></small>
+              </div>
+              <div class="field">
+                <label for="work_email">Email address <span>*</span></label>
+                <input id="work_email" name="work_email" type="email" maxlength="254" autocomplete="email" required placeholder="you@example.com">
+                <small class="field-error" data-error-for="work_email"></small>
+              </div>
+              <div class="field">
+                <label for="company">Company or organization</label>
+                <input id="company" name="company" type="text" maxlength="120" autocomplete="organization" placeholder="Company name">
+                <small class="field-error" data-error-for="company"></small>
+              </div>
+              <div class="field">
+                <label for="phone">Phone number</label>
+                <input id="phone" name="phone" type="tel" maxlength="40" autocomplete="tel" placeholder="+880 ...">
+                <small class="field-error" data-error-for="phone"></small>
+              </div>
+              <div class="field">
+                <label for="service_type">Mailbox requirement <span>*</span></label>
+                <select id="service_type" name="service_type" required>
+                  <option value="">Select a service</option>
+                  <option value="personal">Personal private mailbox</option>
+                  <option value="team">Team mailbox access</option>
+                  <option value="business">Business mailbox setup</option>
+                  <option value="other">Other requirement</option>
+                </select>
+                <small class="field-error" data-error-for="service_type"></small>
+              </div>
+              <div class="field">
+                <label for="team_size">Expected number of users</label>
+                <select id="team_size" name="team_size">
+                  <option value="">Not sure yet</option>
+                  <option value="1">1 user</option>
+                  <option value="2-5">2–5 users</option>
+                  <option value="6-15">6–15 users</option>
+                  <option value="16-50">16–50 users</option>
+                  <option value="51+">More than 50 users</option>
+                </select>
+                <small class="field-error" data-error-for="team_size"></small>
+              </div>
+              <div class="field field-full">
+                <div class="label-row">
+                  <label for="message">Tell us about your requirements <span>*</span></label>
+                  <small><span data-message-count>0</span>/2000</small>
+                </div>
+                <textarea id="message" name="message" minlength="20" maxlength="2000" rows="7" required placeholder="Describe the mailbox addresses, team access or business workflow you need."></textarea>
+                <small class="field-error" data-error-for="message"></small>
+              </div>
+              <div class="field field-full consent-field">
+                <label class="checkbox-label">
+                  <input id="consent" name="consent" type="checkbox" required>
+                  <span class="custom-checkbox" aria-hidden="true"></span>
+                  <span>I agree that MailStack may use this information to respond to my request. <a href="/privacy/">Privacy notice</a>.</span>
+                </label>
+                <small class="field-error" data-error-for="consent"></small>
+              </div>
+            </div>
+
+            <div class="form-status" role="status" aria-live="polite" data-form-status hidden></div>
+
+            <button class="button button-primary submit-button" type="submit">
+              <span data-submit-label>Send inquiry</span>
+              <span class="button-arrow" aria-hidden="true">→</span>
+              <span class="button-loader" aria-hidden="true"></span>
+            </button>
+            <p class="form-note">This form is protected by validation and anti-spam controls.</p>
+          </form>
+
+          <noscript>
+            <div class="noscript-notice">JavaScript is required to submit this protected contact form.</div>
+          </noscript>
+        </div>
+      </div>
+    </section>
+
+    <section class="mini-cta">
+      <div class="container mini-cta-inner">
+        <div><strong>Already have a MailStack account?</strong><span>Open the secure mailbox portal.</span></div>
+        <a class="button button-secondary" href="https://__APP_HOSTNAME__/accounts/login/">Client login</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-main">
+      <div class="footer-brand"><a class="brand" href="/"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 48 48"><path d="M8 13.5A5.5 5.5 0 0 1 13.5 8h21A5.5 5.5 0 0 1 40 13.5v21a5.5 5.5 0 0 1-5.5 5.5h-21A5.5 5.5 0 0 1 8 34.5z"/><path class="brand-mark-line" d="m12.5 15 11.5 9 11.5-9M12.5 33V17m23 16V17"/></svg></span><span>MailStack</span></a><p>Private and team mailbox services for focused business communication.</p></div>
+      <div class="footer-column"><h3>Services</h3><a href="/#services">Private mailbox</a><a href="/#services">Team mailbox</a><a href="/#services">Business setup</a></div>
+      <div class="footer-column"><h3>Company</h3><a href="/contact/">Contact us</a><a href="/privacy/">Privacy</a><a href="https://__APP_HOSTNAME__/accounts/login/">Client login</a></div>
+      <div class="footer-column"><h3>Resources</h3><a href="https://github.com/vibtools/MailStack" rel="noopener noreferrer">Source code</a><a href="https://dev.vib.tools/" rel="noopener noreferrer">More open source</a><a href="https://ygit.net/" rel="noopener noreferrer">Free subdomains</a><a class="footer-login" href="https://__APP_HOSTNAME__/accounts/login/">Client portal <span>↗</span></a></div>
+    </div>
+    <div class="container footer-bottom"><p>© <span data-year></span> MailStack by <a href="https://vib.tools/" rel="noopener noreferrer">Vib Tools</a>. AGPL-3.0-or-later.</p><p>Private mailbox infrastructure for professionals and teams.</p></div>
+  </footer>
+  <script src="/assets/app.js" defer></script>
+</body>
+</html>

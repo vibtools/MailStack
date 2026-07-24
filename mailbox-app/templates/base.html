@@ -1,0 +1,41 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>{% block title %}MailStack{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'css/app.css' %}">
+  <script src="{% static 'js/app.js' %}" defer></script>
+</head>
+<body{% if request.user.is_authenticated %} data-live-url="{% url 'messages:live_updates' %}"{% endif %}>
+<a class="skip-link" href="#main-content">Skip to content</a>
+{% if request.user.is_authenticated %}
+<header class="topbar">
+  <div class="container nav-wrap">
+    <a class="brand" href="{% url 'dashboard:index' %}">MailStack</a>
+    <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="main-nav">Menu</button>
+    <nav id="main-nav" class="main-nav" aria-label="Primary">
+      <a href="{% url 'dashboard:index' %}">Dashboard</a>
+      <a href="{% url 'mailboxes:list' %}">Mailboxes</a>
+      <a href="{% url 'mailboxes:create' %}">Create mailbox</a>
+      {% if is_vibmail_admin %}<a href="{% url 'accounts:user_list' %}">User management</a>{% endif %}
+      <button class="link-button notification-enable" type="button" data-enable-notifications hidden>Enable notifications</button>
+      <form action="{% url 'accounts:logout' %}" method="post" class="inline-form">{% csrf_token %}<button class="link-button" type="submit">Log out</button></form>
+    </nav>
+  </div>
+</header>
+{% endif %}
+<main id="main-content" class="container page-shell">
+  {% if messages %}
+  <div class="alerts" aria-live="polite">
+    {% for message in messages %}<div class="alert alert-{{ message.tags|default:'info' }}">{{ message }}</div>{% endfor %}
+  </div>
+  {% endif %}
+  {% block content %}{% endblock %}
+</main>
+<div id="toast-region" class="toast-region" role="status" aria-live="polite" aria-atomic="false"></div>
+<footer class="footer"><div class="container">© {% now "Y" %} MailStack by <a href="{{ company_url }}" rel="noopener noreferrer">Vib Tools</a>. <a href="{{ source_code_url }}" rel="noopener noreferrer">Source code</a> · <a href="{{ open_source_hub_url }}" rel="noopener noreferrer">More open source</a> · <a href="{{ subdomain_service_url }}" rel="noopener noreferrer">Free subdomains</a>. Authorized team use only.</div></footer>
+</body>
+</html>

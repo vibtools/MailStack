@@ -1,0 +1,36 @@
+From: Sender <sender@example.test>
+To: mailbox1@example.com
+Subject: Nested multipart
+Date: Fri, 26 Jun 2026 10:00:00 +0600
+Message-ID: <fixture@example.test>
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="===============7081388778131080261=="
+
+--===============7081388778131080261==
+Content-Type: multipart/alternative;
+ boundary="===============8656595573295630793=="
+
+--===============8656595573295630793==
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+
+Nested plain.
+
+--===============8656595573295630793==
+Content-Type: text/html; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+
+<div>Nested <em>HTML</em></div>
+
+--===============8656595573295630793==--
+
+--===============7081388778131080261==
+Content-Type: application/octet-stream
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="nested.bin"
+MIME-Version: 1.0
+
+bmVzdGVk
+
+--===============7081388778131080261==--

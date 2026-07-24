@@ -1,0 +1,6 @@
+{% extends "base.html" %}
+{% block title %}Delete {{ managed_user.username }} · MailStack{% endblock %}
+{% block content %}
+<div class="page-header"><div><div class="eyebrow">User administration</div><h1>Delete user</h1></div></div>
+<section class="panel narrow"><div class="alert alert-warning">Deleting this user removes only the login account and mailbox assignments. Mailboxes, received messages, attachments, and audit history remain preserved.</div><p>Delete user <strong>{{ managed_user.username }}</strong>?</p><form method="post">{% csrf_token %}<div class="actions"><button class="btn btn-danger" type="submit">Delete user</button><a class="btn" href="{% url 'accounts:user_list' %}">Cancel</a></div></form></section>
+{% endblock %}

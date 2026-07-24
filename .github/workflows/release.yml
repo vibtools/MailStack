@@ -1,0 +1,47 @@
+name: Release artifacts
+
+"on":
+  workflow_dispatch:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: read
+
+jobs:
+  build-verified-source:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: mailbox-app/requirements/*.txt
+      - name: System build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends default-libmysqlclient-dev build-essential pkg-config
+      - name: Development dependencies
+        run: python -m pip install --disable-pip-version-check -r mailbox-app/requirements/development.txt
+      - name: Full forensic gate
+        run: python scripts/forensic_audit.py --root . --full
+      - name: Build source archive
+        run: python scripts/build_release.py --root .
+      - name: Verify source archive
+        run: |
+          VERSION=$(cat VERSION)
+          python scripts/verify_release.py "dist/mailstack-${VERSION}-source.zip" \
+            --checksum "dist/mailstack-${VERSION}-source.zip.sha256"
+      - name: Upload verified artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: mailstack-source-${{ github.ref_name }}
+          path: |
+            dist/*.zip
+            dist/*.sha256
+            docs/RELEASE_NOTES_1.3.0.md
+            docs/FORENSIC_AUDIT_REPORT.md
+          if-no-files-found: error

@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Security vulnerability
+    url: https://github.com/vibtools/MailStack/security/advisories/new
+    about: Report security issues privately. Do not include secrets, mailbox content, or production identifiers in public issues.
+  - name: Vib Tools
+    url: https://vib.tools/
+    about: Visit the project publisher.
+  - name: Vib Tools open-source hub
+    url: https://dev.vib.tools/
+    about: Browse additional Vib Tools open-source projects.

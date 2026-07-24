@@ -1,0 +1,25 @@
+name: Feature request
+description: Propose a backward-compatible improvement
+title: "[Feature]: "
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: Describe the operational or user problem without including private data.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed behavior
+      description: Explain the expected behavior and compatibility requirements.
+    validations:
+      required: true
+  - type: checkboxes
+    id: compatibility
+    attributes:
+      label: Compatibility
+      options:
+        - label: Existing mailbox, ingestion, access-control, public-site, and contact-service behavior must remain intact.
+          required: true

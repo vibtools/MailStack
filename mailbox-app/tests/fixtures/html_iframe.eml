@@ -1,0 +1,23 @@
+From: Sender <sender@example.test>
+To: mailbox1@example.com
+Subject: html_iframe.eml
+Date: Fri, 26 Jun 2026 10:00:00 +0600
+Message-ID: <fixture@example.test>
+MIME-Version: 1.0
+Content-Type: multipart/alternative;
+ boundary="===============8414076170175078191=="
+
+--===============8414076170175078191==
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+
+Fallback.
+
+--===============8414076170175078191==
+Content-Type: text/html; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+
+<iframe src="https://evil.test"></iframe><p>Text</p>
+
+--===============8414076170175078191==--

@@ -1,0 +1,23 @@
+From: Sender <sender@example.test>
+To: mailbox1@example.com
+Subject: HTML
+Date: Fri, 26 Jun 2026 10:00:00 +0600
+Message-ID: <fixture@example.test>
+MIME-Version: 1.0
+Content-Type: multipart/alternative;
+ boundary="===============7581551167263265820=="
+
+--===============7581551167263265820==
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+
+HTML fallback.
+
+--===============7581551167263265820==
+Content-Type: text/html; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+
+<p><strong>Safe HTML body</strong></p>
+
+--===============7581551167263265820==--

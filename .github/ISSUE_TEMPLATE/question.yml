@@ -1,0 +1,35 @@
+name: Support question
+description: Ask a sanitized installation or operations question
+title: "[Support]: "
+labels: ["support"]
+body:
+  - type: markdown
+    attributes:
+      value: "Do not include credentials, private keys, mailbox content, personal data, production IP addresses or private hostnames."
+  - type: input
+    id: version
+    attributes:
+      label: MailStack version
+      placeholder: "1.3.0-rc.1"
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Installer
+        - Mail delivery
+        - Web application
+        - Contact service
+        - Backup or restore
+        - Development
+    validations:
+      required: true
+  - type: textarea
+    id: question
+    attributes:
+      label: Question
+      description: Provide sanitized context and commands already run.
+    validations:
+      required: true

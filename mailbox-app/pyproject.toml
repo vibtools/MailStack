@@ -1,0 +1,80 @@
+[build-system]
+requires = ["setuptools>=75", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mailstack"
+version = "1.3.0rc1"
+description = "MailStack self-hosted receive-only mail server and shared team inbox"
+authors = [{ name = "Vib Tools" }]
+maintainers = [{ name = "Vib Tools" }]
+keywords = [
+  "self-hosted", "email-server", "team-email", "shared-mailbox",
+  "django", "postfix", "dovecot", "mariadb", "maildir", "nginx",
+]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Environment :: Web Environment",
+  "Framework :: Django :: 5.2",
+  "Intended Audience :: System Administrators",
+  "License :: OSI Approved :: GNU Affero General Public License v3 or later (AGPLv3+)",
+  "Operating System :: POSIX :: Linux",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.12",
+  "Topic :: Communications :: Email",
+]
+requires-python = ">=3.12,<3.13"
+license = "AGPL-3.0-or-later"
+readme = "README.md"
+dependencies = [
+  "Django==5.2.15",
+  "argon2-cffi==25.1.0",
+  "bleach==6.4.0",
+  "filelock==3.20.3",
+  "gunicorn==25.1.0",
+  "mysqlclient==2.2.7",
+  "python-dotenv==1.2.2",
+  "whitenoise==6.11.0",
+]
+
+[project.urls]
+Homepage = "https://vib.tools/"
+Documentation = "https://dev.vib.tools/"
+Source = "https://github.com/vibtools/MailStack"
+Issues = "https://github.com/vibtools/MailStack/issues"
+Changelog = "https://github.com/vibtools/MailStack/blob/main/CHANGELOG.md"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["apps*", "config*"]
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "config.settings.test"
+python_files = ["test_*.py"]
+testpaths = ["tests"]
+addopts = "-ra --strict-markers"
+markers = ["mariadb: requires MariaDB-compatible test service"]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 110
+exclude = ["migrations", "staticfiles", ".audit-venv", ".venv", "venv"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "S", "UP", "SIM", "C4"]
+ignore = ["S101", "S105", "S106"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**/*.py" = ["S", "B017"]
+"config/settings/*.py" = ["F403", "F405"]
+# SQL values remain parameterized; only strictly validated schema/table identifiers are interpolated.
+"apps/mailboxes/mailserver.py" = ["S608"]
+
+[tool.coverage.run]
+source = ["apps"]
+omit = ["*/migrations/*", "*/management/commands/*", "*/admin.py", "*/apps.py"]
+
+[tool.coverage.report]
+fail_under = 85
+show_missing = true
+skip_covered = true

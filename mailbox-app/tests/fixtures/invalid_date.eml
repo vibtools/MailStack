@@ -1,0 +1,10 @@
+From: Sender <sender@example.test>
+To: mailbox1@example.com
+Subject: Invalid date
+Message-ID: <fixture@example.test>
+Date:
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+
+Invalid date.

@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Sign in · MailStack{% endblock %}
+{% block content %}
+<section class="auth-card" aria-labelledby="login-heading">
+  <div class="eyebrow">Authorized team access</div>
+  <h1 id="login-heading">Sign in to MailStack</h1>
+  <p class="muted">Use the team account provided by your administrator.</p>
+  <form method="post" novalidate>{% csrf_token %}
+    {% if form.non_field_errors %}<div class="form-errors" role="alert">{{ form.non_field_errors }}</div>{% endif %}
+    {% for field in form %}<div class="form-group"><label for="{{ field.id_for_label }}">{{ field.label }}</label>{{ field }}{% if field.errors %}<div class="field-error" role="alert">{{ field.errors|striptags }}</div>{% endif %}</div>{% endfor %}
+    <button class="btn btn-primary btn-block" type="submit">Sign in</button>
+  </form>
+</section>
+{% endblock %}

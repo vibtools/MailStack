@@ -1,0 +1,24 @@
+From: Sender <sender@example.test>
+To: mailbox1@example.com
+Subject: html_event_handler.eml
+Date: Fri, 26 Jun 2026 10:00:00 +0600
+Message-ID: <fixture@example.test>
+MIME-Version: 1.0
+Content-Type: multipart/alternative;
+ boundary="===============7696209538686808788=="
+
+--===============7696209538686808788==
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+
+Fallback.
+
+--===============7696209538686808788==
+Content-Type: text/html; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+
+<img src=3D"data:image/png;base64,AA=3D=3D" onerror=3D"alert(1)"><p onclick=
+=3D"x()">Text</p>
+
+--===============7696209538686808788==--

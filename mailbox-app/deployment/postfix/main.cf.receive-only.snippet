@@ -1,0 +1,10 @@
+# Preserve the existing tested MariaDB lookup and Dovecot LMTP delivery contract.
+virtual_mailbox_domains = mysql:/etc/postfix/mysql-virtual-domains.cf
+virtual_mailbox_base = /var/vmail
+virtual_mailbox_maps = mysql:/etc/postfix/mysql-virtual-mailboxes.cf
+virtual_alias_maps = mysql:/etc/postfix/mysql-virtual-aliases.cf
+virtual_transport = lmtp:unix:private/dovecot-lmtp
+
+# Do not enable SMTP AUTH on the public port 25 service.
+smtpd_sasl_auth_enable = no
+smtpd_recipient_restrictions = reject_non_fqdn_recipient, reject_unknown_recipient_domain, reject_unauth_destination

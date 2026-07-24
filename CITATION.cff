@@ -1,0 +1,21 @@
+cff-version: 1.2.0
+message: "If you use MailStack, cite the software release and link to the canonical source repository."
+title: "MailStack"
+type: software
+version: "1.3.0-rc.1"
+date-released: 2026-06-30
+authors:
+  - name: "Vib Tools"
+repository-code: "https://github.com/vibtools/MailStack"
+url: "https://dev.vib.tools/"
+license: "AGPL-3.0-or-later"
+keywords:
+  - self-hosted email
+  - mail server
+  - shared mailbox
+  - team inbox
+  - Postfix
+  - Dovecot
+  - Django
+  - Maildir
+  - MariaDB

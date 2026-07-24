@@ -1,0 +1,32 @@
+# MailStack 1.2.1 production acceptance checklist
+
+- [ ] Release SHA-256 and manifest verified
+- [ ] Online dependency vulnerability audit passes
+- [ ] Installed runtime reports Django 5.2.15 exactly
+- [ ] Full backup checksum verified
+- [ ] `nginx -t` passes
+- [ ] All six critical services active
+- [ ] Django deploy check passes
+- [ ] No unapplied migrations
+- [ ] Root redirects to login and login returns 200
+- [ ] Health readiness returns 200 locally
+- [ ] Static asset returns 200
+- [ ] HTTP redirects to HTTPS
+- [ ] ACME challenge test succeeds
+- [ ] Dotfile request returns 404
+- [ ] Existing mailbox/message counts are preserved
+- [ ] Existing administrator can log in
+- [ ] Ordinary user sees only assigned mailbox
+- [ ] Direct UUID, safe-HTML, and attachment isolation verified
+- [ ] User create/edit/delete verified
+- [ ] Password-change route is unavailable
+- [ ] Duplicate mailbox is rejected
+- [ ] Click-to-copy works
+- [ ] Real external inbound message arrives
+- [ ] Inbox/counts update without reload
+- [ ] In-app notification appears once
+- [ ] Opening message automatically marks it read
+- [ ] Mark-unread works
+- [ ] Delete permissions enforced
+- [ ] Nginx/Gunicorn/ingestion logs are clean
+- [ ] Rollback artifacts and procedure confirmed
