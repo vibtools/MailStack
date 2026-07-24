@@ -72,10 +72,10 @@
     },
     {
       "kind": "text",
-      "lines": 100,
+      "lines": 101,
       "path": ".github/workflows/ci.yml",
-      "sha256": "618cb17f101353d97d8e8d05879e7ff3a366f02c8ee7068355db219f734b5769",
-      "size_bytes": 2946
+      "sha256": "888c162494f787a0c0bc2b5b55c2aa66da13be41460a8e5bf9f2eee17c0b9ebe",
+      "size_bytes": 3020
     },
     {
       "kind": "text",
@@ -4299,7 +4299,7 @@
     },
     {
       "kind": "text",
-      "lines": 314,
+      "lines": 318,
       "path": "scripts/forensic_audit.py",
       "python": {
         "classes": [],
@@ -4324,8 +4324,8 @@
         ],
         "methods": []
       },
-      "sha256": "9526c75f22a9ec7121bd14a28805beb884f9672dc66e638c27cb1e3f475752fa",
-      "size_bytes": 10819
+      "sha256": "53233de834b74e2d6ad7c0422361c7ada8b9087074c66104c40b4a4c617dcfd7",
+      "size_bytes": 11137
     },
     {
       "kind": "text",
@@ -4519,7 +4519,7 @@
     "shell_files": 13,
     "shell_functions": 30,
     "text_files": 347,
-    "total_bytes": 874720,
-    "total_text_lines": 20793
+    "total_bytes": 875112,
+    "total_text_lines": 20798
   }
 }

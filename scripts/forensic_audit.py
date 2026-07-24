@@ -11,6 +11,7 @@ import os
 import re
 import subprocess
 import sys
+import tempfile
 from pathlib import Path
 
 REQUIRED = {
@@ -221,7 +222,6 @@ def main() -> int:
     # Ensure the public-site template renders without leaving placeholder tokens.
     template_dir = root / "public-site/site-template"
     if template_dir.is_dir():
-        import tempfile
         with tempfile.TemporaryDirectory(prefix="vibmail-public-render-") as temporary:
             destination = Path(temporary) / "site"
             code, output = run(
@@ -275,24 +275,28 @@ def main() -> int:
 
     if args.full:
         app = root / "mailbox-app"
-        commands = [
-            ([sys.executable, "-m", "pytest", "--cov=apps", "--cov-report=term-missing", "--cov-fail-under=85"], app, "PYTEST_COVERAGE", True),
-            ([sys.executable, "-m", "ruff", "check", "."], app, "RUFF", True),
-            ([sys.executable, "-m", "bandit", "-c", ".bandit", "-q", "-r", "apps", "config"], app, "BANDIT", True),
-            ([sys.executable, "manage.py", "makemigrations", "--check", "--dry-run", "--settings=config.settings.test"], app, "MIGRATION_DRIFT", True),
-            ([sys.executable, "manage.py", "check", "--settings=config.settings.test"], app, "DJANGO_CHECK", True),
-            ([sys.executable, "test_contact_app.py"], root / "public-site/contact_service", "CONTACT_TESTS", False),
-            ([sys.executable, "-m", "pip", "check"], root, "PIP_CHECK", False),
-        ]
-        for command, cwd, label, django_environment in commands:
-            env = os.environ.copy()
-            if django_environment:
-                env["DJANGO_SETTINGS_MODULE"] = "config.settings.test"
-            else:
-                env.pop("DJANGO_SETTINGS_MODULE", None)
-            completed = subprocess.run(command, cwd=cwd, env=env, text=True, capture_output=True)
-            if completed.returncode:
-                findings.append(f"{label}:{(completed.stdout + completed.stderr).strip()}")
+        with tempfile.TemporaryDirectory(prefix="mailstack-full-audit-") as temporary:
+            coverage_file = Path(temporary) / ".coverage"
+            commands = [
+                ([sys.executable, "-m", "pytest", "--cov=apps", "--cov-report=term-missing", "--cov-fail-under=85"], app, "PYTEST_COVERAGE", True),
+                ([sys.executable, "-m", "ruff", "check", "."], app, "RUFF", True),
+                ([sys.executable, "-m", "bandit", "-c", ".bandit", "-q", "-r", "apps", "config"], app, "BANDIT", True),
+                ([sys.executable, "manage.py", "makemigrations", "--check", "--dry-run", "--settings=config.settings.test"], app, "MIGRATION_DRIFT", True),
+                ([sys.executable, "manage.py", "check", "--settings=config.settings.test"], app, "DJANGO_CHECK", True),
+                ([sys.executable, "test_contact_app.py"], root / "public-site/contact_service", "CONTACT_TESTS", False),
+                ([sys.executable, "-m", "pip", "check"], root, "PIP_CHECK", False),
+            ]
+            for command, cwd, label, django_environment in commands:
+                env = os.environ.copy()
+                if django_environment:
+                    env["DJANGO_SETTINGS_MODULE"] = "config.settings.test"
+                else:
+                    env.pop("DJANGO_SETTINGS_MODULE", None)
+                if label == "PYTEST_COVERAGE":
+                    env["COVERAGE_FILE"] = str(coverage_file)
+                completed = subprocess.run(command, cwd=cwd, env=env, text=True, capture_output=True)
+                if completed.returncode:
+                    findings.append(f"{label}:{(completed.stdout + completed.stderr).strip()}")
 
     print("=== MAILSTACK FORENSIC SOURCE AUDIT ===")
     print(f"ROOT={root}")

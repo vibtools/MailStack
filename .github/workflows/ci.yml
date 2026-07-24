@@ -72,6 +72,7 @@ jobs:
         working-directory: mailbox-app
         env:
           DJANGO_SETTINGS_MODULE: config.settings.test
+          COVERAGE_FILE: ${{ runner.temp }}/mailstack-standalone.coverage
         run: pytest --cov=apps --cov-report=term-missing --cov-fail-under=85
 
       - name: Contact service tests
