@@ -10,7 +10,7 @@ Django==5.2.15
 filelock==3.20.3
 gunicorn==25.1.0
 packaging==26.2
-pip-audit==2.10.0
+pip-audit==2.10.1
 pycparser==3.0
 pytest==9.1.1
 pytest-cov==7.0.0
