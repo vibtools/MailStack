@@ -88,8 +88,8 @@
       "kind": "text",
       "lines": 58,
       "path": ".gitignore",
-      "sha256": "f096ae46d0d84b4d4e6c3b6e98697a3dbe417be71dcd4ca00d2bdd70a29ba75a",
-      "size_bytes": 583
+      "sha256": "23dacac931d01bfabb329b5775c029c09b5937484ebb6928cb6c3363cb661b3e",
+      "size_bytes": 584
     },
     {
       "kind": "text",
@@ -4517,7 +4517,7 @@
     "shell_files": 13,
     "shell_functions": 30,
     "text_files": 347,
-    "total_bytes": 873490,
+    "total_bytes": 873491,
     "total_text_lines": 20775
   }
 }

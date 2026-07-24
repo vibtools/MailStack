@@ -47,7 +47,7 @@ staticfiles/
 *.backup
 build/
 dist/
-release/
+/release/
 artifacts/
 SOURCE_MANIFEST.sha256
 
