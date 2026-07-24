@@ -23,6 +23,11 @@ def sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+def canonical_path_key(path: Path, root: Path) -> str:
+    """Return an OS-independent repository-relative ordering key."""
+    return path.relative_to(root).as_posix()
+
+
 def python_symbols(text: str) -> dict[str, object]:
     tree = ast.parse(text)
     classes: list[str] = []
@@ -67,7 +72,7 @@ def build(root: Path) -> dict[str, object]:
     python_files = python_classes = python_functions = python_methods = 0
     shell_files = shell_functions = 0
 
-    for path in sorted(root.rglob("*")):
+    for path in sorted(root.rglob("*"), key=lambda item: canonical_path_key(item, root)):
         if not path.is_file():
             continue
         relative = path.relative_to(root).as_posix()

@@ -20,6 +20,11 @@ def digest(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+def canonical_path_key(path: Path, root: Path) -> str:
+    """Return an OS-independent repository-relative ordering key."""
+    return path.relative_to(root).as_posix()
+
+
 def included(path: Path, root: Path) -> bool:
     relative = path.relative_to(root)
     return not any(part in EXCLUDED_PARTS for part in relative.parts) and path.suffix.lower() not in EXCLUDED_SUFFIXES
@@ -44,7 +49,7 @@ def main() -> int:
     with tempfile.TemporaryDirectory(prefix="mailstack-release-") as temp:
         stage = Path(temp) / package_name
         stage.mkdir()
-        for source in sorted(root.rglob("*")):
+        for source in sorted(root.rglob("*"), key=lambda item: canonical_path_key(item, root)):
             if not source.is_file() or not included(source, root):
                 continue
             relative = source.relative_to(root)
@@ -54,7 +59,7 @@ def main() -> int:
 
         manifest = stage / "SOURCE_MANIFEST.sha256"
         lines = []
-        for path in sorted(stage.rglob("*")):
+        for path in sorted(stage.rglob("*"), key=lambda item: canonical_path_key(item, stage)):
             if path.is_file() and path != manifest:
                 lines.append(f"{digest(path)}  {path.relative_to(stage).as_posix()}")
         manifest.write_text("\n".join(lines) + "\n", encoding="utf-8", newline="\n")
@@ -62,7 +67,7 @@ def main() -> int:
         temporary = zip_path.with_suffix(".zip.tmp")
         temporary.unlink(missing_ok=True)
         with zipfile.ZipFile(temporary, "w", zipfile.ZIP_DEFLATED, compresslevel=9, allowZip64=True) as archive:
-            for path in sorted(stage.rglob("*")):
+            for path in sorted(stage.rglob("*"), key=lambda item: canonical_path_key(item, stage)):
                 if not path.is_file():
                     continue
                 arcname = (Path(package_name) / path.relative_to(stage)).as_posix()
