@@ -15,11 +15,14 @@ mailbox-app/                Django team mailbox application
   deployment/               Legacy-compatible deployment assets
   requirements/             Pinned runtime and development dependencies
   scripts/                  Backup, restore, deploy, health and verification tools
-  static/                   Application CSS and JavaScript
+  static/                   Application CSS, JavaScript, local brand assets and SVG icon sprite
+    brand/                  Runtime copy of the canonical MailStack logo
+    css/                    Existing page CSS and the frozen shared foundation layer
+    icons/                  Self-hosted shared SVG symbol sprite
   templates/                Django HTML templates
   tests/                    Unit, integration, functional, reliability and security tests
 public-site/                Static site and isolated contact WSGI service
-scripts/                    Repository audit, documentation, rendering, testing and release tools
+scripts/                    Repository audit, documentation, UI contracts, rendering, testing and release tools
 install.sh                  Clean Ubuntu 24.04 installer
 VERSION                     Canonical release version
 ```

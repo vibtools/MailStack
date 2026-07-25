@@ -44,7 +44,11 @@ def test_current_baseline() -> None:
     manifest = json.loads((ROOT / "documents/DOCUMENTATION_MANIFEST.json").read_text(encoding="utf-8"))
     assert manifest["project"] == "MailStack"
     assert manifest["summary"]["draft"] == 0
-    assert manifest["summary"]["phases"] >= 1
+    assert manifest["summary"]["phases"] >= 3
+    assert any(
+        item.get("phase_id") == "PHASE-002"
+        for item in manifest["documents"]
+    )
 
 
 def test_sync_is_deterministic() -> None:

@@ -5,37 +5,157 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light">
+  <meta name="theme-color" content="#ffffff">
   <title>{% block title %}MailStack{% endblock %}</title>
+  <link rel="icon" href="{% static 'brand/mailstack-logo.svg' %}" type="image/svg+xml">
   <link rel="stylesheet" href="{% static 'css/app.css' %}">
+  <link rel="stylesheet" href="{% static 'css/foundation.css' %}">
   <script src="{% static 'js/app.js' %}" defer></script>
 </head>
-<body{% if request.user.is_authenticated %} data-live-url="{% url 'messages:live_updates' %}"{% endif %}>
+<body class="{% if request.user.is_authenticated %}app-authenticated{% else %}auth-page{% endif %}"{% if request.user.is_authenticated %} data-live-url="{% url 'messages:live_updates' %}"{% endif %}>
 <a class="skip-link" href="#main-content">Skip to content</a>
 {% if request.user.is_authenticated %}
-<header class="topbar">
-  <div class="container nav-wrap">
-    <a class="brand" href="{% url 'dashboard:index' %}">MailStack</a>
-    <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="main-nav">Menu</button>
-    <nav id="main-nav" class="main-nav" aria-label="Primary">
-      <a href="{% url 'dashboard:index' %}">Dashboard</a>
-      <a href="{% url 'mailboxes:list' %}">Mailboxes</a>
-      <a href="{% url 'mailboxes:create' %}">Create mailbox</a>
-      {% if is_vibmail_admin %}<a href="{% url 'accounts:user_list' %}">User management</a>{% endif %}
-      <button class="link-button notification-enable" type="button" data-enable-notifications hidden>Enable notifications</button>
-      <form action="{% url 'accounts:logout' %}" method="post" class="inline-form">{% csrf_token %}<button class="link-button" type="submit">Log out</button></form>
+<div class="app-shell" data-app-shell>
+  <aside id="app-sidebar" class="app-sidebar" aria-label="Application navigation" data-app-sidebar>
+    <div class="sidebar-header">
+      <a class="brand-lockup" href="{% url 'dashboard:index' %}" aria-label="MailStack dashboard">
+        <img class="brand-mark" src="{% static 'brand/mailstack-logo.svg' %}" alt="" width="38" height="38">
+        <span class="brand-name">MailStack</span>
+      </a>
+      <button class="icon-button sidebar-collapse" type="button" aria-label="Collapse navigation" aria-pressed="false" data-sidebar-collapse>
+        <svg class="ui-icon" aria-hidden="true"><use href="{% static 'icons/mailstack-icons.svg' %}#icon-panel-left"></use></svg>
+      </button>
+    </div>
+
+    <nav class="sidebar-nav" aria-label="Primary">
+      <div class="nav-section">
+        <div class="nav-section-label">Overview</div>
+        <a class="nav-item{% if request.resolver_match.namespace == 'dashboard' %} is-active{% endif %}" href="{% url 'dashboard:index' %}"{% if request.resolver_match.namespace == 'dashboard' %} aria-current="page"{% endif %}>
+          <svg class="ui-icon" aria-hidden="true"><use href="{% static 'icons/mailstack-icons.svg' %}#icon-dashboard"></use></svg>
+          <span class="nav-label">Dashboard</span>
+        </a>
+      </div>
+
+      <div class="nav-section">
+        <div class="nav-section-label">Mail</div>
+        <a class="nav-item{% if request.resolver_match.namespace == 'messages' or request.resolver_match.namespace == 'mailboxes' and request.resolver_match.url_name != 'create' %} is-active{% endif %}" href="{% url 'mailboxes:list' %}"{% if request.resolver_match.namespace == 'messages' or request.resolver_match.namespace == 'mailboxes' and request.resolver_match.url_name != 'create' %} aria-current="page"{% endif %}>
+          <svg class="ui-icon" aria-hidden="true"><use href="{% static 'icons/mailstack-icons.svg' %}#icon-mailbox"></use></svg>
+          <span class="nav-label">Mailboxes</span>
+        </a>
+        <a class="nav-item{% if request.resolver_match.namespace == 'mailboxes' and request.resolver_match.url_name == 'create' %} is-active{% endif %}" href="{% url 'mailboxes:create' %}"{% if request.resolver_match.namespace == 'mailboxes' and request.resolver_match.url_name == 'create' %} aria-current="page"{% endif %}>
+          <svg class="ui-icon" aria-hidden="true"><use href="{% static 'icons/mailstack-icons.svg' %}#icon-plus-circle"></use></svg>
+          <span class="nav-label">Create mailbox</span>
+        </a>
+        <button class="nav-item nav-button notification-enable" type="button" data-enable-notifications hidden>
+          <svg class="ui-icon" aria-hidden="true"><use href="{% static 'icons/mailstack-icons.svg' %}#icon-bell"></use></svg>
+          <span class="nav-label">Enable notifications</span>
+        </button>
+      </div>
+
+      {% if is_vibmail_admin %}
+      <div class="nav-section">
+        <div class="nav-section-label">Management</div>
+        <a class="nav-item{% if request.resolver_match.namespace == 'accounts' and request.resolver_match.url_name != 'login' and request.resolver_match.url_name != 'logout' %} is-active{% endif %}" href="{% url 'accounts:user_list' %}"{% if request.resolver_match.namespace == 'accounts' and request.resolver_match.url_name != 'login' and request.resolver_match.url_name != 'logout' %} aria-current="page"{% endif %}>
+          <svg class="ui-icon" aria-hidden="true"><use href="{% static 'icons/mailstack-icons.svg' %}#icon-users"></use></svg>
+          <span class="nav-label">User management</span>
+        </a>
+      </div>
+      {% endif %}
     </nav>
-  </div>
-</header>
+
+    <div class="sidebar-footer">
+      <div class="mode-card">
+        <span class="mode-indicator" aria-hidden="true"></span>
+        <span class="mode-copy">
+          <strong>Receive-only mode</strong>
+          <small>Outbound sending is disabled</small>
+        </span>
+      </div>
+    </div>
+  </aside>
+
+  <button class="shell-backdrop" type="button" aria-label="Close navigation" tabindex="-1" data-shell-close></button>
+
+  <div class="app-workspace">
+    <header class="app-topbar">
+      <div class="topbar-leading">
+        <button class="icon-button shell-menu-button" type="button" aria-label="Open navigation" aria-expanded="false" aria-controls="app-sidebar" data-shell-toggle>
+          <svg class="ui-icon" aria-hidden="true"><use href="{% static 'icons/mailstack-icons.svg' %}#icon-menu"></use></svg>
+        </button>
+        <div class="topbar-context">
+          <span class="topbar-product">MailStack</span>
+          <span class="topbar-domain">{{ mail_domain }}</span>
+        </div>
+      </div>
+
+      <div class="topbar-actions">
+        <details class="user-menu" data-user-menu>
+          <summary aria-label="Account menu for {{ request.user.username }}">
+            <span class="user-avatar" aria-hidden="true">{{ request.user.username|slice:":1"|upper }}</span>
+            <span class="user-summary-copy">
+              <strong>{{ request.user.username }}</strong>
+              <small>{% if is_vibmail_admin %}Administrator{% else %}Team member{% endif %}</small>
+            </span>
+            <svg class="ui-icon user-menu-chevron" aria-hidden="true"><use href="{% static 'icons/mailstack-icons.svg' %}#icon-chevron-down"></use></svg>
+          </summary>
+          <div class="user-menu-panel">
+            <div class="user-menu-meta">
+              <strong>{{ request.user.username }}</strong>
+              <span>{{ mail_domain }}</span>
+            </div>
+            <form action="{% url 'accounts:logout' %}" method="post">
+              {% csrf_token %}
+              <button class="user-menu-action" type="submit">
+                <svg class="ui-icon" aria-hidden="true"><use href="{% static 'icons/mailstack-icons.svg' %}#icon-log-out"></use></svg>
+                <span>Log out</span>
+              </button>
+            </form>
+          </div>
+        </details>
+      </div>
+    </header>
+
+    <main id="main-content" class="app-main page-shell">
+      <div class="content-container">
+{% else %}
+<div class="auth-shell">
+  <header class="auth-brand-header">
+    <a class="brand-lockup" href="{% url 'accounts:login' %}" aria-label="MailStack sign in">
+      <img class="brand-mark" src="{% static 'brand/mailstack-logo.svg' %}" alt="" width="40" height="40">
+      <span class="brand-name">MailStack</span>
+    </a>
+  </header>
+  <main id="main-content" class="auth-main">
+    <div class="auth-container">
 {% endif %}
-<main id="main-content" class="container page-shell">
-  {% if messages %}
-  <div class="alerts" aria-live="polite">
-    {% for message in messages %}<div class="alert alert-{{ message.tags|default:'info' }}">{{ message }}</div>{% endfor %}
+      {% if messages %}
+      <div class="alerts" aria-live="polite" aria-atomic="true">
+        {% for message in messages %}<div class="alert alert-{{ message.tags|default:'info' }}">{{ message }}</div>{% endfor %}
+      </div>
+      {% endif %}
+      {% block content %}{% endblock %}
+{% if request.user.is_authenticated %}
+      </div>
+    </main>
+
+    <footer class="app-footer">
+      <div class="app-footer-inner">
+        <span>© {% now "Y" %} MailStack by <a href="{{ company_url }}" rel="noopener noreferrer">Vib Tools</a>. Authorized team use only.</span>
+        <span class="footer-links">
+          <a href="{{ source_code_url }}" rel="noopener noreferrer">Source code</a>
+          <a href="{{ open_source_hub_url }}" rel="noopener noreferrer">Open-source hub</a>
+          <a href="{{ subdomain_service_url }}" rel="noopener noreferrer">Free subdomains</a>
+        </span>
+      </div>
+    </footer>
   </div>
-  {% endif %}
-  {% block content %}{% endblock %}
-</main>
+</div>
+{% else %}
+    </div>
+  </main>
+  <footer class="auth-footer">© {% now "Y" %} MailStack by <a href="{{ company_url }}" rel="noopener noreferrer">Vib Tools</a>. Authorized team use only.</footer>
+</div>
+{% endif %}
 <div id="toast-region" class="toast-region" role="status" aria-live="polite" aria-atomic="false"></div>
-<footer class="footer"><div class="container">© {% now "Y" %} MailStack by <a href="{{ company_url }}" rel="noopener noreferrer">Vib Tools</a>. <a href="{{ source_code_url }}" rel="noopener noreferrer">Source code</a> · <a href="{{ open_source_hub_url }}" rel="noopener noreferrer">More open source</a> · <a href="{{ subdomain_service_url }}" rel="noopener noreferrer">Free subdomains</a>. Authorized team use only.</div></footer>
 </body>
 </html>

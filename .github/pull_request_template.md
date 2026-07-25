@@ -19,6 +19,7 @@ Describe the change and the operational problem it solves.
 - [ ] `python scripts/test_documents.py`
 - [ ] `python scripts/manage_designs.py --root . check`
 - [ ] `python scripts/test_designs.py`
+- [ ] `python scripts/test_ui_foundation.py`
 - [ ] `python scripts/check_documentation_policy.py --base HEAD^ --head HEAD`
 
 ## Verification

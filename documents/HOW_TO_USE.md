@@ -5,7 +5,7 @@ document_type: how-to
 audience: mailbox-users-and-administrators
 status: active
 version: 1.3.0-rc.1
-last_reviewed: 2026-07-24
+last_reviewed: 2026-07-25
 ---
 
 # How to use MailStack
@@ -16,8 +16,13 @@ last_reviewed: 2026-07-24
 2. Enter the administrator-provided username and password.
 3. Select **Sign in**.
 4. Confirm that the dashboard shows only the mailboxes assigned to the account.
+5. Use the persistent sidebar on desktop. On tablet or mobile, select the menu button to open the
+   navigation drawer and close it with the backdrop, Escape key, or a selected destination.
+6. Open the account menu in the top bar and select **Log out** when finished.
 
-There is no public registration or in-application password-change workflow in this release.
+At desktop widths of 1200 pixels or more, the sidebar control can collapse or expand the navigation.
+That preference is stored only in the current browser. There is no public registration or
+in-application password-change workflow in this release.
 
 ## Create a mailbox
 
@@ -56,7 +61,7 @@ scanned by MailStack.
 
 ## Enable browser notifications
 
-1. Select **Enable notifications** in the authenticated navigation.
+1. Select **Enable notifications** in the **Mail** section of the authenticated sidebar.
 2. Approve the browser permission prompt.
 3. Leave MailStack open in a supported browser to receive new-message notifications.
 4. To disable notifications later, change the permission in the browser site settings.

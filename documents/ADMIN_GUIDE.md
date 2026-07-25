@@ -5,7 +5,7 @@ document_type: admin-guide
 audience: mailstack-administrators
 status: active
 version: 1.3.0-rc.1
-last_reviewed: 2026-07-24
+last_reviewed: 2026-07-25
 ---
 
 # MailStack administrator guide
@@ -14,8 +14,9 @@ last_reviewed: 2026-07-24
 
 Administrators can view all maintained mailboxes, create and manage ordinary users, assign mailbox
 memberships, control deletion permissions, create mailboxes, enable or disable mailboxes, and
-review operational health. Administrator accounts are intentionally not editable or deletable
-through the ordinary user-management screen.
+review operational health. The authenticated shell displays **User management** only when the
+existing administrator authorization check passes. Administrator accounts are intentionally not
+editable or deletable through the ordinary user-management screen.
 
 ## User management
 
@@ -48,6 +49,10 @@ scripts, systemd service status, and journal logs. After deployment, verify exte
 creation before onboarding users.
 
 ## Security boundaries
+
+The shared shell uses only local CSS, JavaScript, logo, and SVG icon assets. Logout remains a
+CSRF-protected POST action; hidden mobile navigation is removed from interaction; no planned route
+or control is exposed by the shell. Preserve these boundaries in every subsequent page patch.
 
 MailStack is receive-only and must not be treated as an outbound relay, public registration system,
 or general-purpose webmail service. Preserve object-scoped authorization, sanitized HTML,

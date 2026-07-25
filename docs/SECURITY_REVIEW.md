@@ -37,7 +37,7 @@ The reference deployment is receive-only for hosted team mailboxes. It does not 
 - Nginx protects attachments through an internal route.
 - Maildir and attachment paths are confined; symlinks and traversal attempts are tested.
 - HTML is sanitized; remote/active content and unsafe attachment names are covered by tests.
-- The contact service uses one-time CSRF tokens, secure SameSite cookies, a honeypot, minimum form timing, size limits, rate limits, hashed abuse identifiers, header validation, and a local fixed sendmail path.
+- The contact service uses one-time CSRF tokens, secure SameSite cookies, a honeypot, minimum form timing, size limits, rate limits, hashed abuse identifiers, header validation, a local operator-configured sendmail path, and deterministic SQLite connection closure.
 
 ### Service confinement
 
@@ -46,6 +46,11 @@ The reference deployment is receive-only for hosted team mailboxes. It does not 
 ## Reviewed static-analysis exception
 
 Bandit B608 is disabled only at repository configuration level because the mail integration must interpolate configured SQL identifiers. Ruff S608 remains enabled and the specific module has an explicit reviewed exception. The identifiers pass `^[A-Za-z0-9_]+$`, are backtick-quoted, and all data values remain parameterized. Unit tests reject unsafe identifiers.
+The standalone contact service invokes the operator-configured local sendmail executable with a
+fixed argument vector, byte input, `shell=False` semantics, bounded timeout, and captured output.
+Narrow B404/B603 exceptions document that reviewed boundary; user-controlled form data cannot alter
+the executable or argument list. Ruff and Bandit now scan this module in the full forensic gate and
+GitHub Actions.
 
 ## Remaining external risks
 
@@ -53,3 +58,21 @@ Bandit B608 is disabled only at repository configuration level because the mail 
 - SPF, DKIM, and DMARC are not automatically provisioned by the receive-only base installer; they are recommended for contact/system-mail deliverability.
 - A blocking online dependency advisory audit must pass in CI.
 - Copyright ownership and third-party license compatibility require release-owner confirmation.
+
+## PHASE-002 shared-shell review
+
+- The shell adds no external script, stylesheet, font, image, or CDN dependency.
+- The runtime logo is a byte-identical local copy of the canonical repository SVG; navigation icons
+  use a local SVG symbol sprite with unique IDs.
+- Administrator navigation remains controlled by the existing authorization context.
+- Logout remains a CSRF-protected POST form.
+- Hidden mobile navigation is marked inert and `aria-hidden`; opening and closing the drawer manages
+  focus without changing authorization or route behavior.
+- The unauthenticated shell does not render private navigation or the authenticated live-update URL.
+- No settings, logs, teams, domains, public signup, outbound sending, reply, forward, IMAP, or POP3
+  control is activated.
+- JavaScript contract tests block `eval`, `new Function`, `innerHTML`, and `document.write` in the
+  maintained application script.
+
+The shared shell does not change the existing message HTML sanitizer or sandbox. Message-reader
+hardening and redesign remain a separate security-focused phase.

@@ -14,7 +14,9 @@ from pathlib import Path
 
 EXCLUDED_PARTS = {".git", ".venv", ".audit-venv", "venv", ".tox", ".nox", "__pycache__", ".pytest_cache", ".ruff_cache", "dist", "artifacts"}
 EXCLUDED_SUFFIXES = {".pyc", ".pyo", ".zip", ".tar", ".gz", ".log", ".sqlite", ".sqlite3", ".db"}
-STORED_SUFFIXES = {".png", ".jpg", ".jpeg", ".gif", ".woff", ".woff2"}
+CANONICAL_ZIP_TIMESTAMP = (2026, 1, 1, 0, 0, 0)
+CANONICAL_ZIP_CREATE_SYSTEM = 3
+CANONICAL_ZIP_VERSION = 20
 
 
 def digest(path: Path) -> str:
@@ -67,17 +69,23 @@ def main() -> int:
 
         temporary = zip_path.with_suffix(".zip.tmp")
         temporary.unlink(missing_ok=True)
-        with zipfile.ZipFile(temporary, "w", zipfile.ZIP_DEFLATED, compresslevel=9, allowZip64=True) as archive:
+        with zipfile.ZipFile(temporary, "w", compression=zipfile.ZIP_STORED, allowZip64=True) as archive:
+            archive.comment = b""
             for path in sorted(stage.rglob("*"), key=lambda item: canonical_path_key(item, stage)):
                 if not path.is_file():
                     continue
                 arcname = (Path(package_name) / path.relative_to(stage)).as_posix()
-                info = zipfile.ZipInfo(arcname, date_time=(2026, 1, 1, 0, 0, 0))
-                info.compress_type = (
-                    zipfile.ZIP_STORED
-                    if path.suffix.lower() in STORED_SUFFIXES
-                    else zipfile.ZIP_DEFLATED
-                )
+                info = zipfile.ZipInfo(arcname, date_time=CANONICAL_ZIP_TIMESTAMP)
+                info.create_system = CANONICAL_ZIP_CREATE_SYSTEM
+                info.create_version = CANONICAL_ZIP_VERSION
+                info.extract_version = CANONICAL_ZIP_VERSION
+                info.reserved = 0
+                info.flag_bits = 0
+                info.volume = 0
+                info.internal_attr = 0
+                info.compress_type = zipfile.ZIP_STORED
+                info.extra = b""
+                info.comment = b""
                 mode = 0o755 if path.name == "install.sh" or path.suffix == ".sh" else 0o644
                 info.external_attr = mode << 16
                 archive.writestr(info, path.read_bytes())

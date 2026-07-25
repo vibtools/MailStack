@@ -31,7 +31,8 @@ def test_mailbox_paths_and_provisioning(settings):
     for name in ("new", "cur", "tmp"):
         child = maildir / name
         assert child.is_dir()
-        assert child.stat().st_mode & 0o777 == 0o700
+        if os.name == "posix":
+            assert child.stat().st_mode & 0o777 == 0o700
     assert AuditLog.objects.filter(action="mailbox_create").exists()
 
 

@@ -8,7 +8,7 @@ relevant user manual, how-to guide, or administrator guide.
 
 ```bash
 python scripts/manage_documents.py new-phase \
-  --phase-id PHASE-002 \
+  --phase-id PHASE-003 \
   --title "Feature title" \
   --summary "What the phase changes for users"
 
@@ -39,6 +39,7 @@ required documentation update.
 | [Documentation Policy](DOCUMENTATION_POLICY.md) | Documentation Policy | contributors-and-maintainers | active | 1.3.0-rc.1 |
 | [How to Use MailStack](HOW_TO_USE.md) | How To | mailbox-users-and-administrators | active | 1.3.0-rc.1 |
 | [Documentation and Feature Baseline](phases/PHASE-000-BASELINE.md) | Phase | users-operators-and-maintainers | active | 1.3.0-rc.1 |
+| [Shared UI Foundation and Application Shell](phases/PHASE-002-SHARED-UI-FOUNDATION-AND-APPLICATION-SHELL.md) | Phase | users-operators-designers-and-maintainers | active | 1.3.0-rc.1 |
 | [UI Design Intake Baseline](phases/PHASE-001-UI-DESIGN-INTAKE-BASELINE.md) | Phase | users-operators-designers-and-maintainers | active | 1.3.0-rc.1 |
 | [MailStack User Manual](USER_MANUAL.md) | User Manual | mailbox-users | active | 1.3.0-rc.1 |
 <!-- AUTO-DOCUMENT-INDEX:END -->

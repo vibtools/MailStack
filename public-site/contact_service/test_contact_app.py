@@ -4,6 +4,7 @@ import io
 import json
 import os
 import re
+import sqlite3
 import tempfile
 import time
 from pathlib import Path
@@ -169,6 +170,15 @@ assert row is not None
 assert row["delivery_status"] == "sent"
 assert row["work_email"] == "client@example.com"
 assert row["service_type"] == "team"
+
+with contact_app._connection() as closed_connection:
+    closed_connection.execute("SELECT 1").fetchone()
+try:
+    closed_connection.execute("SELECT 1").fetchone()
+except sqlite3.ProgrammingError:
+    pass
+else:
+    raise AssertionError("Contact database connection remained open after context exit")
 
 print("CONTACT_SERVICE_TESTS: PASS")
 print("TESTED: health, secure cookie, CSRF, validation, honeypot, timing, persistence, one-time token")

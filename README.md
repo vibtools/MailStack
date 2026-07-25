@@ -202,6 +202,7 @@ Run the complete repository gate from the project root:
 ```bash
 python scripts/manage_designs.py --root . check
 python scripts/test_designs.py
+python scripts/test_ui_foundation.py
 python scripts/forensic_audit.py --root . --full
 ```
 

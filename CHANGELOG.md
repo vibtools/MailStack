@@ -6,10 +6,13 @@ All notable repository-level changes are recorded here. Application history befo
 
 ### Changed
 
+- Implemented PHASE-002 shared UI foundation and application shell with frozen design tokens, responsive authenticated navigation, an isolated sign-in shell, local SVG brand/icon assets, accessible focus handling, and preserved page business logic.
+- Added dependency-free UI foundation contract tests, Django shell functional tests, CI enforcement, forensic-audit integration, and synchronized user/design documentation.
+- Hardened cross-platform verification by deterministically closing contact-service SQLite connections, limiting POSIX permission assertions to POSIX runtimes, extending Ruff/Bandit coverage to the standalone contact service, and canonicalizing source-release ZIP host metadata and storage so Windows and Linux produce byte-identical archives.
 - Imported and verified the complete 25-image MailStack UI and logo reference archive as `MAILSTACK-UI-DESIGN-INTAKE-001`.
 - Frozen `MAILSTACK-UI-FOUNDATION-001` with screen classification, component, responsive, accessibility, future-roadmap, and implementation-status specifications.
 - Added immutable design-asset hashing, PNG integrity validation, deterministic manifest synchronization, contract tests, CI gates, and forensic-audit integration.
-- Optimized deterministic source packaging by storing already-compressed media without redundant DEFLATE work.
+- Made deterministic source packaging independent of host ZIP metadata and zlib implementation by using canonical POSIX metadata, fixed timestamps, empty optional metadata, and stored entries for every release member.
 - Adopted **MailStack** as the public open-source project name.
 - Set `https://github.com/vibtools/MailStack` as the canonical repository.
 - Rebuilt the root README with SEO-oriented positioning for a self-hosted mail server and shared team inbox.

@@ -59,6 +59,9 @@ jobs:
       - name: UI design system tests
         run: python scripts/test_designs.py
 
+      - name: Shared UI foundation contract tests
+        run: python scripts/test_ui_foundation.py
+
       - name: Feature documentation policy
         env:
           DOCUMENTATION_BASE_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event.before }}
@@ -97,6 +100,12 @@ jobs:
       - name: Contact service tests
         working-directory: public-site/contact_service
         run: python test_contact_app.py
+
+      - name: Contact service Ruff
+        run: python -m ruff check --config mailbox-app/pyproject.toml public-site/contact_service/contact_app.py
+
+      - name: Contact service Bandit
+        run: python -m bandit -c mailbox-app/.bandit -q public-site/contact_service/contact_app.py
 
       - name: Django checks
         working-directory: mailbox-app

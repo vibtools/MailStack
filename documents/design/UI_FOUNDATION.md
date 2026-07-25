@@ -5,23 +5,27 @@ document_type: design-reference
 audience: designers-developers-and-maintainers
 status: active
 version: 1.3.0-rc.1
-last_reviewed: 2026-07-24
+last_reviewed: 2026-07-25
 ---
 
 # MailStack UI foundation
 
 ## Purpose
 
-Freeze the shared visual and interaction language that all current and future MailStack screens
-must follow. This foundation is identified as `MAILSTACK-UI-FOUNDATION-001` and is based on the complete
-25-image intake rather than any single page.
+Freeze and implement the shared visual and interaction language that all current and future
+MailStack screens must follow. The baseline remains `MAILSTACK-UI-FOUNDATION-001` and is derived
+from the complete 25-image intake rather than any single page.
 
 ## Scope
 
-The foundation governs application shell, navigation, spacing, color, typography, cards, forms,
-tables, status indicators, dialogs, drawers, responsive behavior, accessibility, and the secure
-message-reading surface. It does not add routes, models, permissions, mail protocols, outbound
-sending, public registration, or other unsupported behavior.
+The foundation governs the application shell, navigation, spacing, color, typography, shared
+controls, responsive behavior, focus treatment, and local brand/icon assets. PHASE-002 implements
+that shared runtime layer in `base.html`, `foundation.css`, the preserved `VibMail` JavaScript
+module, and self-hosted SVG assets.
+
+It does not redesign individual dashboard, mailbox, user, inbox, or message page content. It does
+not add routes, models, permissions, mail protocols, outbound sending, public registration, or
+other unsupported behavior.
 
 ## Approved baseline
 
@@ -41,38 +45,45 @@ Danger          #DC2626
 Secondary       #7C3AED
 ```
 
-The approved language uses a light enterprise-admin canvas, dark navy information hierarchy,
-blue primary actions, rounded white surfaces, compact status badges, restrained shadows, and
-clear green, amber, red, and purple semantic accents.
+Runtime CSS exposes these values through `--ui-*` custom properties and maps the prior `--bg`,
+`--surface`, `--text`, `--muted`, `--line`, `--brand`, and related variables to the frozen tokens.
+That alias layer preserves existing page styles while page-by-page redesign remains pending.
 
 ### Typography and spacing
 
-Use a self-hosted or system-safe sans-serif stack. Body text begins at 16 px, compact metadata may
-use 13–14 px, page headings use 32–40 px on desktop, and line height remains at least 1.45. Layout
-uses a 4 px base unit with common spacing steps of 4, 8, 12, 16, 24, 32, and 48 px. Interactive
-controls target a minimum 44 px height unless a compact data-density mode remains fully keyboard
-accessible.
+The runtime uses a system-safe sans-serif stack with no external font request. Body text begins at
+16 px, compact metadata uses 13–14 px, and page headings use a responsive 32–40 px scale. Layout
+uses a 4 px base unit with common steps of 4, 8, 12, 16, 24, 32, and 48 px. Primary interactive
+controls target a minimum 44 px height.
 
-### Layout and components
+### Application shell
 
-Desktop pages use a persistent sidebar and compact top bar. Tablet pages collapse the sidebar to
-an icon rail or drawer. Mobile pages use a single-column task flow. Shared components include
-buttons, inputs, searchable selection, status badges, data tables, responsive list rows, cards,
-menus, confirmation dialogs, drawers, alerts, pagination, empty states, loading states, and error
-states.
+Authenticated pages use a persistent desktop sidebar, sticky top bar, account menu, current-route
+indicator, receive-only status card, bounded content region, and shared footer. Desktop users may
+collapse the sidebar; the browser stores only that local presentation preference. Below 1200 px,
+the sidebar becomes a drawer with a backdrop, Escape handling, focus movement, and focus return.
+
+Unauthenticated pages use a separate sign-in shell and do not render private navigation or the live
+updates endpoint. Administrator-only navigation remains guarded by the existing context-level
+authorization decision.
+
+### Shared assets and behavior
+
+The runtime logo is byte-identical to `assets/mailstack-logo.svg`. Navigation icons are served from
+a local SVG symbol sprite. No CDN, external font, framework, or new JavaScript package is introduced.
+Existing live polling, notifications, copy controls, tabs, confirmations, and the `VibMail`
+namespace remain in place.
 
 ### Secure message reader
 
-The current plain-text and safe-HTML tabs are not the target experience. The approved direction is
-a normalized reading view by default, a secondary plain-text view, and an optional isolated
-original-layout view. Sanitized content must not inherit application styles or execute active
-content. Remote resources, tracking pixels, forms, scripts, embedded frames, and unsafe URL or CSS
-behaviors remain blocked.
+The current plain-text and safe-HTML tabs are not changed in this phase. The approved future
+direction remains a normalized reading view by default, a secondary plain-text view, and an
+optional isolated original-layout view. That work requires a dedicated security-focused page phase.
 
 ## Change control
 
-Foundation changes require a new phase record, updated affected design references, changelog and
-documentation updates, accessibility review, responsive review, security review for message
-content, deterministic manifest synchronization, full CI, and rollback notes. Page patches may
+Foundation changes require a new phase record, updated design references and user guides,
+changelog, accessibility and responsive review, dependency-free contract tests, Django functional
+tests, deterministic inventory synchronization, full CI, and rollback notes. Page patches may
 consume this foundation but may not silently redefine global tokens or activate controls whose
 backend behavior is absent.

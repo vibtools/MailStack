@@ -5,7 +5,7 @@ document_type: user-manual
 audience: mailbox-users
 status: active
 version: 1.3.0-rc.1
-last_reviewed: 2026-07-24
+last_reviewed: 2026-07-25
 ---
 
 # MailStack user manual
@@ -24,15 +24,19 @@ POP3 in this release.
 
 Open the application hostname supplied by the administrator and enter the assigned username and
 password. Accounts are created by an administrator; users cannot self-register or change their
-password inside MailStack. Repeated failed sign-in attempts are rate limited. Use **Log out** in the
-navigation when leaving a shared device.
+password inside MailStack. Repeated failed sign-in attempts are rate limited. Authenticated pages use a shared sidebar and top
+bar. On desktop, the sidebar may be collapsed; on tablet or mobile, use the menu button to open the
+navigation drawer. Open the account menu in the top bar and use **Log out** when leaving a shared
+device.
 
 ## Dashboard
 
 The dashboard summarizes the mailboxes available to the signed-in user, including active and
 disabled mailbox counts, received and unread totals, the last received time, recent messages, and
 recent mailboxes. Administrators also see ingestion, mail-storage, and database health indicators.
-Dashboard and mailbox counters update through authenticated live polling.
+Dashboard and mailbox counters update through authenticated live polling. The active navigation
+item is visually highlighted and announced as the current page. The shell also shows a persistent
+receive-only notice so users do not mistake MailStack for an outbound webmail client.
 
 ## Mailboxes
 
@@ -60,8 +64,8 @@ retention design.
 
 ## Notifications
 
-When the browser supports notifications, select **Enable notifications** in the navigation and
-approve the browser prompt. Notifications are generated only for newly indexed messages that the
+When the browser supports notifications, select **Enable notifications** in the Mail section of the
+sidebar and approve the browser prompt. Notifications are generated only for newly indexed messages that the
 current user is authorized to access. Browser permissions can be changed later in the browser site
 settings.
 

@@ -23,6 +23,7 @@ REQUIRED_DOCUMENTS = {
     "documents/USER_MANUAL.md",
     "documents/phases/PHASE-000-BASELINE.md",
     "documents/phases/PHASE-001-UI-DESIGN-INTAKE-BASELINE.md",
+    "documents/phases/PHASE-002-SHARED-UI-FOUNDATION-AND-APPLICATION-SHELL.md",
     "documents/design/UI_FOUNDATION.md",
     "documents/design/SCREEN_CATALOG.md",
     "documents/design/COMPONENT_MATRIX.md",

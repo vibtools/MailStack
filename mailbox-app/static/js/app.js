@@ -3,6 +3,7 @@
 const VibMail = (() => {
   const MAX_NOTIFIED = 200;
   const STORAGE_KEY = "vibmail-notified-message-uuids";
+  const SIDEBAR_STORAGE_KEY = "mailstack-sidebar-collapsed";
   let cursor = 0;
   let bootstrapped = false;
   let polling = false;
@@ -294,6 +295,152 @@ const VibMail = (() => {
     timer = window.setTimeout(poll, delay);
   }
 
+  function readSidebarPreference() {
+    try {
+      return window.localStorage.getItem(SIDEBAR_STORAGE_KEY) === "true";
+    } catch (_error) {
+      return false;
+    }
+  }
+
+  function saveSidebarPreference(collapsed) {
+    try {
+      window.localStorage.setItem(SIDEBAR_STORAGE_KEY, String(collapsed));
+    } catch (_error) {
+      // Storage restrictions must not make navigation unusable.
+    }
+  }
+
+  function setupAppShell() {
+    const body = document.body;
+    const sidebar = document.querySelector("[data-app-sidebar]");
+    const toggle = document.querySelector("[data-shell-toggle]");
+    const closeButton = document.querySelector("[data-shell-close]");
+    const collapseButton = document.querySelector("[data-sidebar-collapse]");
+    if (!sidebar || !toggle) return;
+
+    const desktop = window.matchMedia("(min-width: 1200px)");
+    let returnFocus = null;
+
+    function setSidebarInteractive(interactive) {
+      const focusable = sidebar.querySelectorAll(
+        "a, button, input, select, textarea, summary, [tabindex]"
+      );
+      if ("inert" in sidebar) sidebar.inert = !interactive;
+      focusable.forEach((element) => {
+        if (interactive) {
+          if (element.dataset.shellTabindex === "none") {
+            element.removeAttribute("tabindex");
+          } else if (element.dataset.shellTabindex !== undefined) {
+            element.setAttribute("tabindex", element.dataset.shellTabindex);
+          }
+          delete element.dataset.shellTabindex;
+          return;
+        }
+        if (element.dataset.shellTabindex === undefined) {
+          element.dataset.shellTabindex = element.hasAttribute("tabindex")
+            ? element.getAttribute("tabindex")
+            : "none";
+        }
+        element.setAttribute("tabindex", "-1");
+      });
+      if (interactive) {
+        sidebar.removeAttribute("aria-hidden");
+      } else {
+        sidebar.setAttribute("aria-hidden", "true");
+      }
+    }
+
+    function setDrawerOpen(open, { moveFocus = false } = {}) {
+      const wasOpen = body.classList.contains("shell-open");
+      const shouldOpen = Boolean(open && !desktop.matches);
+
+      if (!shouldOpen && wasOpen && returnFocus) {
+        const focusTarget = returnFocus;
+        returnFocus = null;
+        window.requestAnimationFrame(() => {
+          if (focusTarget.isConnected) focusTarget.focus();
+        });
+      }
+
+      body.classList.toggle("shell-open", shouldOpen);
+      toggle.setAttribute("aria-expanded", String(shouldOpen));
+      toggle.setAttribute("aria-label", shouldOpen ? "Close navigation" : "Open navigation");
+      if (closeButton) closeButton.tabIndex = shouldOpen ? 0 : -1;
+      setSidebarInteractive(desktop.matches || shouldOpen);
+
+      if (shouldOpen && moveFocus) {
+        returnFocus = document.activeElement;
+        window.requestAnimationFrame(() => {
+          sidebar.querySelector("a, button:not([hidden])")?.focus();
+        });
+      }
+    }
+
+    function updateCollapseState(collapsed) {
+      const shouldCollapse = Boolean(collapsed && desktop.matches);
+      body.classList.toggle("sidebar-collapsed", shouldCollapse);
+      if (collapseButton) {
+        collapseButton.setAttribute("aria-pressed", String(shouldCollapse));
+        collapseButton.setAttribute(
+          "aria-label",
+          shouldCollapse ? "Expand navigation" : "Collapse navigation"
+        );
+      }
+    }
+
+    function synchronizeViewport() {
+      setDrawerOpen(false);
+      updateCollapseState(readSidebarPreference());
+    }
+
+    toggle.addEventListener("click", () => {
+      setDrawerOpen(!body.classList.contains("shell-open"), { moveFocus: true });
+    });
+    closeButton?.addEventListener("click", () => setDrawerOpen(false));
+    sidebar.querySelectorAll("a").forEach((link) => {
+      link.addEventListener("click", () => {
+        if (!desktop.matches) setDrawerOpen(false);
+      });
+    });
+
+    collapseButton?.addEventListener("click", () => {
+      const collapsed = !body.classList.contains("sidebar-collapsed");
+      saveSidebarPreference(collapsed);
+      updateCollapseState(collapsed);
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && body.classList.contains("shell-open")) {
+        event.preventDefault();
+        setDrawerOpen(false);
+      }
+    });
+
+    if (desktop.addEventListener) {
+      desktop.addEventListener("change", synchronizeViewport);
+    } else {
+      desktop.addListener(synchronizeViewport);
+    }
+    synchronizeViewport();
+  }
+
+  function setupUserMenu() {
+    const menu = document.querySelector("[data-user-menu]");
+    if (!menu) return;
+    const summary = menu.querySelector("summary");
+
+    document.addEventListener("click", (event) => {
+      if (menu.open && !menu.contains(event.target)) menu.open = false;
+    });
+    menu.addEventListener("keydown", (event) => {
+      if (event.key !== "Escape" || !menu.open) return;
+      event.preventDefault();
+      menu.open = false;
+      summary?.focus();
+    });
+  }
+
   function setupNotifications() {
     const button = document.querySelector("[data-enable-notifications]");
     if (!button || !("Notification" in window)) return;
@@ -326,14 +473,8 @@ const VibMail = (() => {
       });
     }
 
-    const toggle = document.querySelector(".nav-toggle");
-    const nav = document.querySelector("#main-nav");
-    if (toggle && nav) {
-      toggle.addEventListener("click", () => {
-        const open = nav.classList.toggle("open");
-        toggle.setAttribute("aria-expanded", String(open));
-      });
-    }
+    setupAppShell();
+    setupUserMenu();
 
     document.querySelectorAll("[data-tabs]").forEach((tabList) => {
       const buttons = tabList.querySelectorAll("[data-tab-target]");

@@ -7,6 +7,12 @@ their status and scope.
 
 The source package intentionally excludes screenshots containing real mail, users, domains, IP addresses or credentials.
 
+PHASE-002 implements the shared application shell, but the existing page bodies are not yet
+redesigned. Runtime screenshots may be used to verify sidebar, top bar, account menu, responsive
+drawer, sign-in shell, and active navigation only. Do not present the imported PNG pages or any
+planned controls as implemented product behavior. Page-comparison screenshots remain pending each
+page-specific phase and staging verification.
+
 Recommended GitHub README/release screenshots:
 
 1. Login page with a synthetic domain

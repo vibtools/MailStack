@@ -1,6 +1,6 @@
 # Forensic audit report — MailStack 1.3.0 RC1
 
-**Baseline audit date:** 2026-07-24
+**Baseline audit date:** 2026-07-25
 **Release version:** `1.3.0-rc.1`
 **Target runtime:** Ubuntu Server 24.04 LTS and CPython 3.12
 **Release classification:** CI-qualified and clean-clone-qualified open-source release candidate
@@ -12,13 +12,15 @@
 | Baseline feature preservation | PASS |
 | Repository structure and public documentation | PASS |
 | User manual, how-to, admin guide and phase-document baseline | PASS |
-| UI design intake, immutable-source manifest and design contract tests | PASS locally; CI pending for this phase |
+| UI design intake, immutable-source manifest and design contract tests | PASS in GitHub Actions run `30165905840` |
+| PHASE-002 shared UI foundation structural contracts | PASS locally — 8 tests |
+| PHASE-002 local Django, coverage and mailbox lint qualification | PASS — 195 passed, 1 skipped, 94.99% coverage |
 | Deterministic documentation index, manifest and change policy | PASS |
 | Complete AGPL-3.0 license text | PASS |
 | Source secret/private-data safety gate | PASS |
 | Python, JSON, YAML and shell syntax | PASS |
 | Django application tests and coverage | PASS |
-| Ruff and Bandit | PASS |
+| Ruff and Bandit | PASS for mailbox application; standalone contact-service gates added to final verifier and CI |
 | Django checks and migration drift | PASS |
 | Public contact-service tests | PASS |
 | Installer and operations contract tests | PASS |
@@ -92,16 +94,18 @@ See `FEATURE_MATRIX.md` for the feature-by-feature verification record.
 13. A root `documents/` baseline now provides maintained user, administrator and phase documentation.
 14. Deterministic synchronization, draft blocking and diff-based CI policy prevent maintained feature changes from merging without substantive documentation.
 15. The complete 25-image UI and logo archive is preserved with stable IDs, SHA-256 hashes, PNG structural validation, scope classification, and CI enforcement.
+16. PHASE-002 adds the frozen runtime design tokens, responsive authenticated and sign-in shells, local SVG assets, accessible navigation behavior, and focused UI contract gates without changing page business logic.
+17. Cross-platform verification now closes contact-service SQLite handles deterministically, preserves POSIX-only permission assertions, and subjects the standalone contact service to Ruff and Bandit in both the full forensic gate and CI.
 
 ## Automated evidence
 
-- Django tests: **189 passed, 0 failed**
+- Django tests: **195 passed, 1 capability-based skip, 0 failed**
 - Application coverage: **94.99%**; minimum: **85%**
 - Ruff: **PASS**
 - Bandit: **PASS**
 - Django system check: **PASS**
 - Migration drift: **none**
-- Contact-service test program: **PASS**
+- Contact-service test program: **PASS**, including deterministic connection-close regression coverage
 - Deployment templates rendered: **13**, unresolved tokens: **0**
 - Installer plans: **2 valid and 9 invalid cases**, all passed
 - Backup/restore/health contracts: **PASS**
@@ -126,6 +130,16 @@ Web requests and Maildir ingestion remain separate services. Gunicorn worker/thr
 ## GitHub/open-source readiness
 
 The repository includes an SEO-oriented README, logo asset, release/download/license/platform/language/community badges, GitHub topics and description guidance, full license, notice, security policy, contribution guide, code of conduct, support policy, roadmap, issue/PR templates, CODEOWNERS, Dependabot, CI, release workflow, installation/build/development/operations/security documentation and Vib Tools ecosystem links.
+
+
+## PHASE-002 audit boundary
+
+The phase changes only the shared base template, shared static foundation assets and JavaScript,
+focused tests, the contact-service connection-lifecycle helper, CI/audit tooling, generated
+inventories, and required documentation. It contains no model, migration, URL, form, permission,
+mail-flow, ingestion schema, deployment-template, or package change. Local dependency-backed tests
+and coverage passed; the final overwrite verifier must pass before commit, and GitHub Actions must
+pass before remote qualification.
 
 ## External acceptance gates
 

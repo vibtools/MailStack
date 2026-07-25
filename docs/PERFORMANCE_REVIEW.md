@@ -23,7 +23,7 @@
 
 ## Public contact service
 
-- SQLite uses WAL mode, full synchronous durability, a busy timeout, indexed rate-limit/status paths, and short immediate transactions.
+- SQLite uses WAL mode, full synchronous durability, a busy timeout, indexed rate-limit/status paths, short immediate transactions, and deterministic connection closure after every context.
 - Gunicorn request recycling limits long-lived worker growth.
 
 ## Operational characteristics
@@ -34,10 +34,22 @@
 
 ## Performance gate result
 
-No regression was observed in the automated suite; 189 tests completed in approximately 4.2 seconds in the audit container. No production load benchmark was executed. Before high-volume use, benchmark realistic message size, attachment mix, mailbox count, concurrency, disk latency, and MariaDB buffer settings on target hardware.
+No regression was observed in the local Windows suite; 195 tests passed, one capability-based symbolic-link case was skipped, and the suite completed in approximately 7.4 seconds with 94.99 percent coverage. No production load benchmark was executed. Before high-volume use, benchmark realistic message size, attachment mix, mailbox count, concurrency, disk latency, and MariaDB buffer settings on target hardware.
 
 ## Release packaging
 
 Deterministic source packaging stores already-compressed PNG, JPEG, GIF, and web-font assets
 without redundant DEFLATE work. Text and source files remain compressed. This preserves archive
 reproducibility while preventing the UI reference set from causing unnecessary CI CPU time.
+
+## PHASE-002 shared-shell review
+
+The runtime change adds one local stylesheet, one small local icon sprite, and a local copy of the
+existing logo. It adds no framework, package, external font, network dependency, or client-side
+rendering layer. The shell uses CSS Grid/Flexbox, bounded transitions, one responsive media-query
+listener, and event listeners attached once during `DOMContentLoaded`. The desktop collapse
+preference stores one boolean string in browser local storage. Existing live polling frequency and
+payload behavior are unchanged.
+
+No production browser performance benchmark has been executed. Page-level rendering and large-list
+performance remain subject to the later page phases and staging acceptance.

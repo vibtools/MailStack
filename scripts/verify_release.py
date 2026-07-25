@@ -31,6 +31,9 @@ IPV4_LITERAL = re.compile(
 )
 
 MANIFEST_LINE = re.compile(r"^([0-9a-f]{64})  (.+)$")
+CANONICAL_ZIP_TIMESTAMP = (2026, 1, 1, 0, 0, 0)
+CANONICAL_ZIP_CREATE_SYSTEM = 3
+CANONICAL_ZIP_VERSION = 20
 
 
 def sha256_bytes(data: bytes) -> str:
@@ -68,6 +71,9 @@ def main() -> int:
         if bad is not None:
             raise SystemExit(f"ZIP integrity failure: {bad}")
 
+        if archive.comment:
+            raise SystemExit("release archive comment must be empty")
+
         infos = archive.infolist()
         names = [info.filename for info in infos]
         if len(names) != len(set(names)):
@@ -88,6 +94,29 @@ def main() -> int:
                 raise SystemExit(f"blocked file in release: {info.filename}")
             if info.is_dir():
                 continue
+            if info.date_time != CANONICAL_ZIP_TIMESTAMP:
+                raise SystemExit(f"non-canonical ZIP timestamp: {info.filename}")
+            if info.create_system != CANONICAL_ZIP_CREATE_SYSTEM:
+                raise SystemExit(f"non-canonical ZIP host metadata: {info.filename}")
+            if (
+                info.create_version != CANONICAL_ZIP_VERSION
+                or info.extract_version != CANONICAL_ZIP_VERSION
+                or info.reserved != 0
+                or info.flag_bits != 0
+                or info.volume != 0
+                or info.internal_attr != 0
+            ):
+                raise SystemExit(f"non-canonical ZIP member fields: {info.filename}")
+            if info.compress_type != zipfile.ZIP_STORED:
+                raise SystemExit(f"non-canonical ZIP compression: {info.filename}")
+            if info.extra or info.comment:
+                raise SystemExit(f"unexpected ZIP member metadata: {info.filename}")
+            expected_mode = 0o755 if pure.name == "install.sh" or pure.suffix == ".sh" else 0o644
+            actual_mode = (info.external_attr >> 16) & 0o777
+            if actual_mode != expected_mode:
+                raise SystemExit(
+                    f"non-canonical ZIP mode: {info.filename}: {oct(actual_mode)}"
+                )
             data = archive.read(info)
             if any(marker in data for marker in PRIVATE_MARKERS):
                 raise SystemExit(f"private-key material in release: {info.filename}")
@@ -129,15 +158,6 @@ def main() -> int:
         for member, expected_hash in expected_members.items():
             if sha256_bytes(archive.read(member)) != expected_hash:
                 raise SystemExit(f"manifest mismatch: {member.removeprefix(prefix)}")
-
-        executable_members = [
-            info for info in infos
-            if not info.is_dir() and (info.filename == prefix + "install.sh" or info.filename.endswith(".sh"))
-        ]
-        for executable_info in executable_members:
-            executable_mode = (executable_info.external_attr >> 16) & 0o777
-            if executable_mode & 0o111 == 0:
-                raise SystemExit(f"shell program is not executable in the release archive: {executable_info.filename}")
 
     print(f"SHA256={actual}")
     print(f"ARCHIVE_MEMBERS={len(names)}")

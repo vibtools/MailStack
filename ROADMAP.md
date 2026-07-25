@@ -21,7 +21,8 @@ This roadmap is directional. Security, data integrity and backward compatibility
 ## UI design baseline
 
 - Preserve `MAILSTACK-UI-DESIGN-INTAKE-001` and `MAILSTACK-UI-FOUNDATION-001` as the approved visual reference baseline
-- Implement one existing page per reviewed patch after shared foundation work
+- Complete PHASE-002 shared runtime tokens, responsive application shell, local assets, and accessibility contracts
+- Implement one existing page per reviewed patch on top of the qualified shared foundation
 - Keep planned and future-review screens inactive until architecture and security phases approve them
 - Require responsive, accessibility, security, regression, documentation and CI evidence for each page
 

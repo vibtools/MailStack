@@ -9,15 +9,17 @@ import os
 import re
 import secrets
 import sqlite3
-import subprocess
+import subprocess  # nosec B404
 import time
 import uuid
+from collections.abc import Iterable, Iterator
+from contextlib import contextmanager
 from email.message import EmailMessage
 from email.utils import parseaddr
 from http import HTTPStatus
 from http.cookies import SimpleCookie
 from pathlib import Path
-from typing import Any, Iterable
+from typing import Any
 from urllib.parse import quote
 
 LOGGER = logging.getLogger("vibmail_public_contact")
@@ -78,19 +80,23 @@ def _require_configuration() -> None:
         raise RuntimeError("Invalid CONTACT_FROM_ADDRESS")
 
 
-def _connection() -> sqlite3.Connection:
+@contextmanager
+def _connection() -> Iterator[sqlite3.Connection]:
     DATABASE_PATH.parent.mkdir(parents=True, exist_ok=True)
     connection = sqlite3.connect(
         DATABASE_PATH,
         timeout=10,
         isolation_level=None,
     )
-    connection.row_factory = sqlite3.Row
-    connection.execute("PRAGMA foreign_keys = ON")
-    connection.execute("PRAGMA journal_mode = WAL")
-    connection.execute("PRAGMA synchronous = FULL")
-    connection.execute("PRAGMA busy_timeout = 10000")
-    return connection
+    try:
+        connection.row_factory = sqlite3.Row
+        connection.execute("PRAGMA foreign_keys = ON")
+        connection.execute("PRAGMA journal_mode = WAL")
+        connection.execute("PRAGMA synchronous = FULL")
+        connection.execute("PRAGMA busy_timeout = 10000")
+        yield connection
+    finally:
+        connection.close()
 
 
 def initialize_database() -> None:
@@ -185,7 +191,7 @@ def _request_ip(environ: dict[str, Any]) -> str:
     try:
         return str(ipaddress.ip_address(candidate))
     except ValueError:
-        return "0.0.0.0"
+        return str(ipaddress.IPv4Address(0))
 
 
 def _read_json(environ: dict[str, Any]) -> dict[str, Any]:
@@ -575,11 +581,10 @@ def _send_notification(
     )
     message.set_content(body, charset="utf-8")
 
-    completed = subprocess.run(
+    completed = subprocess.run(  # noqa: S603  # nosec B603
         [SENDMAIL_PATH, "-t", "-oi"],
         input=message.as_bytes(),
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
+        capture_output=True,
         timeout=15,
         check=False,
     )

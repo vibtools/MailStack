@@ -5,7 +5,7 @@ document_type: documentation-policy
 audience: contributors-and-maintainers
 status: active
 version: 1.3.0-rc.1
-last_reviewed: 2026-07-24
+last_reviewed: 2026-07-25
 ---
 
 # MailStack documentation policy
@@ -69,5 +69,8 @@ For local verification of a commit:
 ```bash
 python scripts/check_documentation_policy.py --base HEAD^ --head HEAD
 python scripts/test_documents.py
+python scripts/manage_designs.py --root . check
+python scripts/test_designs.py
+python scripts/test_ui_foundation.py
 python scripts/forensic_audit.py --root . --full
 ```
