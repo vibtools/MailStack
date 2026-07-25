@@ -29,8 +29,18 @@ def main() -> int:
         "documents/README.md", "documents/USER_MANUAL.md", "documents/HOW_TO_USE.md",
         "documents/ADMIN_GUIDE.md", "documents/BASELINE.md",
         "documents/DOCUMENTATION_POLICY.md", "documents/DOCUMENTATION_MANIFEST.json",
-        "documents/phases/PHASE-000-BASELINE.md", "scripts/manage_documents.py",
+        "documents/phases/PHASE-000-BASELINE.md",
+        "documents/phases/PHASE-001-UI-DESIGN-INTAKE-BASELINE.md",
+        "documents/design/UI_FOUNDATION.md", "documents/design/SCREEN_CATALOG.md",
+        "documents/design/COMPONENT_MATRIX.md",
+        "documents/design/RESPONSIVE_SPECIFICATION.md",
+        "documents/design/ACCESSIBILITY_SPECIFICATION.md",
+        "documents/design/FUTURE_UI_ROADMAP.md",
+        "documents/design/IMPLEMENTATION_STATUS.md",
+        "design/README.md", "design/DESIGN_MANIFEST.json",
+        "scripts/manage_documents.py", "scripts/manage_designs.py",
         "scripts/check_documentation_policy.py", "scripts/test_documents.py",
+        "scripts/test_designs.py",
     }
     missing = sorted(path for path in required if not (ROOT / path).is_file())
     if missing:

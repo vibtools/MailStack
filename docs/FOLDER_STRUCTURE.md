@@ -3,7 +3,10 @@
 ```text
 .github/                    CI, release workflow and contribution templates
 deployment/templates/       Rendered server configuration templates
+design/                     Immutable UI PNG intake and deterministic design manifest
+  intake/original/          Byte-preserved original UI and logo reference files
 documents/                  User manual, how-to, admin guide, phase history and generated manifest
+  design/                   UI foundation, catalog, components, responsive, accessibility and roadmap
   phases/                   Mandatory per-phase user and compatibility records
 docs/                       Public architecture, operations and release documentation
 mailbox-app/                Django team mailbox application

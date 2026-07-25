@@ -38,6 +38,9 @@ Covered areas include authentication, user management, mailbox membership isolat
 | Documentation and forensic inventory gates | PASS |
 | User-document synchronization and manifest gate | PASS |
 | Documentation change-policy contract tests | PASS |
+| UI design manifest synchronization and PNG integrity gate | PASS |
+| UI design contract tests | PASS |
+| Mixed stored/deflated deterministic release packaging | PASS |
 
 ## Runtime qualification
 

@@ -17,6 +17,9 @@ Transitive runtime versions are pinned in `mailbox-app/requirements/locked.txt`.
 
 ## Compatibility assessment
 
+The UI design-intake phase adds no runtime or development package dependency. PNG integrity,
+hashing, manifest synchronization, and contract tests use the Python standard library.
+
 No obvious conflict was identified between the declared direct dependency license families and `AGPL-3.0-or-later`. `mysqlclient` is GPL-2.0-or-later, permitting use of a later GPL version; AGPLv3 section 13 addresses combination with GPLv3-covered work. This is a technical inventory, not legal advice. The release owner must confirm copyright ownership and license compatibility before publication.
 
 ## Vulnerability review

@@ -10,11 +10,15 @@ Describe the change and the operational problem it solves.
 
 ## Documentation baseline
 
+- [ ] UI/design changes preserve original references and pass the design manifest and contract tests
+- [ ] Planned or future-review controls remain inactive unless this PR contains the approved feature architecture
 - [ ] A `documents/phases/PHASE-NNN-*.md` record was added or updated
 - [ ] User-facing changes update `USER_MANUAL.md`, `HOW_TO_USE.md`, or `ADMIN_GUIDE.md`
 - [ ] `CHANGELOG.md` was updated
 - [ ] `python scripts/manage_documents.py check`
 - [ ] `python scripts/test_documents.py`
+- [ ] `python scripts/manage_designs.py --root . check`
+- [ ] `python scripts/test_designs.py`
 - [ ] `python scripts/check_documentation_policy.py --base HEAD^ --head HEAD`
 
 ## Verification

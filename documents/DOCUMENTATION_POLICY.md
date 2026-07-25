@@ -14,8 +14,11 @@ last_reviewed: 2026-07-24
 
 The root `documents/` directory is the maintained user-documentation baseline. It contains the
 user manual, task-based how-to guide, administrator guide, baseline record, policy, and phase
-history. Engineering and operator reference material remains under `docs/`. Both sets are part of
-the release source and deterministic forensic inventory.
+history. Engineering and operator reference material remains under `docs/`. Maintained UI foundation,
+screen catalog, component, responsive, accessibility, future-roadmap, and implementation-status
+records are stored under `documents/design/`, while immutable PNG references and their manifest
+are stored under `design/`. All sets are part of the release source and deterministic forensic
+inventory.
 
 ## Mandatory feature workflow
 
@@ -29,7 +32,7 @@ Create the next phase document before implementation:
 
 ```bash
 python scripts/manage_documents.py new-phase \
-  --phase-id PHASE-001 \
+  --phase-id PHASE-002 \
   --title "Feature title" \
   --summary "What the phase changes for users"
 ```
@@ -57,8 +60,9 @@ CI runs documentation synchronization checks, documentation contract tests, the 
 policy, general Markdown link validation, the forensic source audit, and the deterministic release
 build. The feature policy compares the base and head commits. Runtime or deployment changes without
 a phase record and changelog fail. User-facing changes without a canonical guide update also fail.
-Generated index, manifest, and forensic inventory files do not satisfy the substantive documentation
-requirement by themselves.
+Generated document and design manifests, indexes, and forensic inventory files do not satisfy the
+substantive documentation requirement by themselves. A design-asset change requires a phase record
+and changelog even when no runtime page is implemented.
 
 For local verification of a commit:
 

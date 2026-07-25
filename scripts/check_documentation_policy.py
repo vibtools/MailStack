@@ -9,6 +9,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 PHASE_SENSITIVE_PREFIXES = (
+    "design/",
     "deployment/templates/",
     "mailbox-app/apps/",
     "mailbox-app/config/",
@@ -41,6 +42,7 @@ CANONICAL_GUIDES = {
 GENERATED_ONLY = {
     "documents/DOCUMENTATION_MANIFEST.json",
     "documents/README.md",
+    "design/DESIGN_MANIFEST.json",
     "docs/FORENSIC_FILE_INVENTORY.json",
 }
 ZERO_SHA = "0" * 40

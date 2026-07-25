@@ -67,13 +67,18 @@ def test_new_phase_is_draft_and_blocked() -> None:
         shutil.copytree(ROOT / "documents", target / "documents")
         shutil.copytree(ROOT / "scripts", target / "scripts")
         shutil.copy2(ROOT / "VERSION", target / "VERSION")
+        phase_numbers = [
+            int(path.name.split("-", 2)[1])
+            for path in (target / "documents/phases").glob("PHASE-*.md")
+        ]
+        next_phase = f"PHASE-{max(phase_numbers, default=-1) + 1:03d}"
         output = run(
             "scripts/manage_documents.py",
             "--root",
             ".",
             "new-phase",
             "--phase-id",
-            "PHASE-001",
+            next_phase,
             "--title",
             "Contract test phase",
             "--summary",
@@ -118,6 +123,14 @@ def test_change_policy() -> None:
     assert policy.evaluate_policy([".github/workflows/ci.yml"]) == []
     assert policy.evaluate_policy(["public-site/contact_service/test_contact_app.py"]) == []
     assert policy.evaluate_policy(["scripts/test_installer.py"]) == []
+    design_only = policy.evaluate_policy(["design/intake/original/Dashboard.png"])
+    assert len(design_only) == 2
+    assert policy.evaluate_policy([
+        "design/intake/original/Dashboard.png",
+        "documents/phases/PHASE-001-UI-DESIGN.md",
+        "CHANGELOG.md",
+    ]) == []
+    assert policy.evaluate_policy(["design/DESIGN_MANIFEST.json"]) == []
     renamed_ui = policy.evaluate_policy(
         [
             "R100\tmailbox-app/templates/base.html\tdocs/base.html",

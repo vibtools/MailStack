@@ -200,6 +200,8 @@ python scripts/check_documentation_policy.py --base HEAD^ --head HEAD
 Run the complete repository gate from the project root:
 
 ```bash
+python scripts/manage_designs.py --root . check
+python scripts/test_designs.py
 python scripts/forensic_audit.py --root . --full
 ```
 
@@ -262,6 +264,9 @@ See [docs/SCREENSHOTS.md](docs/SCREENSHOTS.md) for the approved screenshot set a
 | Bootstrap audit | [docs/MAILSTACK_BOOTSTRAP_AUDIT.md](docs/MAILSTACK_BOOTSTRAP_AUDIT.md) |
 | GitHub metadata | [docs/GITHUB_REPOSITORY_METADATA.md](docs/GITHUB_REPOSITORY_METADATA.md) |
 | First commit from Windows | [docs/FIRST_COMMIT_WINDOWS.md](docs/FIRST_COMMIT_WINDOWS.md) |
+| UI design intake | [design/README.md](design/README.md) |
+| UI foundation | [documents/design/UI_FOUNDATION.md](documents/design/UI_FOUNDATION.md) |
+| UI screen catalog | [documents/design/SCREEN_CATALOG.md](documents/design/SCREEN_CATALOG.md) |
 
 ## Roadmap
 

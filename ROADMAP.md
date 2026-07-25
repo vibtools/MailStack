@@ -18,6 +18,13 @@ This roadmap is directional. Security, data integrity and backward compatibility
 - Require a phase record, changelog update and affected user-guide update with maintained feature changes
 - Keep the generated user-document index and manifest deterministic and CI-enforced
 
+## UI design baseline
+
+- Preserve `MAILSTACK-UI-DESIGN-INTAKE-001` and `MAILSTACK-UI-FOUNDATION-001` as the approved visual reference baseline
+- Implement one existing page per reviewed patch after shared foundation work
+- Keep planned and future-review screens inactive until architecture and security phases approve them
+- Require responsive, accessibility, security, regression, documentation and CI evidence for each page
+
 ## 1.3 stable
 
 - Promote the verified release candidate without feature removal

@@ -49,11 +49,16 @@ The full gate runs tests, coverage, Ruff, Bandit, Django checks, contact-service
 
 ## Documentation-first phase workflow
 
+UI work must begin from the frozen design intake and shared foundation. Preserve original PNGs,
+update `design/DESIGN_MANIFEST.json` only through the maintained workflow, implement one page per
+reviewed patch, and do not activate planned controls without an approved backend/security phase.
+Run `python scripts/manage_designs.py --root . check` and `python scripts/test_designs.py`.
+
 Start a maintained phase before implementation:
 
 ```bash
 python scripts/manage_documents.py new-phase \
-  --phase-id PHASE-001 \
+  --phase-id PHASE-002 \
   --title "Feature title" \
   --summary "What the phase changes for users"
 ```

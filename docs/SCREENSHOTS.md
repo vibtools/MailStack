@@ -1,5 +1,10 @@
 # Screenshot guide
 
+The immutable files under `design/intake/original/` are approved design references, not evidence
+of implemented runtime behavior. They may contain controls for planned or architecture-review
+features and must not be published as completed product screenshots. The design manifest records
+their status and scope.
+
 The source package intentionally excludes screenshots containing real mail, users, domains, IP addresses or credentials.
 
 Recommended GitHub README/release screenshots:

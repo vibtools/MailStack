@@ -53,6 +53,12 @@ jobs:
       - name: Documentation system tests
         run: python scripts/test_documents.py
 
+      - name: UI design intake integrity
+        run: python scripts/manage_designs.py --root . check
+
+      - name: UI design system tests
+        run: python scripts/test_designs.py
+
       - name: Feature documentation policy
         env:
           DOCUMENTATION_BASE_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event.before }}

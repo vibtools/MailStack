@@ -22,6 +22,14 @@ REQUIRED_DOCUMENTS = {
     "documents/HOW_TO_USE.md",
     "documents/USER_MANUAL.md",
     "documents/phases/PHASE-000-BASELINE.md",
+    "documents/phases/PHASE-001-UI-DESIGN-INTAKE-BASELINE.md",
+    "documents/design/UI_FOUNDATION.md",
+    "documents/design/SCREEN_CATALOG.md",
+    "documents/design/COMPONENT_MATRIX.md",
+    "documents/design/RESPONSIVE_SPECIFICATION.md",
+    "documents/design/ACCESSIBILITY_SPECIFICATION.md",
+    "documents/design/FUTURE_UI_ROADMAP.md",
+    "documents/design/IMPLEMENTATION_STATUS.md",
 }
 REQUIRED_METADATA = {
     "document_id",
@@ -37,6 +45,7 @@ ALLOWED_TYPES = {
     "admin-guide",
     "baseline",
     "documentation-policy",
+    "design-reference",
     "how-to",
     "phase",
     "user-manual",
@@ -60,6 +69,12 @@ REQUIRED_SECTIONS = {
         "Mandatory feature workflow",
         "Automated synchronization",
         "CI enforcement",
+    },
+    "design-reference": {
+        "Purpose",
+        "Scope",
+        "Approved baseline",
+        "Change control",
     },
     "how-to": {
         "Sign in",
@@ -303,6 +318,12 @@ def render_index(documents: list[ManagedDocument]) -> str:
 
 def render_readme(documents: list[ManagedDocument]) -> str:
     index = render_index(documents)
+    phase_numbers = [
+        int(document.metadata["phase_id"].split("-", 1)[1])
+        for document in documents
+        if document.document_type == "phase"
+    ]
+    next_phase_id = f"PHASE-{max(phase_numbers, default=-1) + 1:03d}"
     return f"""# MailStack user documentation
 
 The `documents/` directory is the canonical user-facing documentation baseline for MailStack.
@@ -313,7 +334,7 @@ relevant user manual, how-to guide, or administrator guide.
 
 ```bash
 python scripts/manage_documents.py new-phase \\
-  --phase-id PHASE-001 \\
+  --phase-id {next_phase_id} \\
   --title \"Feature title\" \\
   --summary \"What the phase changes for users\"
 

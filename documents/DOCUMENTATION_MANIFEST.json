@@ -21,7 +21,7 @@
       "last_reviewed": "2026-07-24",
       "path": "documents/BASELINE.md",
       "phase_id": null,
-      "sha256": "b2a478dc245821045197248f760d540e12d31844c7879cdf2ef2fa38936adde3",
+      "sha256": "f17acc52e17a87a545bb38dbd171ee3462491506ceb6412b9a98e86257d7d1fe",
       "status": "active",
       "title": "MailStack Baseline",
       "version": "1.3.0-rc.1"
@@ -33,7 +33,7 @@
       "last_reviewed": "2026-07-24",
       "path": "documents/DOCUMENTATION_POLICY.md",
       "phase_id": null,
-      "sha256": "36de3a27191eb623ed52ff6cc0daff01f93a524f4d41d5649ae5847b1744d0c9",
+      "sha256": "f3569104570a8797ddbad176f11afb805fa56d429deb66dbe0e28859f8dcd00f",
       "status": "active",
       "title": "Documentation Policy",
       "version": "1.3.0-rc.1"
@@ -63,6 +63,90 @@
       "version": "1.3.0-rc.1"
     },
     {
+      "audience": "designers-developers-and-maintainers",
+      "document_id": "ui-accessibility-specification",
+      "document_type": "design-reference",
+      "last_reviewed": "2026-07-24",
+      "path": "documents/design/ACCESSIBILITY_SPECIFICATION.md",
+      "phase_id": null,
+      "sha256": "75273964ee0f26ab7c2877ab22686bb78f40a9a364dbb6a37d71c107edfa528b",
+      "status": "active",
+      "title": "MailStack Accessibility Specification",
+      "version": "1.3.0-rc.1"
+    },
+    {
+      "audience": "designers-developers-and-maintainers",
+      "document_id": "ui-component-matrix",
+      "document_type": "design-reference",
+      "last_reviewed": "2026-07-24",
+      "path": "documents/design/COMPONENT_MATRIX.md",
+      "phase_id": null,
+      "sha256": "08932804b2be1b191895f96b52715d4c072efc25ae2464221521775f1ecc9948",
+      "status": "active",
+      "title": "MailStack UI Component Matrix",
+      "version": "1.3.0-rc.1"
+    },
+    {
+      "audience": "designers-developers-and-maintainers",
+      "document_id": "future-ui-roadmap",
+      "document_type": "design-reference",
+      "last_reviewed": "2026-07-24",
+      "path": "documents/design/FUTURE_UI_ROADMAP.md",
+      "phase_id": null,
+      "sha256": "364119f5df14e66347699e7bda9b22b964a55f4c37659dd06c1c0db0d6fde04b",
+      "status": "active",
+      "title": "MailStack Future UI Roadmap",
+      "version": "1.3.0-rc.1"
+    },
+    {
+      "audience": "designers-developers-and-maintainers",
+      "document_id": "ui-implementation-status",
+      "document_type": "design-reference",
+      "last_reviewed": "2026-07-24",
+      "path": "documents/design/IMPLEMENTATION_STATUS.md",
+      "phase_id": null,
+      "sha256": "65ccfbbf8ed08c71d0143bced4e03a41578ca8a33f9238f8a9b0066a877ed0ec",
+      "status": "active",
+      "title": "MailStack UI Implementation Status",
+      "version": "1.3.0-rc.1"
+    },
+    {
+      "audience": "designers-developers-and-maintainers",
+      "document_id": "ui-responsive-specification",
+      "document_type": "design-reference",
+      "last_reviewed": "2026-07-24",
+      "path": "documents/design/RESPONSIVE_SPECIFICATION.md",
+      "phase_id": null,
+      "sha256": "e4c0b25b78279bc309fce39e9cee8e38051a98ade4119eb110449bb964c9efad",
+      "status": "active",
+      "title": "MailStack Responsive Specification",
+      "version": "1.3.0-rc.1"
+    },
+    {
+      "audience": "designers-developers-and-maintainers",
+      "document_id": "ui-screen-catalog",
+      "document_type": "design-reference",
+      "last_reviewed": "2026-07-24",
+      "path": "documents/design/SCREEN_CATALOG.md",
+      "phase_id": null,
+      "sha256": "7822cd15dea8c3a64cdac2eaabe5c3ad4c5f9c9b9ca8cb42ddd24b2097c9748f",
+      "status": "active",
+      "title": "MailStack UI Screen Catalog",
+      "version": "1.3.0-rc.1"
+    },
+    {
+      "audience": "designers-developers-and-maintainers",
+      "document_id": "ui-foundation",
+      "document_type": "design-reference",
+      "last_reviewed": "2026-07-24",
+      "path": "documents/design/UI_FOUNDATION.md",
+      "phase_id": null,
+      "sha256": "5af6e5a4c2a1daaea1ece501542dc6e3af33ba5c01004f2dd3fd960ec7b80114",
+      "status": "active",
+      "title": "MailStack UI Foundation",
+      "version": "1.3.0-rc.1"
+    },
+    {
       "audience": "users-operators-and-maintainers",
       "document_id": "phase-000-baseline",
       "document_type": "phase",
@@ -73,6 +157,18 @@
       "status": "active",
       "title": "Documentation and Feature Baseline",
       "version": "1.3.0-rc.1"
+    },
+    {
+      "audience": "users-operators-designers-and-maintainers",
+      "document_id": "phase-001-ui-design-intake-baseline",
+      "document_type": "phase",
+      "last_reviewed": "2026-07-24",
+      "path": "documents/phases/PHASE-001-UI-DESIGN-INTAKE-BASELINE.md",
+      "phase_id": "PHASE-001",
+      "sha256": "f72355ea2266fff91bc4b053a1b11d308e23320664cdc3b2c604ad7e88695220",
+      "status": "active",
+      "title": "UI Design Intake Baseline",
+      "version": "1.3.0-rc.1"
     }
   ],
   "project": "MailStack",
@@ -80,10 +176,10 @@
   "schema_version": 1,
   "scope": "Managed user, administrator, how-to, policy, baseline, and phase Markdown documents.",
   "summary": {
-    "active": 6,
-    "documents": 6,
+    "active": 14,
+    "documents": 14,
     "draft": 0,
     "historical": 0,
-    "phases": 1
+    "phases": 2
   }
 }

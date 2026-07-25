@@ -35,3 +35,9 @@
 ## Performance gate result
 
 No regression was observed in the automated suite; 189 tests completed in approximately 4.2 seconds in the audit container. No production load benchmark was executed. Before high-volume use, benchmark realistic message size, attachment mix, mailbox count, concurrency, disk latency, and MariaDB buffer settings on target hardware.
+
+## Release packaging
+
+Deterministic source packaging stores already-compressed PNG, JPEG, GIF, and web-font assets
+without redundant DEFLATE work. Text and source files remain compressed. This preserves archive
+reproducibility while preventing the UI reference set from causing unnecessary CI CPU time.

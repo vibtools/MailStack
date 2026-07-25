@@ -34,6 +34,9 @@ add SMTP submission, IMAP, POP3, public registration, outbound campaigns, or mul
 
 ## Change control
 
+The design-governance layer is anchored to commit `068097056cecdd18f39fd304d579563b7b43c491` through
+`MAILSTACK-UI-DESIGN-INTAKE-001` and `MAILSTACK-UI-FOUNDATION-001`. This does not replace the runtime source anchor above.
+
 Every future maintained phase must add or update a phase record under `documents/phases/`, update
 the affected user-facing guide when behavior changes, update `CHANGELOG.md`, synchronize the
 documentation index and manifest, and pass the documentation policy in CI. Existing features,

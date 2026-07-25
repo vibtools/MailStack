@@ -12,6 +12,7 @@
 | Baseline feature preservation | PASS |
 | Repository structure and public documentation | PASS |
 | User manual, how-to, admin guide and phase-document baseline | PASS |
+| UI design intake, immutable-source manifest and design contract tests | PASS locally; CI pending for this phase |
 | Deterministic documentation index, manifest and change policy | PASS |
 | Complete AGPL-3.0 license text | PASS |
 | Source secret/private-data safety gate | PASS |
@@ -90,6 +91,7 @@ See `FEATURE_MATRIX.md` for the feature-by-feature verification record.
 12. Local audit virtual environments are ignored without weakening generated-artifact release blocking.
 13. A root `documents/` baseline now provides maintained user, administrator and phase documentation.
 14. Deterministic synchronization, draft blocking and diff-based CI policy prevent maintained feature changes from merging without substantive documentation.
+15. The complete 25-image UI and logo archive is preserved with stable IDs, SHA-256 hashes, PNG structural validation, scope classification, and CI enforcement.
 
 ## Automated evidence
 

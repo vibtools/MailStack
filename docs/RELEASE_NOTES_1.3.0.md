@@ -41,6 +41,10 @@ Repository CI, the online dependency audit, deterministic release build, release
 
 ## Documentation baseline
 
+MailStack also preserves the complete UI reference archive as `MAILSTACK-UI-DESIGN-INTAKE-001` and freezes
+`MAILSTACK-UI-FOUNDATION-001`. The intake adds no runtime feature; it provides immutable design assets,
+screen classification, future-scope boundaries, and automated integrity gates for later page-by-page redesign.
+
 MailStack now includes a root `documents/` user-documentation hub with a complete user manual,
 task-based how-to guide, administrator guide, protected baseline record, mandatory per-phase
 records, deterministic index and manifest generation, documentation contract tests, and CI
