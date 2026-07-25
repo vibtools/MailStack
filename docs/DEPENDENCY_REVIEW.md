@@ -21,4 +21,4 @@ No obvious conflict was identified between the declared direct dependency licens
 
 ## Vulnerability review
 
-`pip check` passes in the audit environment. Django is pinned to 5.2.16, the upstream July 2026 security release for the 5.2 LTS line. GitHub CI retains `pip-audit` as a blocking network-enabled gate.
+`pip check` passes. Django is pinned to 5.2.16, the July 2026 security maintenance release for the 5.2 LTS line. The blocking network-enabled `pip-audit` gate passed in GitHub Actions run `30133728843` for commit `1e1737edea2e6c922265a15d8584b56671820c65` and remains mandatory for future changes.

@@ -16,6 +16,9 @@ All notable repository-level changes are recorded here. Application history befo
 - Removed the stale root `SOURCE_MANIFEST.sha256`; verified release archives continue to generate their own manifest.
 - Made forensic inventory and source-release ordering deterministic across Windows and Linux by sorting canonical POSIX repository-relative paths.
 - Upgraded the pinned Django LTS runtime from 5.2.15 to 5.2.16 to resolve the July 2026 Django security advisories and kept exact-version deployment verification aligned.
+- Established `MAILSTACK-1.3.0-RC1-DOCS-BASELINE-001` as the protected feature and documentation baseline.
+- Added the root `documents/` user-documentation hub with a user manual, task-based how-to guide, administrator guide, baseline record and mandatory phase history.
+- Added deterministic documentation index and manifest synchronization, phase scaffolding, contract tests and CI policy enforcement so maintained feature changes cannot merge without the required user documentation and changelog updates.
 
 ### Compatibility
 
@@ -51,4 +54,4 @@ All notable repository-level changes are recorded here. Application history befo
 
 ### Qualification
 
-Automated gates pass. Stable promotion remains blocked on a clean Ubuntu 24.04 VPS acceptance campaign, external SMTP/LMTP verification, online dependency advisory audit and release-owner legal confirmation.
+Repository CI, the online dependency advisory audit, deterministic release build, release verification and clean-clone verification pass. Stable promotion remains blocked on a clean Ubuntu 24.04 VPS acceptance campaign, external SMTP/LMTP verification, backup/restore acceptance and release-owner legal confirmation.

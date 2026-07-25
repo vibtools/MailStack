@@ -3,6 +3,8 @@
 ```text
 .github/                    CI, release workflow and contribution templates
 deployment/templates/       Rendered server configuration templates
+documents/                  User manual, how-to, admin guide, phase history and generated manifest
+  phases/                   Mandatory per-phase user and compatibility records
 docs/                       Public architecture, operations and release documentation
 mailbox-app/                Django team mailbox application
   apps/                     Accounts, audit, core, dashboard, ingestion, mailboxes and messages
@@ -14,7 +16,7 @@ mailbox-app/                Django team mailbox application
   templates/                Django HTML templates
   tests/                    Unit, integration, functional, reliability and security tests
 public-site/                Static site and isolated contact WSGI service
-scripts/                    Repository audit, rendering, testing and release tools
+scripts/                    Repository audit, documentation, rendering, testing and release tools
 install.sh                  Clean Ubuntu 24.04 installer
 VERSION                     Canonical release version
 ```

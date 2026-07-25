@@ -44,6 +44,17 @@ REQUIRED = {
     "docs/SECURITY_REVIEW.md",
     "docs/PERFORMANCE_REVIEW.md",
     "docs/RELEASE_NOTES_1.3.0.md",
+    "documents/README.md",
+    "documents/USER_MANUAL.md",
+    "documents/HOW_TO_USE.md",
+    "documents/ADMIN_GUIDE.md",
+    "documents/BASELINE.md",
+    "documents/DOCUMENTATION_POLICY.md",
+    "documents/DOCUMENTATION_MANIFEST.json",
+    "documents/phases/PHASE-000-BASELINE.md",
+    "scripts/manage_documents.py",
+    "scripts/check_documentation_policy.py",
+    "scripts/test_documents.py",
 }
 BLOCKED_NAMES = {
     ".env",
@@ -215,7 +226,7 @@ def main() -> int:
                 findings.append(f"JSON_SYNTAX:{relative}:{exc.lineno}")
         elif path.suffix == ".sh" or path.name == "install.sh":
             shell_count += 1
-            code, output = run(["bash", "-n", str(path)], root)
+            code, output = run([BASH, "-n", str(path)], root)
             if code:
                 findings.append(f"SHELL_SYNTAX:{relative}:{output}")
 
@@ -263,6 +274,8 @@ def main() -> int:
         findings.append(f"INSTALLER_PLAN:{output}")
 
     for command, label in (
+        ([sys.executable, str(root / "scripts/manage_documents.py"), "--root", str(root), "check"], "USER_DOCUMENTATION_GATE"),
+        ([sys.executable, str(root / "scripts/test_documents.py")], "DOCUMENTATION_TESTS"),
         ([sys.executable, str(root / "scripts/check_docs.py")], "DOCUMENTATION_GATE"),
         ([sys.executable, str(root / "scripts/generate_inventory.py"), "--root", str(root), "--check"], "INVENTORY_GATE"),
         ([sys.executable, str(root / "scripts/validate_templates.py")], "TEMPLATE_VALIDATION"),

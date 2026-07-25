@@ -18,6 +18,8 @@ jobs:
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - uses: actions/setup-python@v5
         with:
@@ -44,6 +46,17 @@ jobs:
 
       - name: Documentation and metadata validation
         run: python scripts/check_docs.py
+
+      - name: User documentation synchronization
+        run: python scripts/manage_documents.py --root . check
+
+      - name: Documentation system tests
+        run: python scripts/test_documents.py
+
+      - name: Feature documentation policy
+        env:
+          DOCUMENTATION_BASE_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event.before }}
+        run: python scripts/check_documentation_policy.py --head "$GITHUB_SHA"
 
       - name: Forensic file inventory
         run: python scripts/generate_inventory.py --root . --check

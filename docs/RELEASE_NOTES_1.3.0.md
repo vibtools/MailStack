@@ -37,4 +37,11 @@ Version 1.3.0 RC1 converts the verified private deployment source into a configu
 
 ## Release qualification
 
-Automated gates pass locally. The release remains an **RC** until an online dependency audit and a complete clean Ubuntu 24.04 live installation/inbound-mail acceptance campaign pass.
+Repository CI, the online dependency audit, deterministic release build, release verification and clean-clone verification pass at commit `1e1737edea2e6c922265a15d8584b56671820c65`. The release remains an **RC** until a complete clean Ubuntu 24.04 live installation, inbound SMTP/LMTP, backup/restore and operational acceptance campaign passes.
+
+## Documentation baseline
+
+MailStack now includes a root `documents/` user-documentation hub with a complete user manual,
+task-based how-to guide, administrator guide, protected baseline record, mandatory per-phase
+records, deterministic index and manifest generation, documentation contract tests, and CI
+change-policy enforcement. This framework does not change runtime application behavior.

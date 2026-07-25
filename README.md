@@ -188,6 +188,15 @@ ruff check .
 bandit -c .bandit -q -r apps config
 ```
 
+Synchronize and validate user documentation before the complete repository gate:
+
+```bash
+python scripts/manage_documents.py sync
+python scripts/manage_documents.py check
+python scripts/test_documents.py
+python scripts/check_documentation_policy.py --base HEAD^ --head HEAD
+```
+
 Run the complete repository gate from the project root:
 
 ```bash
@@ -232,6 +241,10 @@ See [docs/SCREENSHOTS.md](docs/SCREENSHOTS.md) for the approved screenshot set a
 
 | Area | Document |
 |---|---|
+| User documentation | [documents/README.md](documents/README.md) |
+| User manual | [documents/USER_MANUAL.md](documents/USER_MANUAL.md) |
+| How to use | [documents/HOW_TO_USE.md](documents/HOW_TO_USE.md) |
+| Administrator guide | [documents/ADMIN_GUIDE.md](documents/ADMIN_GUIDE.md) |
 | Quick start | [docs/QUICKSTART.md](docs/QUICKSTART.md) |
 | Installation | [docs/INSTALLATION.md](docs/INSTALLATION.md) |
 | Configuration | [docs/CONFIGURATION.md](docs/CONFIGURATION.md) |

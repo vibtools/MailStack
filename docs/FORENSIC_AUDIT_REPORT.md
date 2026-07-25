@@ -1,9 +1,9 @@
 # Forensic audit report — MailStack 1.3.0 RC1
 
-**Audit date:** 2026-06-30  
-**Release version:** `1.3.0-rc.1`  
-**Target runtime:** Ubuntu Server 24.04 LTS and CPython 3.12  
-**Release classification:** GitHub-ready open-source release candidate
+**Baseline audit date:** 2026-07-24
+**Release version:** `1.3.0-rc.1`
+**Target runtime:** Ubuntu Server 24.04 LTS and CPython 3.12
+**Release classification:** CI-qualified and clean-clone-qualified open-source release candidate
 
 ## Executive disposition
 
@@ -11,6 +11,8 @@
 |---|---|
 | Baseline feature preservation | PASS |
 | Repository structure and public documentation | PASS |
+| User manual, how-to, admin guide and phase-document baseline | PASS |
+| Deterministic documentation index, manifest and change policy | PASS |
 | Complete AGPL-3.0 license text | PASS |
 | Source secret/private-data safety gate | PASS |
 | Python, JSON, YAML and shell syntax | PASS |
@@ -21,13 +23,13 @@
 | Installer and operations contract tests | PASS |
 | Template rendering and placeholder validation | PASS |
 | Forensic file/symbol inventory | PASS |
-| Deterministic release ZIP, manifest and checksum | Required final build gate |
-| Online dependency advisory query | PENDING — audit environment DNS unavailable |
+| Deterministic release ZIP, manifest and checksum | PASS in GitHub CI |
+| Online dependency advisory query | PASS in GitHub CI |
 | Clean Ubuntu 24.04 full-stack acceptance | PENDING external VPS |
 | Real inbound SMTP/LMTP acceptance | PENDING external VPS |
 | Copyright ownership/license confirmation | PENDING release owner |
 
-**OPEN_SOURCE_RELEASE_CANDIDATE:** PASS  
+**OPEN_SOURCE_RELEASE_CANDIDATE:** PASS
 **PRODUCTION_ACCEPTANCE:** PENDING
 
 ## Audited scope
@@ -86,6 +88,8 @@ See `FEATURE_MATRIX.md` for the feature-by-feature verification record.
 10. The complete AGPL-3.0 license text and licensing rationale were added.
 11. A deterministic file/symbol inventory and documentation consistency gate were added.
 12. Local audit virtual environments are ignored without weakening generated-artifact release blocking.
+13. A root `documents/` baseline now provides maintained user, administrator and phase documentation.
+14. Deterministic synchronization, draft blocking and diff-based CI policy prevent maintained feature changes from merging without substantive documentation.
 
 ## Automated evidence
 
@@ -101,16 +105,17 @@ See `FEATURE_MATRIX.md` for the feature-by-feature verification record.
 - Backup/restore/health contracts: **PASS**
 - Shell syntax: **13 files PASS**
 - Source forensic gate: **PASS with zero blocking findings**
-- Documentation gate: **23 required documents PASS**
+- Engineering documentation gate: **PASS**
+- User-document synchronization, manifest and policy tests: **PASS**
 - Python environment consistency (`pip check`): **PASS**
 
-The tests ran locally with Python 3.13.5 because it is the available audit runtime. Package metadata and CI constrain production to Python 3.12 on Ubuntu 24.04.
+The authoritative repository qualification is GitHub Actions run `30133728843` on Ubuntu 24.04 with Python 3.12 at commit `1e1737edea2e6c922265a15d8584b56671820c65`. Local isolated audit environments remain useful for non-networked structural checks but do not replace CI.
 
 ## Security review
 
 Verified controls include root-only generated secrets, strict configuration validation, Argon2 password hashing, CSRF and secure-cookie controls, login throttling, object-level mailbox authorization, safe HTML sanitization, protected attachments, receive-only SMTP, no public registration, no IMAP/POP3/submission in the reference deployment, MariaDB least privilege, systemd sandboxing, safe archive extraction, checksum verification and fail-closed CI/release gates.
 
-The online `pip-audit` command was attempted but could not resolve `pypi.org` in the isolated environment. This is not a passing vulnerability result; the network-enabled CI step remains blocking.
+The network-enabled `pip-audit` command passed as a blocking step in GitHub Actions run `30133728843`. Future dependency changes must continue to pass the locked dependency, `pip check`, and online advisory gates.
 
 ## Performance review
 
@@ -125,7 +130,7 @@ The repository includes an SEO-oriented README, logo asset, release/download/lic
 Before stable promotion:
 
 1. Confirm source ownership and third-party license compatibility.
-2. Require GitHub CI, including the online dependency advisory audit, to pass.
+2. Preserve the successful GitHub CI baseline and require every subsequent release commit to pass all blocking gates.
 3. Install on a clean isolated Ubuntu Server 24.04 VPS.
 4. Verify DNS, MX, PTR/rDNS, TLS, firewall, unknown-recipient rejection, LMTP delivery, ingestion, authorization, contact delivery, backup, restore and restart recovery.
 5. Publish the first version as `v1.3.0-rc.1`; promote to stable only after acceptance.

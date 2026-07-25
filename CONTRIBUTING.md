@@ -23,6 +23,9 @@ pip install -r requirements/development.txt
 From the repository root:
 
 ```bash
+python scripts/manage_documents.py check
+python scripts/test_documents.py
+python scripts/check_documentation_policy.py --base HEAD^ --head HEAD
 python scripts/check_docs.py
 python scripts/validate_templates.py
 python scripts/test_installer.py
@@ -36,10 +39,28 @@ The full gate runs tests, coverage, Ruff, Bandit, Django checks, contact-service
 
 1. Open an issue for significant behavior, schema or deployment changes.
 2. Keep changes narrow and explain compatibility impact.
-3. Add or update tests for every behavior change.
-4. Update documentation, changelog and release notes where applicable.
-5. Do not commit secrets, real mailbox data, personal email addresses, certificates, databases, logs, archives or generated credentials.
-6. Confirm the pull-request checklist and CI results.
+3. Create or update a `documents/phases/PHASE-NNN-*.md` record for every maintained feature phase.
+4. Update `documents/USER_MANUAL.md`, `documents/HOW_TO_USE.md`, or `documents/ADMIN_GUIDE.md` whenever user-visible behavior changes.
+5. Run `python scripts/manage_documents.py sync` and commit the generated documentation index and manifest.
+6. Add or update tests for every behavior change.
+7. Update `CHANGELOG.md`, engineering documentation and release notes where applicable.
+8. Do not commit secrets, real mailbox data, personal email addresses, certificates, databases, logs, archives or generated credentials.
+9. Confirm the pull-request checklist and CI results.
+
+## Documentation-first phase workflow
+
+Start a maintained phase before implementation:
+
+```bash
+python scripts/manage_documents.py new-phase \
+  --phase-id PHASE-001 \
+  --title "Feature title" \
+  --summary "What the phase changes for users"
+```
+
+Complete the generated draft, update the affected guides and changelog, then run `sync`, `check`,
+the documentation contract tests and the feature-change policy. Draft phase documents and stale
+generated documentation cannot pass CI.
 
 ## Coding standards
 

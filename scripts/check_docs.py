@@ -26,6 +26,11 @@ def main() -> int:
         "docs/FAQ.md", "docs/TROUBLESHOOTING.md", "docs/DEPENDENCY_REVIEW.md",
         "docs/GITHUB_REPOSITORY_METADATA.md", "docs/SCREENSHOTS.md", "docs/BRANDING.md",
         "docs/LICENSING.md", "docs/FORENSIC_FILE_INVENTORY.json",
+        "documents/README.md", "documents/USER_MANUAL.md", "documents/HOW_TO_USE.md",
+        "documents/ADMIN_GUIDE.md", "documents/BASELINE.md",
+        "documents/DOCUMENTATION_POLICY.md", "documents/DOCUMENTATION_MANIFEST.json",
+        "documents/phases/PHASE-000-BASELINE.md", "scripts/manage_documents.py",
+        "scripts/check_documentation_policy.py", "scripts/test_documents.py",
     }
     missing = sorted(path for path in required if not (ROOT / path).is_file())
     if missing:

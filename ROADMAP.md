@@ -12,6 +12,12 @@ This roadmap is directional. Security, data integrity and backward compatibility
 - Complete backup, restore and restart-recovery acceptance
 - Confirm source copyright ownership and third-party license compatibility
 
+## Documentation baseline
+
+- Preserve `MAILSTACK-1.3.0-RC1-DOCS-BASELINE-001` as the starting point for future phases
+- Require a phase record, changelog update and affected user-guide update with maintained feature changes
+- Keep the generated user-document index and manifest deterministic and CI-enforced
+
 ## 1.3 stable
 
 - Promote the verified release candidate without feature removal

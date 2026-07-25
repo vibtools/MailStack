@@ -65,17 +65,17 @@
     },
     {
       "kind": "text",
-      "lines": 22,
+      "lines": 31,
       "path": ".github/pull_request_template.md",
-      "sha256": "72a639c9187ff41b6d6529952c85c69890435ddcd92fe219f572c7036297afab",
-      "size_bytes": 785
+      "sha256": "e09fbd492e74b5cfe9977469f03e323d8ffd4268061a4bdee86084da5ae69750",
+      "size_bytes": 1172
     },
     {
       "kind": "text",
-      "lines": 101,
+      "lines": 114,
       "path": ".github/workflows/ci.yml",
-      "sha256": "888c162494f787a0c0bc2b5b55c2aa66da13be41460a8e5bf9f2eee17c0b9ebe",
-      "size_bytes": 3020
+      "sha256": "1df6bfc0cd18122935f5df9f1eb5d02257aa5fe24fe2c2c9cda9d2ae2f922cd1",
+      "size_bytes": 3534
     },
     {
       "kind": "text",
@@ -93,10 +93,10 @@
     },
     {
       "kind": "text",
-      "lines": 54,
+      "lines": 57,
       "path": "CHANGELOG.md",
-      "sha256": "f20befb17c179b6fa6b820e1462d9f096406cc84e05430bc7ce3365a2565b4b5",
-      "size_bytes": 3373
+      "sha256": "b16a452d81b6426e15a202f1f503f4976aa8aefe51aed84d7864982d46029ade",
+      "size_bytes": 3991
     },
     {
       "kind": "text",
@@ -114,10 +114,10 @@
     },
     {
       "kind": "text",
-      "lines": 48,
+      "lines": 69,
       "path": "CONTRIBUTING.md",
-      "sha256": "7373e120d701604ebd6ba4ba39c189cb16431baede0986d72f823a50761a3b00",
-      "size_bytes": 1709
+      "sha256": "261a06768a85bf91859ed847a52c230682602a2d8f77f8966f3baeae05461c8f",
+      "size_bytes": 2695
     },
     {
       "kind": "text",
@@ -135,17 +135,17 @@
     },
     {
       "kind": "text",
-      "lines": 295,
+      "lines": 308,
       "path": "README.md",
-      "sha256": "c60381cf64f6be2c5a33df7d4b43bac7f18ff0d71b7389d57e72936305575c4b",
-      "size_bytes": 12053
+      "sha256": "de3c3b035b4d7533c612a04cc0ad7679ae6cd35adfdd697964c7bb2abc565c9b",
+      "size_bytes": 12618
     },
     {
       "kind": "text",
-      "lines": 37,
+      "lines": 43,
       "path": "ROADMAP.md",
-      "sha256": "48f311f2670fe1b099c6a27d49b744e9df35103704516f56b9f3d6270f1abd33",
-      "size_bytes": 1582
+      "sha256": "10f6e52337168933f36f076943861a9007b8ec3fd176e8d149c71f5eca513d3e",
+      "size_bytes": 1891
     },
     {
       "kind": "text",
@@ -326,8 +326,8 @@
       "kind": "text",
       "lines": 24,
       "path": "docs/DEPENDENCY_REVIEW.md",
-      "sha256": "ebbb15546fcce6ab984dc3c4cd8cb52999b8fe77b91caa0d2c9c72929b19939f",
-      "size_bytes": 1436
+      "sha256": "3a5e289fc355853018cb04bd9a59d9dd5089b13109cfdcf9cd03afb7b0a8fe2a",
+      "size_bytes": 1533
     },
     {
       "kind": "text",
@@ -366,17 +366,17 @@
     },
     {
       "kind": "text",
-      "lines": 22,
+      "lines": 24,
       "path": "docs/FOLDER_STRUCTURE.md",
-      "sha256": "6ba8516f2aa47d5352141dfe47d55240e32498325d8d50ccd70e21dafa69d420",
-      "size_bytes": 1376
+      "sha256": "9bbf7a1d9c922d7ceb5ed48c83b6479026905ecc36a36bb1ded5903f8a982ace",
+      "size_bytes": 1569
     },
     {
       "kind": "text",
-      "lines": 135,
+      "lines": 140,
       "path": "docs/FORENSIC_AUDIT_REPORT.md",
-      "sha256": "8952bd55effe62206fb4c293506f8ca9626b6024d490c6973484782ee1cd50d5",
-      "size_bytes": 7643
+      "sha256": "e830af27b4791a1c5a7ec5d9524f7d841d79c626e24a1de5987ae8130efdacb1",
+      "size_bytes": 8266
     },
     {
       "kind": "text",
@@ -478,17 +478,17 @@
     },
     {
       "kind": "text",
-      "lines": 40,
+      "lines": 47,
       "path": "docs/RELEASE_NOTES_1.3.0.md",
-      "sha256": "c3fc0a9a436d9f07fbd04341a15997638dfd7c938fe772448b0e51db6ce0f624",
-      "size_bytes": 2082
+      "sha256": "9eefc73b3d88f4edc1f69c1e8509b1fd194f1ed93a969b2a72ab173b8ded2fd1",
+      "size_bytes": 2638
     },
     {
       "kind": "text",
-      "lines": 12,
+      "lines": 14,
       "path": "docs/RELEASE_PROCESS.md",
-      "sha256": "098138eb952aa01bf76e749eb5e27147ad272dca96ca32b74834b4602d4bcde4",
-      "size_bytes": 723
+      "sha256": "1b0c561d2fb3e8b6b28bb38f997657fc5731c75580f02795c09c98ef36480464",
+      "size_bytes": 973
     },
     {
       "kind": "text",
@@ -506,10 +506,10 @@
     },
     {
       "kind": "text",
-      "lines": 50,
+      "lines": 52,
       "path": "docs/TEST_REPORT.md",
-      "sha256": "31a8c82a12d3f1076f2cc8d9b31db0dc873e399dc308208770f30c461c2440fa",
-      "size_bytes": 2278
+      "sha256": "13fc0313a8a3410662d028da178694432560bbbbfc54c3c5054bc2ac8ab56aea",
+      "size_bytes": 2643
     },
     {
       "kind": "text",
@@ -531,6 +531,62 @@
       "path": "docs/UPGRADE.md",
       "sha256": "b5dcb27cdd26d5730f65f09df15b4544865ed504ce68d80346e0c931031c4949",
       "size_bytes": 848
+    },
+    {
+      "kind": "text",
+      "lines": 60,
+      "path": "documents/ADMIN_GUIDE.md",
+      "sha256": "29857b8f2438246c09bbf8b1578b349190c5db64836016899562400b59970a14",
+      "size_bytes": 3151
+    },
+    {
+      "kind": "text",
+      "lines": 41,
+      "path": "documents/BASELINE.md",
+      "sha256": "b2a478dc245821045197248f760d540e12d31844c7879cdf2ef2fa38936adde3",
+      "size_bytes": 1825
+    },
+    {
+      "kind": "text",
+      "lines": 89,
+      "path": "documents/DOCUMENTATION_MANIFEST.json",
+      "sha256": "8481b655a5860e1704ab8f402c4341d557a301dd39c24d0c31c4b20dedf377bc",
+      "size_bytes": 3001
+    },
+    {
+      "kind": "text",
+      "lines": 69,
+      "path": "documents/DOCUMENTATION_POLICY.md",
+      "sha256": "36de3a27191eb623ed52ff6cc0daff01f93a524f4d41d5649ae5847b1744d0c9",
+      "size_bytes": 2703
+    },
+    {
+      "kind": "text",
+      "lines": 71,
+      "path": "documents/HOW_TO_USE.md",
+      "sha256": "1437655b083484afa903211feb81d14b73e3be8e03e920da4efdb8e181a2188d",
+      "size_bytes": 2808
+    },
+    {
+      "kind": "text",
+      "lines": 43,
+      "path": "documents/README.md",
+      "sha256": "ebe07d4486542e9bf02947d1c1c3eb60e680b195804a98783b66b27d13c34486",
+      "size_bytes": 2115
+    },
+    {
+      "kind": "text",
+      "lines": 78,
+      "path": "documents/USER_MANUAL.md",
+      "sha256": "517147ff30e60088007301a231b05c7ec1dc341693f31daa3d7a9a6ef9795776",
+      "size_bytes": 3804
+    },
+    {
+      "kind": "text",
+      "lines": 59,
+      "path": "documents/phases/PHASE-000-BASELINE.md",
+      "sha256": "f6c1872bc32d81f11cf67a1f7bf619eebae7080603d3b7981211e2648dc064c0",
+      "size_bytes": 2543
     },
     {
       "kind": "text",
@@ -4278,7 +4334,7 @@
     },
     {
       "kind": "text",
-      "lines": 82,
+      "lines": 87,
       "path": "scripts/check_docs.py",
       "python": {
         "classes": [],
@@ -4294,12 +4350,48 @@
         ],
         "methods": []
       },
-      "sha256": "0a6a957851f7e688ea1051960006a3c0d79468c0a8b31b41f35b2680550a25e1",
-      "size_bytes": 3632
+      "sha256": "aa30f0d5489b578e52917ce9a012dd9b48b227726f12f9b7cf099577532095a7",
+      "size_bytes": 4024
     },
     {
       "kind": "text",
-      "lines": 318,
+      "lines": 236,
+      "path": "scripts/check_documentation_policy.py",
+      "python": {
+        "classes": [
+          "ChangedFile",
+          "PolicyError"
+        ],
+        "functions": [
+          "changed_files_from_git",
+          "commit_exists",
+          "evaluate_policy",
+          "is_phase_sensitive",
+          "is_test_only_path",
+          "is_user_facing",
+          "main",
+          "parse_changed_line",
+          "resolve_base",
+          "run_git"
+        ],
+        "imports": [
+          "__future__",
+          "argparse",
+          "dataclasses",
+          "os",
+          "pathlib",
+          "subprocess"
+        ],
+        "methods": [
+          "ChangedFile.deleted"
+        ]
+      },
+      "sha256": "7428f1ee89c2c88eff016620a5e605bf6db4ece9c5e7700c887c4ffc30a75ddd",
+      "size_bytes": 7808
+    },
+    {
+      "kind": "text",
+      "lines": 331,
       "path": "scripts/forensic_audit.py",
       "python": {
         "classes": [],
@@ -4324,8 +4416,8 @@
         ],
         "methods": []
       },
-      "sha256": "53233de834b74e2d6ad7c0422361c7ada8b9087074c66104c40b4a4c617dcfd7",
-      "size_bytes": 11137
+      "sha256": "c2bfff0969fe27fe209e190ba3388de561fb191d9b624cae6cdf3c187a0f1888",
+      "size_bytes": 11751
     },
     {
       "kind": "text",
@@ -4362,6 +4454,52 @@
       },
       "sha256": "d8a1cc16bc6a9a4050cd3dfd2d96d364560104b9d14daa4a193a193e92f7b259",
       "size_bytes": 6124
+    },
+    {
+      "kind": "text",
+      "lines": 525,
+      "path": "scripts/manage_documents.py",
+      "python": {
+        "classes": [
+          "DocumentationError",
+          "ManagedDocument"
+        ],
+        "functions": [
+          "canonical_path",
+          "check",
+          "create_phase",
+          "load_documents",
+          "main",
+          "markdown_sections",
+          "parse_front_matter",
+          "render_index",
+          "render_manifest",
+          "render_readme",
+          "sha256_text",
+          "slugify",
+          "sync",
+          "synchronized_content",
+          "validate_document"
+        ],
+        "imports": [
+          "__future__",
+          "argparse",
+          "dataclasses",
+          "datetime",
+          "hashlib",
+          "json",
+          "pathlib",
+          "re",
+          "sys"
+        ],
+        "methods": [
+          "ManagedDocument.document_id",
+          "ManagedDocument.document_type",
+          "ManagedDocument.title"
+        ]
+      },
+      "sha256": "8443a02b84470f98cff5a8b53880e84fa33db38e76c16a05969ce750586d00af",
+      "size_bytes": 19218
     },
     {
       "kind": "text",
@@ -4405,6 +4543,36 @@
       },
       "sha256": "4b591c23da8ba83f90b1e315406af74c40bf58c6a991cb3d18124ab198154e99",
       "size_bytes": 1667
+    },
+    {
+      "kind": "text",
+      "lines": 156,
+      "path": "scripts/test_documents.py",
+      "python": {
+        "classes": [],
+        "functions": [
+          "load_module",
+          "main",
+          "run",
+          "test_change_policy",
+          "test_current_baseline",
+          "test_new_phase_is_draft_and_blocked",
+          "test_sync_is_deterministic"
+        ],
+        "imports": [
+          "__future__",
+          "importlib.util",
+          "json",
+          "pathlib",
+          "shutil",
+          "subprocess",
+          "sys",
+          "tempfile"
+        ],
+        "methods": []
+      },
+      "sha256": "0612dcd071051050f74228eab15e926c7cb34be8a8a274cb8fb43c0b1e20d101",
+      "size_bytes": 5415
     },
     {
       "kind": "text",
@@ -4511,15 +4679,15 @@
   },
   "summary": {
     "binary_files": 0,
-    "files": 347,
-    "python_classes": 68,
-    "python_files": 136,
-    "python_functions": 328,
-    "python_methods": 57,
+    "files": 358,
+    "python_classes": 72,
+    "python_files": 139,
+    "python_functions": 360,
+    "python_methods": 61,
     "shell_files": 13,
     "shell_functions": 30,
-    "text_files": 347,
-    "total_bytes": 875112,
-    "total_text_lines": 20798
+    "text_files": 358,
+    "total_bytes": 935972,
+    "total_text_lines": 22326
   }
 }

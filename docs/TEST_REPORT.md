@@ -1,6 +1,6 @@
 # Test report — MailStack 1.3.0 RC1
 
-**Execution date:** 2026-06-30
+**Baseline verification date:** 2026-07-24
 
 ## Application suite
 
@@ -12,7 +12,7 @@ Coverage: 94.99%
 Required coverage: 85%
 ```
 
-Covered areas include authentication, user management, mailbox membership isolation, mailbox lifecycle, Postfix contract behavior, Maildir provisioning/ingestion, MIME parsing, HTML sanitization, attachment storage and authorization, duplicate handling, counters, live updates, reliability, security controls, and responsive routes.
+Covered areas include authentication, user management, mailbox membership isolation, mailbox lifecycle, Postfix contract behavior, Maildir provisioning/ingestion, MIME parsing, HTML sanitization, attachment storage and authorization, duplicate handling, counters, live updates, reliability, security controls, responsive routes, deterministic user-document synchronization, draft blocking and feature-document policy enforcement.
 
 ## Additional automated gates
 
@@ -34,16 +34,18 @@ Covered areas include authentication, user management, mailbox membership isolat
 | systemd unit syntax | PASS |
 | `pip check` | PASS |
 | Source safety scan | PASS after generated files are removed |
-| Deterministic ZIP/manifest/checksum verification | Required final release-build gate |
+| Deterministic ZIP/manifest/checksum verification | PASS in GitHub CI |
 | Documentation and forensic inventory gates | PASS |
+| User-document synchronization and manifest gate | PASS |
+| Documentation change-policy contract tests | PASS |
 
 ## Runtime qualification
 
-Local tests executed with Python 3.13.5 because that is the available audit runtime. The package declares and CI enforces Python 3.12 for production. The CI job runs on Ubuntu 24.04 with Python 3.12.
+GitHub Actions run `30133728843` completed successfully on Ubuntu 24.04 with Python 3.12 for source safety, documentation, dependency audit, Ruff, Bandit, tests and coverage, contact tests, Django checks, shell syntax, the full forensic gate, deterministic release build and release verification. The qualifying source commit is `1e1737edea2e6c922265a15d8584b56671820c65`.
 
 ## Dependency advisory qualification
 
-The local online vulnerability query could not run because DNS access to the external package/advisory service was unavailable. The exact command is retained as a blocking CI step. A public release must not be promoted when that CI step fails.
+The network-enabled blocking `pip-audit` gate passed in GitHub Actions after Django was upgraded to 5.2.16. Dependency changes remain subject to `pip check`, the locked requirements contract and the blocking online advisory gate.
 
 ## Manual acceptance still required
 

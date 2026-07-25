@@ -1,0 +1,89 @@
+{
+  "baseline_id": "MAILSTACK-1.3.0-RC1-DOCS-BASELINE-001",
+  "baseline_source_commit": "1e1737edea2e6c922265a15d8584b56671820c65",
+  "documents": [
+    {
+      "audience": "mailstack-administrators",
+      "document_id": "admin-guide",
+      "document_type": "admin-guide",
+      "last_reviewed": "2026-07-24",
+      "path": "documents/ADMIN_GUIDE.md",
+      "phase_id": null,
+      "sha256": "29857b8f2438246c09bbf8b1578b349190c5db64836016899562400b59970a14",
+      "status": "active",
+      "title": "MailStack Administrator Guide",
+      "version": "1.3.0-rc.1"
+    },
+    {
+      "audience": "maintainers-and-operators",
+      "document_id": "baseline",
+      "document_type": "baseline",
+      "last_reviewed": "2026-07-24",
+      "path": "documents/BASELINE.md",
+      "phase_id": null,
+      "sha256": "b2a478dc245821045197248f760d540e12d31844c7879cdf2ef2fa38936adde3",
+      "status": "active",
+      "title": "MailStack Baseline",
+      "version": "1.3.0-rc.1"
+    },
+    {
+      "audience": "contributors-and-maintainers",
+      "document_id": "documentation-policy",
+      "document_type": "documentation-policy",
+      "last_reviewed": "2026-07-24",
+      "path": "documents/DOCUMENTATION_POLICY.md",
+      "phase_id": null,
+      "sha256": "36de3a27191eb623ed52ff6cc0daff01f93a524f4d41d5649ae5847b1744d0c9",
+      "status": "active",
+      "title": "Documentation Policy",
+      "version": "1.3.0-rc.1"
+    },
+    {
+      "audience": "mailbox-users-and-administrators",
+      "document_id": "how-to-use",
+      "document_type": "how-to",
+      "last_reviewed": "2026-07-24",
+      "path": "documents/HOW_TO_USE.md",
+      "phase_id": null,
+      "sha256": "1437655b083484afa903211feb81d14b73e3be8e03e920da4efdb8e181a2188d",
+      "status": "active",
+      "title": "How to Use MailStack",
+      "version": "1.3.0-rc.1"
+    },
+    {
+      "audience": "mailbox-users",
+      "document_id": "user-manual",
+      "document_type": "user-manual",
+      "last_reviewed": "2026-07-24",
+      "path": "documents/USER_MANUAL.md",
+      "phase_id": null,
+      "sha256": "517147ff30e60088007301a231b05c7ec1dc341693f31daa3d7a9a6ef9795776",
+      "status": "active",
+      "title": "MailStack User Manual",
+      "version": "1.3.0-rc.1"
+    },
+    {
+      "audience": "users-operators-and-maintainers",
+      "document_id": "phase-000-baseline",
+      "document_type": "phase",
+      "last_reviewed": "2026-07-24",
+      "path": "documents/phases/PHASE-000-BASELINE.md",
+      "phase_id": "PHASE-000",
+      "sha256": "f6c1872bc32d81f11cf67a1f7bf619eebae7080603d3b7981211e2648dc064c0",
+      "status": "active",
+      "title": "Documentation and Feature Baseline",
+      "version": "1.3.0-rc.1"
+    }
+  ],
+  "project": "MailStack",
+  "release_version": "1.3.0-rc.1",
+  "schema_version": 1,
+  "scope": "Managed user, administrator, how-to, policy, baseline, and phase Markdown documents.",
+  "summary": {
+    "active": 6,
+    "documents": 6,
+    "draft": 0,
+    "historical": 0,
+    "phases": 1
+  }
+}

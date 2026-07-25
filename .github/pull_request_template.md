@@ -8,6 +8,15 @@ Describe the change and the operational problem it solves.
 - [ ] Database and deployment compatibility were reviewed.
 - [ ] Any intentional breaking change is explicitly approved and documented.
 
+## Documentation baseline
+
+- [ ] A `documents/phases/PHASE-NNN-*.md` record was added or updated
+- [ ] User-facing changes update `USER_MANUAL.md`, `HOW_TO_USE.md`, or `ADMIN_GUIDE.md`
+- [ ] `CHANGELOG.md` was updated
+- [ ] `python scripts/manage_documents.py check`
+- [ ] `python scripts/test_documents.py`
+- [ ] `python scripts/check_documentation_policy.py --base HEAD^ --head HEAD`
+
 ## Verification
 
 - [ ] Tests added or updated
