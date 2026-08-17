@@ -4,8 +4,8 @@ title: UI Design Intake Baseline
 document_type: phase
 audience: users-operators-designers-and-maintainers
 status: active
-version: 1.3.0-rc.1
-last_reviewed: 2026-07-24
+version: 1.3.0-rc.2
+last_reviewed: 2026-08-17
 phase_id: PHASE-001
 ---
 

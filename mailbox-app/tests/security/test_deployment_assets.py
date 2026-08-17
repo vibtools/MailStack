@@ -148,3 +148,15 @@ def test_v1_2_1_security_hotfix_pins_and_bleach_scope():
     assert "parse_email=False" in parser
     assert "GHSA-g75f-g53v-794x" in audit
     assert "--ignore-vuln GHSA-g75f-g53v-794x" in audit
+
+
+def test_production_mariadb_warning_qualification_is_narrow_and_documented():
+    production = read("config/settings/production.py")
+    bootstrap = (ROOT.parent / "deployment/templates/mariadb/bootstrap.sql.tpl").read_text(encoding="utf-8")
+    assert '"mysql.W003"' in production
+    assert '"models.W044"' in production
+    assert "utf8mb4_unicode_ci" in bootstrap
+    mailbox_models = read("apps/mailboxes/models.py")
+    message_models = read("apps/messages/models.py")
+    assert "email_address = models.EmailField(max_length=320, unique=True)" in mailbox_models
+    assert "storage_relative_path = models.CharField(max_length=500, unique=True)" in message_models

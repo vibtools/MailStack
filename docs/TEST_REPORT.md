@@ -1,6 +1,6 @@
-# Test report — MailStack 1.3.0 RC1
+# Test report — MailStack 1.3.0 RC2
 
-**Baseline verification date:** 2026-07-25
+**PHASE-003 verification date:** 2026-08-17
 
 ## Application suite
 
@@ -54,6 +54,26 @@ GitHub Actions run `30133728843` completed successfully on Ubuntu 24.04 with Pyt
 ## Dependency advisory qualification
 
 The network-enabled blocking `pip-audit` gate passed in GitHub Actions after Django was upgraded to 5.2.16. Dependency changes remain subject to `pip check`, the locked requirements contract and the blocking online advisory gate.
+
+## PHASE-003 installation/recovery reliability qualification
+
+Dependency-free local qualification for 1.3.0-rc.2 passes the documentation index/manifest gate,
+documentation contract tests, design manifest and PNG integrity tests, shared UI foundation
+contracts, deployment-template rendering, installer contracts, operations contracts, Python compile,
+shell syntax, forensic inventory generation/check, and the structural forensic audit. The installer
+contract specifically protects global `/var/log`, sanitized `vmail` command execution, provisioning
+runtime directories, early credential persistence, explicit repair idempotency, the Dovecot static
+userdb LMTP setting, and the existing MariaDB collation qualification.
+
+The current artifact-building environment does not contain the repository's pinned Django/Ruff/Bandit
+dependencies and cannot download them, so the dependency-backed Django/coverage/lint/full-forensic
+gates are delegated to the mandatory Ubuntu 24.04 GitHub Actions run for the PHASE-003 commit. This
+does not waive those gates.
+
+The live staging campaign that motivated PHASE-003 demonstrated real external Gmail delivery through
+Postfix and Dovecot LMTP into Maildir, queue drain after the static-userdb correction, ingestion, and
+web-inbox visibility. A final clean installation from the exact RC2 source remains a release-candidate
+acceptance requirement before stable promotion.
 
 ## Manual acceptance still required
 

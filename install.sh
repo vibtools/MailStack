@@ -136,10 +136,31 @@ backup_file() {
 }
 
 run_as_vmail() {
-  runuser -u vmail --preserve-environment -- env \
+  runuser -u vmail -- env -i \
+    PATH=/opt/vibmail/venv/bin:/usr/local/bin:/usr/bin:/bin \
+    HOME=/var/vmail \
+    USER=vmail \
+    LOGNAME=vmail \
     VIBMAIL_ENV_FILE=/etc/vibmail/vibmail.env \
     DJANGO_SETTINGS_MODULE=config.settings.production \
     "$@"
+}
+
+write_initial_credentials() {
+  local password=$1
+  CREDENTIALS_FILE="/root/vibmail-initial-credentials-$STAMP.txt"
+  cat > "$CREDENTIALS_FILE" <<EOF
+MailStack initial credentials
+============================
+Application: https://$APP_HOSTNAME
+Username: $ADMIN_USERNAME
+Password: $password
+Mail domain: $MAIL_DOMAIN
+
+Change the administrator password immediately after first sign-in.
+This file is root-only. Delete it after storing the credential securely.
+EOF
+  chmod 0600 "$CREDENTIALS_FILE"
 }
 
 for argument in "$@"; do
@@ -247,7 +268,10 @@ for required_path in mailbox-app public-site scripts deployment/templates; do
   [[ -e "$SOURCE_ROOT/$required_path" ]] || die "Source package is incomplete: $required_path"
 done
 
-install -d -m 0750 /var/log
+[[ -d /var/log && ! -L /var/log ]] || die "/var/log must be a real directory"
+if [[ -n ${SSH_CONNECTION:-} && -z ${TMUX:-} && -z ${STY:-} ]]; then
+  log "WARNING: Running a mutating installation over SSH without tmux/screen; a disconnect may interrupt the installer"
+fi
 exec 9>"$LOCK_FILE"
 flock -n 9 || die "Another MailStack installation is running"
 touch "$LOG_FILE"
@@ -376,6 +400,14 @@ install -d -o vmail -g vmail -m 0750 \
 install -d -o vmail -g www-data -m 0755 /var/lib/vibmail/static
 install -d -o vmail -g vmail -m 0700 /var/lib/vibmail/attachments
 install -d -o vmail -g adm -m 0750 /var/log/vibmail
+install -d -o vmail -g vmail -m 0750 /run/vibmail
+install -d -o vmail -g vmail -m 0700 /run/vibmail/mailbox-provision-locks
+runuser -u vmail -- test -x /var/log \
+  || die "The vmail runtime cannot traverse /var/log; preserve the host directory and correct its parent permissions"
+runuser -u vmail -- test -w /var/log/vibmail \
+  || die "The vmail runtime cannot write to /var/log/vibmail"
+runuser -u vmail -- test -w /run/vibmail/mailbox-provision-locks \
+  || die "The vmail runtime cannot write to the mailbox provisioning lock directory"
 install -d -o root -g www-data -m 0755 /var/www/letsencrypt/.well-known/acme-challenge
 install -d -o root -g root -m 0755 /opt/vibmail-public-site/releases
 install -d -o root -g www-data -m 0755 "/var/www/$PUBLIC_HOSTNAME"
@@ -478,23 +510,45 @@ find /var/lib/vibmail/static -type d -exec chmod 0755 {} +
 find /var/lib/vibmail/static -type f -exec chmod 0644 {} +
 run_as_vmail /opt/vibmail/venv/bin/python /opt/vibmail/app/manage.py check --deploy
 
-if [[ $REPAIR -eq 0 ]]; then
-  if [[ -n "$ADMIN_PASSWORD_ENV" ]]; then
-    ADMIN_PASSWORD=${!ADMIN_PASSWORD_ENV:-}
-    [[ -n "$ADMIN_PASSWORD" ]] || die "Environment variable $ADMIN_PASSWORD_ENV is empty"
-  else
-    ADMIN_PASSWORD="Vm!$(random_hex 12)"
-  fi
-  export VIBMAIL_INITIAL_ADMIN_PASSWORD="$ADMIN_PASSWORD"
+CREDENTIALS_FILE="not-created-existing-admin"
+if [[ -n "$ADMIN_PASSWORD_ENV" ]]; then
+  ADMIN_PASSWORD=${!ADMIN_PASSWORD_ENV:-}
+  [[ -n "$ADMIN_PASSWORD" ]] || die "Environment variable $ADMIN_PASSWORD_ENV is empty"
+else
+  ADMIN_PASSWORD="Vm!$(random_hex 12)"
+fi
+
+ADMIN_COMMAND_ARGS=(
+  --username "$ADMIN_USERNAME"
+  --password-env VIBMAIL_INITIAL_ADMIN_PASSWORD
+)
+if [[ $REPAIR -eq 1 ]]; then
+  ADMIN_COMMAND_ARGS+=(--if-missing)
+fi
+ADMIN_COMMAND_OUTPUT=$(
   run_as_vmail env VIBMAIL_INITIAL_ADMIN_PASSWORD="$ADMIN_PASSWORD" \
     /opt/vibmail/venv/bin/python /opt/vibmail/app/manage.py create_initial_admin \
-    --username "$ADMIN_USERNAME" --password-env VIBMAIL_INITIAL_ADMIN_PASSWORD
-  unset VIBMAIL_INITIAL_ADMIN_PASSWORD
-  for system_mailbox in postmaster abuse; do
-    run_as_vmail /opt/vibmail/venv/bin/python /opt/vibmail/app/manage.py create_system_mailbox \
-      "$system_mailbox" --confirm
-  done
+    "${ADMIN_COMMAND_ARGS[@]}"
+)
+printf '%s\n' "$ADMIN_COMMAND_OUTPUT"
+if grep -Fxq 'INITIAL_ADMIN_STATUS=created' <<< "$ADMIN_COMMAND_OUTPUT"; then
+  write_initial_credentials "$ADMIN_PASSWORD"
+elif grep -Fxq 'INITIAL_ADMIN_STATUS=preserved' <<< "$ADMIN_COMMAND_OUTPUT"; then
+  CREDENTIALS_FILE="not-created-existing-admin"
+else
+  die "Initial administrator command did not report a recognized status"
 fi
+unset ADMIN_PASSWORD
+
+for system_mailbox in postmaster abuse; do
+  SYSTEM_MAILBOX_ARGS=("$system_mailbox" --confirm)
+  if [[ $REPAIR -eq 1 ]]; then
+    SYSTEM_MAILBOX_ARGS+=(--if-missing)
+  fi
+  run_as_vmail /opt/vibmail/venv/bin/python /opt/vibmail/app/manage.py create_system_mailbox \
+    "${SYSTEM_MAILBOX_ARGS[@]}"
+done
+run_as_vmail /opt/vibmail/venv/bin/python /opt/vibmail/app/manage.py verify_mail_storage
 
 CURRENT_PHASE="nginx-bootstrap"
 log "Installing bootstrap Nginx configuration"
@@ -615,24 +669,6 @@ data = {
 path.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
 path.chmod(0o600)
 PY
-
-if [[ $REPAIR -eq 0 ]]; then
-  CREDENTIALS_FILE="/root/vibmail-initial-credentials-$STAMP.txt"
-  cat > "$CREDENTIALS_FILE" <<EOF
-MailStack initial credentials
-============================
-Application: https://$APP_HOSTNAME
-Username: $ADMIN_USERNAME
-Password: $ADMIN_PASSWORD
-Mail domain: $MAIL_DOMAIN
-
-Change the administrator password immediately after first sign-in.
-This file is root-only. Delete it after storing the credential securely.
-EOF
-  chmod 0600 "$CREDENTIALS_FILE"
-else
-  CREDENTIALS_FILE="not-created-in-repair-mode"
-fi
 
 CURRENT_PHASE="complete"
 trap - ERR

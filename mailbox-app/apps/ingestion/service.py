@@ -199,14 +199,15 @@ def ingest_all(
     query = Mailbox.objects.filter(deleted_at__isnull=True)
     if mailbox_local_part:
         query = query.filter(local_part__iexact=mailbox_local_part)
-    ServiceHeartbeat.objects.update_or_create(
-        service_name="maildir_ingestion",
-        defaults={
-            "status": "running",
-            "last_seen_at": timezone.now(),
-            "details": {"rebuild_missing": rebuild_missing, "dry_run": dry_run},
-        },
-    )
+    if not dry_run:
+        ServiceHeartbeat.objects.update_or_create(
+            service_name="maildir_ingestion",
+            defaults={
+                "status": "running",
+                "last_seen_at": timezone.now(),
+                "details": {"rebuild_missing": rebuild_missing, "dry_run": dry_run},
+            },
+        )
     for mailbox in query.iterator():
         for path in iter_maildir_files(mailbox):
             result.scanned += 1
@@ -221,12 +222,13 @@ def ingest_all(
                 result.duplicates += 1
             elif outcome == "oversized":
                 result.oversized += 1
-    ServiceHeartbeat.objects.update_or_create(
-        service_name="maildir_ingestion",
-        defaults={
-            "status": "healthy" if result.errors == 0 else "degraded",
-            "last_seen_at": timezone.now(),
-            "details": {**asdict(result), "rebuild_missing": rebuild_missing, "dry_run": dry_run},
-        },
-    )
+    if not dry_run:
+        ServiceHeartbeat.objects.update_or_create(
+            service_name="maildir_ingestion",
+            defaults={
+                "status": "healthy" if result.errors == 0 else "degraded",
+                "last_seen_at": timezone.now(),
+                "details": {**asdict(result), "rebuild_missing": rebuild_missing, "dry_run": dry_run},
+            },
+        )
     return result

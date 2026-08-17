@@ -1,51 +1,66 @@
-# MailStack 1.3.0 RC1 release notes
+# MailStack 1.3.0 RC2 release notes
 
 ## Purpose
 
-Version 1.3.0 RC1 converts the verified private deployment source into a configurable, publicly documented, reproducibly packaged open-source release candidate while preserving the approved v1.2.1 mailbox application behavior.
+Version 1.3.0 RC2 is a reliability-hardening release candidate built from the frozen 1.3.0 RC1
+baseline. It incorporates only the installation, partial-recovery, official-verification, MariaDB
+qualification, and inbound SMTP/LMTP fixes reproduced during the first live Ubuntu 24.04 staging
+acceptance campaign. Existing MailStack product features, UI/UX, routes, data model, receive-only
+scope, and deployment identifiers remain preserved.
 
-## Added
+## Fixed in RC2
 
-- Ubuntu 24.04 one-command installer
-- configurable mail, application, mail-server, and public hostnames
-- MariaDB/Postfix/Dovecot/Nginx/systemd/environment templates
-- public-site rendering for the configured domain
-- complete AGPL-3.0 license text, licensing rationale and public governance/security documents
-- Django 5.2.16 LTS security maintenance pin with exact-version deployment and CI verification
-- GitHub CI, release workflow, Dependabot, CODEOWNERS, issue and pull-request templates
-- source secret scanning, documentation validation, forensic file/symbol inventory, template validation and installer/operations contract tests
-- SEO-oriented repository metadata, reusable project logo, deterministic source ZIP, manifest, checksum and verifier
-- custom-domain migration and tests
-- consistent configurable backup/restore tooling
-
-## Hardened
-
-- strict production setting validation
-- SQL identifier validation and least-privilege column grants
-- Postfix invoker-view privileges
-- LMTP-only Dovecot service identity
-- hostname collision and installer argument validation
-- HSTS policy consistency
-- backup consistency, archive validation, and service-state restoration
-- release scanner self-protection and generated-artifact rejection
+- The installer no longer changes the host-wide `/var/log` mode; it validates the dedicated MailStack
+  log path from the `vmail` runtime instead.
+- Installer-launched Django commands now run from a clean least-privilege environment instead of
+  inheriting stale database/Django variables from the parent shell.
+- `/run/vibmail/mailbox-provision-locks` is prepared before bootstrap mailbox creation.
+- Reviewed `--repair` can preserve a valid existing initial administrator and valid system mailboxes
+  while creating only missing bootstrap objects; inconsistent partial state fails closed.
+- Newly created initial-administrator credentials are persisted immediately to the root-only
+  credential file, before later TLS/mail-stack phases can fail.
+- Dovecot's static LMTP userdb includes `allow_all_users=yes`; Postfix SQL virtual-mailbox lookup
+  remains the authoritative recipient gate, so unknown recipients are still rejected.
+- One-shot `ingest_maildir --dry-run` verification no longer takes the live worker's exclusive lock
+  and no longer updates `ServiceHeartbeat`, allowing the official application verifier to run beside
+  the live ingestion service.
+- Conservative Django MariaDB uniqueness warnings are qualified only in production against the
+  existing `utf8mb4_unicode_ci` database and unique-column deployment contract; no migration or
+  schema change is introduced.
+- SSH/PuTTY installation guidance now recommends `tmux`/`screen`, with a non-blocking warning when a
+  mutating installer is launched over SSH outside a resilient terminal.
 
 ## Compatibility
 
-- Existing `vibmail.my` defaults, application data model, URLs, templates, static assets, tests, migration history, and legacy maintenance assets are retained.
-- No functional baseline source file was deleted.
-- Existing v1.2 backup sets without contact-state archives remain restorable by the updated restore script.
+- No database migration.
+- No dependency upgrade or new dependency.
+- No route, template, CSS, JavaScript, UI page, authorization, mailbox, message, public-site, or
+  contact-workflow redesign.
+- No SMTP submission, IMAP, POP3, reply, forward, sent, draft, or public-registration feature.
+- Existing `VIBMAIL_*` settings, `vibmail-*` services, `/etc/vibmail` paths, databases, Maildir
+  layout, and receive-only architecture remain unchanged.
+- Strict duplicate rejection remains the default for bootstrap management commands; preservation is
+  available only through the explicit repair option.
+
+## Staging evidence that motivated RC2
+
+The live campaign reproduced and isolated failures in `/var/log` traversal, inherited installer
+credentials, mailbox provisioning runtime locks, partial bootstrap recovery, delayed initial
+credential persistence, Dovecot static-userdb LMTP lookup, and live verification locking. After the
+LMTP correction, deferred Gmail messages were accepted by Dovecot, saved to INBOX, removed from the
+Postfix queue, ingested, and displayed by the application.
 
 ## Release qualification
 
-Repository CI, the online dependency audit, deterministic release build, release verification and clean-clone verification pass at commit `1e1737edea2e6c922265a15d8584b56671820c65`. The release remains an **RC** until a complete clean Ubuntu 24.04 live installation, inbound SMTP/LMTP, backup/restore and operational acceptance campaign passes.
+RC2 must pass the full documentation, installer, operations, template, Ruff, Bandit, Django,
+coverage, forensic, deterministic-release, and CI gates. Clean Ubuntu 24.04 installation and real
+external SMTP/LMTP acceptance are required. Stable promotion remains blocked until backup/restore,
+restart-recovery, final security/legal, and release-owner acceptance are complete.
 
-## Documentation baseline
+## RC1 foundation preserved
 
-MailStack also preserves the complete UI reference archive as `MAILSTACK-UI-DESIGN-INTAKE-001` and freezes
-`MAILSTACK-UI-FOUNDATION-001`. The intake adds no runtime feature; it provides immutable design assets,
-screen classification, future-scope boundaries, and automated integrity gates for later page-by-page redesign.
-
-MailStack now includes a root `documents/` user-documentation hub with a complete user manual,
-task-based how-to guide, administrator guide, protected baseline record, mandatory per-phase
-records, deterministic index and manifest generation, documentation contract tests, and CI
-change-policy enforcement. This framework does not change runtime application behavior.
+RC1 established the configurable Ubuntu 24.04 installer, MariaDB/Postfix/Dovecot/Nginx/systemd
+templates, reproducible source packaging, public governance/security documentation, Django 5.2.16
+security pin, protected user/documentation baseline, UI design intake, and shared application shell.
+RC2 does not replace or redesign those foundations; it hardens the operational paths exercised by
+staging acceptance.

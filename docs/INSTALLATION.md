@@ -34,13 +34,21 @@ Plan mode validates arguments and prints the intended layout without changing th
 
 ## Installation
 
+When installing over SSH, start a resilient terminal session first so a PuTTY/network disconnect does not terminate the foreground installer:
+
+```bash
+tmux new -s mailstack-install
+```
+
+Then run the installer inside that session:
+
 ```bash
 chmod +x install.sh
 sudo ./install.sh --domain example.com --admin-email admin@example.com \
   --server-ip 203.0.113.10 --non-interactive
 ```
 
-Optional flags include custom application/mail/public hostnames, `--www`, a password environment variable, `--repair`, and `--skip-dns-check`. Use `./install.sh --help` for the authoritative list.
+Optional flags include custom application/mail/public hostnames, `--www`, a password environment variable, `--repair`, and `--skip-dns-check`. Use `./install.sh --help` for the authoritative list. The installer warns, but does not abort, when a mutating run starts over SSH outside `tmux`/`screen`.
 
 ## Installer phases
 
@@ -52,8 +60,14 @@ Optional flags include custom application/mail/public hostnames, `--www`, a pass
 6. Application and public-site deployment
 7. Postfix, Dovecot, Nginx and systemd configuration
 8. TLS certificate issuance
-9. Database migration, static collection and mailbox provisioning
+9. Database migration, static collection and resumable administrator/system-mailbox provisioning
 10. Acceptance checks and installation marker
+
+## Reviewed repair after a partial installation
+
+If a clean installation stops after secrets or bootstrap data have been created, inspect the failure, preserve the generated state, and rerun the same release and parameters with `--repair`. Repair preserves a valid existing administrator and valid `postmaster`/`abuse` mailboxes, creates only missing bootstrap objects, and fails closed on inconsistent state. It never silently changes an existing administrator password. If repair must create the administrator, a new root-only initial-credentials file is written immediately after creation.
+
+Do not source `/etc/vibmail/vibmail.env` into the parent root shell before installation/repair. Installer-launched Django commands use an isolated least-privilege environment so stale exported database credentials cannot override the rendered production environment.
 
 ## After installation
 

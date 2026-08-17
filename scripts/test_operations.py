@@ -90,6 +90,14 @@ def main() -> int:
     require('-H "Host: $APP_HOSTNAME"' in health, "health check does not use configured app hostname")
     require('-H "Host: $APP_HOSTNAME"' in verify, "application verifier does not use configured app hostname")
     require("manage.py check --deploy" in verify, "application verifier omits deployment checks")
+    require(
+        "manage.py ingest_maildir --once --dry-run" in verify,
+        "application verifier omits non-mutating Maildir validation",
+    )
+    require(
+        "systemctl stop vibmail-ingestion" not in verify,
+        "application verifier must not stop the live ingestion worker",
+    )
 
     print("OPERATIONAL_SCRIPTS=4")
     print("BACKUP_RESTORE_CONTRACT=PASS")

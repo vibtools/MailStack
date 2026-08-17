@@ -2,8 +2,8 @@ cff-version: 1.2.0
 message: "If you use MailStack, cite the software release and link to the canonical source repository."
 title: "MailStack"
 type: software
-version: "1.3.0-rc.1"
-date-released: 2026-06-30
+version: "1.3.0-rc.2"
+date-released: 2026-08-17
 authors:
   - name: "Vib Tools"
 repository-code: "https://github.com/vibtools/MailStack"

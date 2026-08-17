@@ -7,7 +7,7 @@
 5. Run the online dependency audit in CI.
 6. Test a clean installation on an isolated Ubuntu Server 24.04 LTS VPS.
 7. Verify external inbound SMTP, login, authorization boundaries, live updates, safe HTML, and attachment downloads.
-8. Build with `python scripts/build_release.py --root . --version 1.3.0-rc.1`.
+8. Build with `python scripts/build_release.py --root . --version 1.3.0-rc.2`.
 9. Verify the ZIP and checksum with `python scripts/verify_release.py`.
 10. Publish the source ZIP, checksum, release notes, user-document manifest, and exact Git commit/tag.
 

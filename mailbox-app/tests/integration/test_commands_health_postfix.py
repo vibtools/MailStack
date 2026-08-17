@@ -105,6 +105,13 @@ def test_create_initial_admin_from_environment(monkeypatch):
             password_env="VIBMAIL_TEST_ADMIN_PASSWORD",
         )
 
+    preserved = StringIO()
+    call_command("create_initial_admin", username="owner", if_missing=True, stdout=preserved)
+    assert "INITIAL_ADMIN_STATUS=preserved" in preserved.getvalue()
+    assert get_user_model().objects.count() == 1
+    with pytest.raises(CommandError, match="requested administrator|administrator .* is missing"):
+        call_command("create_initial_admin", username="second", if_missing=True)
+
 
 @pytest.mark.django_db
 def test_create_system_mailbox_requires_confirmation():
@@ -116,6 +123,13 @@ def test_create_system_mailbox_requires_confirmation():
     _root, maildir, _relative = mailbox_paths(mailbox.local_part, allow_reserved=True)
     assert (maildir / "new").is_dir()
     call_command("verify_mail_storage")
+
+    preserved = StringIO()
+    call_command("create_system_mailbox", "postmaster", confirm=True, if_missing=True, stdout=preserved)
+    assert "SYSTEM_MAILBOX_STATUS=preserved" in preserved.getvalue()
+    (maildir / "cur").rmdir()
+    with pytest.raises(CommandError, match="incomplete mail storage"):
+        call_command("create_system_mailbox", "postmaster", confirm=True, if_missing=True)
 
 
 @pytest.mark.django_db
@@ -156,6 +170,12 @@ def test_ingestion_command_rejects_bad_interval_and_second_worker(settings):
     try:
         with pytest.raises(CommandError):
             call_command("ingest_maildir", once=True)
+        output = StringIO()
+        call_command("ingest_maildir", once=True, dry_run=True, stdout=output)
+        assert "errors=0" in output.getvalue()
+        from apps.core.models import ServiceHeartbeat
+
+        assert ServiceHeartbeat.objects.filter(service_name="maildir_ingestion").count() == 0
     finally:
         lock.release()
 

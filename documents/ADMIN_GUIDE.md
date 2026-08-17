@@ -4,8 +4,8 @@ title: MailStack Administrator Guide
 document_type: admin-guide
 audience: mailstack-administrators
 status: active
-version: 1.3.0-rc.1
-last_reviewed: 2026-07-25
+version: 1.3.0-rc.2
+last_reviewed: 2026-08-17
 ---
 
 # MailStack administrator guide
@@ -44,7 +44,8 @@ mailboxes. Message and mailbox deletion controls remain hidden unless policy all
 
 The administrator dashboard reports ingestion heartbeat, mail-storage accessibility, and database
 connectivity. Server-side verification should also use the maintained health and verification
-scripts, systemd service status, and journal logs. After deployment, verify external delivery to
+scripts, systemd service status, and journal logs. The one-shot dry-run verifier can run while the
+live ingestion worker remains active and does not update its heartbeat. After deployment, verify external delivery to
 `postmaster@DOMAIN` and `abuse@DOMAIN`, Maildir creation, ingestion, browser visibility, and backup
 creation before onboarding users.
 
@@ -62,4 +63,6 @@ attachments, database dumps, backups, certificates, private keys, or unsanitized
 
 Before production use, complete clean Ubuntu 24.04 VPS acceptance, TLS and DNS validation, real
 SMTP/LMTP delivery tests, backup/restore acceptance, and security review. Use the documented repair
-or upgrade path rather than running the clean installer over an unreviewed existing mail stack.
+or upgrade path rather than running the clean installer over an unreviewed existing mail stack. A
+reviewed repair preserves an existing valid administrator and bootstrap mailboxes, creates only
+missing bootstrap objects, and never silently resets an administrator password.
