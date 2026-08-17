@@ -10,7 +10,7 @@ gunicorn==25.1.0
 packaging==26.2
 pycparser==3.0
 python-dotenv==1.2.2
-sqlparse==0.5.5
+sqlparse==0.6.0
 webencodings==0.5.1
 whitenoise==6.11.0
 

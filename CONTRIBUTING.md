@@ -38,6 +38,8 @@ python scripts/forensic_audit.py --root . --full
 
 The full gate runs tests, coverage, Ruff, Bandit, Django checks, contact-service tests and source-safety checks.
 
+On Windows, the repository audit tools require a real Bash runtime for shell syntax and installer-plan checks. They automatically prefer Git for Windows/Git Bash over the WSL `bash.exe` launcher and probe the runtime before use. Install Git for Windows or set `BASH_EXECUTABLE` to a known-good Bash path when using a custom shell. A broken WSL or Docker Desktop VM must not be mistaken for a MailStack shell-script failure.
+
 ## Pull requests
 
 1. Open an issue for significant behavior, schema or deployment changes.

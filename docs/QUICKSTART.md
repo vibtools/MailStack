@@ -24,12 +24,20 @@ The automated installer targets Ubuntu Server 24.04 LTS. It deliberately refuses
 
 ## 4. Install
 
+For an SSH/PuTTY session, create a resilient terminal first:
+
+```bash
+tmux new -s mailstack-install
+```
+
+Run the installer inside it:
+
 ```bash
 sudo ./install.sh --domain example.com --admin-email admin@example.com \
   --server-ip 203.0.113.10 --non-interactive
 ```
 
-The initial administrator credential is written to a root-only file. Sign in, store the password in an approved password manager, change it immediately, then securely delete the file.
+The initial administrator credential is written to a root-only file immediately after the account is created. Sign in, store the password in an approved password manager, change it immediately, then securely delete the file. A reviewed `--repair` preserves an already-valid administrator instead of resetting its password.
 
 ## 5. Verify external delivery
 

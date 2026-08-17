@@ -1,5 +1,21 @@
 # Changelog
 
+## 1.3.0-rc.4 — Cross-platform audit tooling maintenance
+
+- Added portable Bash runtime discovery for repository-level installer, operations, and forensic audit tooling on Windows while preserving Linux CI behavior.
+- No application model, migration, route, UI, mailbox, ingestion, LMTP, authorization, or runtime dependency behavior changed.
+
+## 1.3.0-rc.3 — Dependency security maintenance
+
+- Upgraded the transitive runtime lock for `sqlparse` from 0.5.5 to 0.6.0 to resolve CVE-2026-71491, CVE-2026-59894, CVE-2026-59893, and CVE-2026-54284 reported by the blocking GitHub Actions `pip-audit` gate.
+- No application model, migration, route, UI, mailbox, ingestion, LMTP, or authorization behavior changed.
+
+## 1.3.0-rc.2 — Installation and inbound-delivery reliability
+
+- Added explicit idempotent repair behavior for the initial administrator and reserved system-mailbox bootstrap commands while preserving strict default duplicate rejection.
+- Made one-shot dry-run Maildir verification non-locking and non-mutating so it can run while the live ingestion worker holds the worker lock.
+- Qualified deployment-specific MariaDB compatibility warnings without changing models or migrations.
+
 ## Unreleased — Django security maintenance
 
 - Upgraded Django from 5.2.15 to 5.2.16 for the July 2026 security fixes.

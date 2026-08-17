@@ -25,12 +25,15 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         if options["interval"] < 1:
             raise CommandError("--interval must be at least 1 second")
-        settings.INGESTION_LOCK_FILE.parent.mkdir(parents=True, exist_ok=True)
-        lock = FileLock(str(settings.INGESTION_LOCK_FILE))
-        try:
-            lock.acquire(timeout=0)
-        except Timeout as exc:
-            raise CommandError("Another ingestion worker already holds the lock") from exc
+        lock_required = not (options["dry_run"] and not options["watch"])
+        lock = None
+        if lock_required:
+            settings.INGESTION_LOCK_FILE.parent.mkdir(parents=True, exist_ok=True)
+            lock = FileLock(str(settings.INGESTION_LOCK_FILE))
+            try:
+                lock.acquire(timeout=0)
+            except Timeout as exc:
+                raise CommandError("Another ingestion worker already holds the lock") from exc
         stop_event = threading.Event()
 
         def stop_handler(_signum, _frame):
@@ -59,4 +62,5 @@ class Command(BaseCommand):
                     return
                 stop_event.wait(options["interval"])
         finally:
-            lock.release()
+            if lock is not None:
+                lock.release()

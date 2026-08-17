@@ -26,11 +26,43 @@ All notable repository-level changes are recorded here. Application history befo
 - Established `MAILSTACK-1.3.0-RC1-DOCS-BASELINE-001` as the protected feature and documentation baseline.
 - Added the root `documents/` user-documentation hub with a user manual, task-based how-to guide, administrator guide, baseline record and mandatory phase history.
 - Added deterministic documentation index and manifest synchronization, phase scaffolding, contract tests and CI policy enforcement so maintained feature changes cannot merge without the required user documentation and changelog updates.
+- Corrected the RC4 Windows audit harness so Git Bash maps installer-only `python3` calls to the exact Python interpreter running the local test process, without changing the Ubuntu production installer or requiring a machine-wide Windows alias.
 
 ### Compatibility
 
 - Preserved `VIBMAIL_*` environment variables, `vibmail-*` service names, `/etc/vibmail` paths, database identifiers, source directories, and legacy deployment contracts.
 - No application behavior, database migration operations, mail-flow, authentication, authorization, or deployment contract was intentionally changed. Legacy protocol headers such as `X-VibMail-CSRF` remain unchanged.
+
+## 1.3.0-rc.3 — 2026-08-17
+
+### Security
+
+- Upgraded the locked transitive `sqlparse` runtime from 0.5.5 to 0.6.0 after GitHub Actions run `32053931714` identified CVE-2026-71491, CVE-2026-59894, CVE-2026-59893, and CVE-2026-54284.
+- Kept Django at 5.2.16; its declared `sqlparse>=0.3.1` dependency accepts sqlparse 0.6.0, and MailStack's Python 3.12 runtime satisfies sqlparse 0.6.0's Python 3.10+ requirement.
+- Preserved all PHASE-003 installation, recovery, LMTP, ingestion, UI, route, schema, and deployment behavior; this maintenance delta changes only the vulnerable dependency pin plus required release metadata and verification records.
+
+### CI
+
+- Corrected RC2 qualification records that could be read as if the current PHASE-003 dependency audit had passed. The RC2 branch passed structural/documentation/installer/operations gates but stopped at the blocking online advisory gate.
+- Regenerated deterministic documentation, design, and forensic inventories for RC3. Full dependency-backed GitHub Actions requalification remains mandatory before merge or release.
+
+## 1.3.0-rc.2 — 2026-08-17
+
+### Fixed
+
+- Prevented the installer from changing the host-wide `/var/log` mode and added explicit least-privilege log-path checks.
+- Isolated installer-launched Django management commands from stale parent-shell database and Django environment variables.
+- Prepared the mailbox provisioning runtime lock directory before clean/repair bootstrap commands.
+- Made reviewed repair resumable with explicit idempotent initial-administrator and system-mailbox preservation while retaining strict duplicate rejection by default.
+- Persisted root-only initial administrator credentials immediately after administrator creation so later installer failures do not lose the generated password.
+- Fixed Postfix-to-Dovecot LMTP delivery by configuring the static userdb with `allow_all_users=yes` while preserving Postfix SQL recipient validation.
+- Allowed official one-shot dry-run ingestion verification to run beside the live ingestion worker without taking the exclusive worker lock or mutating ServiceHeartbeat state.
+- Qualified the two conservative MariaDB uniqueness warnings against the existing `utf8mb4_unicode_ci` and unique-column deployment contract without changing schema or migrations.
+
+### Operations
+
+- Added SSH session-resilience guidance and a non-blocking installer warning when a mutating run starts outside `tmux`/`screen`.
+- Synchronized the live-staging fixes back into the canonical source so fresh deployments require no manual copies of the acceptance hotfixes.
 
 ## 1.3.0-rc.1 — 2026-06-30
 

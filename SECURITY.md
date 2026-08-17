@@ -6,7 +6,10 @@ Security fixes are applied to the latest tagged release candidate or stable rele
 
 | Version | Support status |
 |---|---|
-| 1.3.0-rc.1 | Supported release candidate |
+| 1.3.0-rc.4 | Supported release candidate |
+| 1.3.0-rc.3 | Superseded release candidate |
+| 1.3.0-rc.2 | Superseded release candidate |
+| 1.3.0-rc.1 | Superseded release candidate |
 | 1.2.x | Legacy deployment assets retained; security support is best-effort |
 | Older versions | Unsupported |
 

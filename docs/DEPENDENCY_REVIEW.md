@@ -11,6 +11,7 @@
 | gunicorn | 25.1.0 | MIT | WSGI server |
 | mysqlclient | 2.2.7 | GPL-2.0-or-later | MariaDB/MySQL adapter |
 | python-dotenv | 1.2.2 | BSD-3-Clause | Environment loading |
+| sqlparse | 0.6.0 | BSD-3-Clause | Django SQL parsing dependency |
 | WhiteNoise | 6.11.0 | MIT | Static-file fallback |
 
 Transitive runtime versions are pinned in `mailbox-app/requirements/locked.txt`. Development tooling is pinned in `requirements/development.txt` and includes pytest, coverage, Ruff, Bandit and pip-audit.
@@ -24,4 +25,10 @@ No obvious conflict was identified between the declared direct dependency licens
 
 ## Vulnerability review
 
-`pip check` passes. Django is pinned to 5.2.16, the July 2026 security maintenance release for the 5.2 LTS line. The blocking network-enabled `pip-audit` gate passed in GitHub Actions run `30133728843` for commit `1e1737edea2e6c922265a15d8584b56671820c65` and remains mandatory for future changes.
+Django remains pinned to 5.2.16, the July 2026 security maintenance release for the 5.2 LTS line.
+GitHub Actions run `32053931714` on PHASE-003 RC2 passed the structural and repository gates but the
+blocking `pip-audit` step found CVE-2026-71491, CVE-2026-59894, CVE-2026-59893, and CVE-2026-54284
+in `sqlparse==0.5.5`. RC3 introduced and RC4 preserves `sqlparse==0.6.0`, the upstream security release fixing those findings.
+Django 5.2.16 permits `sqlparse>=0.3.1`, and sqlparse 0.6.0 supports Python 3.10+, including
+MailStack's required Python 3.12 runtime. `pip check` and the network-enabled blocking `pip-audit`
+gate remain mandatory for RC4 qualification; no advisory is ignored or suppressed.

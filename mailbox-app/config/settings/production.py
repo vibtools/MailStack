@@ -95,6 +95,12 @@ INGESTION_LOCK_FILE = Path(required("INGESTION_LOCK_FILE"))
 if not INGESTION_LOCK_FILE.is_absolute():
     raise ImproperlyConfigured("INGESTION_LOCK_FILE must be an absolute path")
 
+# MariaDB uses the configured utf8mb4_unicode_ci collation for the application database.
+# The underlying unique=True columns remain case-insensitive and the approved long unique
+# columns fit within the supported InnoDB index width. Django cannot infer those deployment
+# guarantees, so these two conservative backend warnings are qualified by installer/tests.
+SILENCED_SYSTEM_CHECKS = [*SILENCED_SYSTEM_CHECKS, "mysql.W003", "models.W044"]  # noqa: F405
+
 if not MAILSERVER_INTEGRATION_ENABLED:  # noqa: F405
     raise ImproperlyConfigured("MAILSERVER_INTEGRATION_ENABLED=true is required in production")
 

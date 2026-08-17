@@ -1,9 +1,9 @@
-# Forensic audit report — MailStack 1.3.0 RC1
+# Forensic audit report — MailStack 1.3.0 RC3
 
-**Baseline audit date:** 2026-07-25
-**Release version:** `1.3.0-rc.1`
+**PHASE-003 audit date:** 2026-08-17
+**Release version:** `1.3.0-rc.4`
 **Target runtime:** Ubuntu Server 24.04 LTS and CPython 3.12
-**Release classification:** CI-qualified and clean-clone-qualified open-source release candidate
+**Release classification:** locally structurally qualified release candidate; dependency-backed RC3 CI requalification pending
 
 ## Executive disposition
 
@@ -26,13 +26,13 @@
 | Installer and operations contract tests | PASS |
 | Template rendering and placeholder validation | PASS |
 | Forensic file/symbol inventory | PASS |
-| Deterministic release ZIP, manifest and checksum | PASS in GitHub CI |
-| Online dependency advisory query | PASS in GitHub CI |
-| Clean Ubuntu 24.04 full-stack acceptance | PENDING external VPS |
-| Real inbound SMTP/LMTP acceptance | PENDING external VPS |
+| Deterministic release ZIP, manifest and checksum | PENDING RC4 CI; deterministic local build/verification required before patch handoff |
+| Online dependency advisory query | PENDING RC4 rerun — RC2 run `32053931714` failed on sqlparse 0.5.5; RC3/RC4 pin 0.6.0 |
+| Clean Ubuntu 24.04 RC3 full-stack acceptance | PENDING exact-RC3 clean VPS requalification |
+| Real inbound SMTP/LMTP acceptance | PASS in staging after equivalent PHASE-003 LMTP hotfix; exact-RC3 clean requalification pending |
 | Copyright ownership/license confirmation | PENDING release owner |
 
-**OPEN_SOURCE_RELEASE_CANDIDATE:** PASS
+**OPEN_SOURCE_RELEASE_CANDIDATE:** PENDING RC4 CI
 **PRODUCTION_ACCEPTANCE:** PENDING
 
 ## Audited scope
@@ -96,10 +96,11 @@ See `FEATURE_MATRIX.md` for the feature-by-feature verification record.
 15. The complete 25-image UI and logo archive is preserved with stable IDs, SHA-256 hashes, PNG structural validation, scope classification, and CI enforcement.
 16. PHASE-002 adds the frozen runtime design tokens, responsive authenticated and sign-in shells, local SVG assets, accessible navigation behavior, and focused UI contract gates without changing page business logic.
 17. Cross-platform verification now closes contact-service SQLite handles deterministically, preserves POSIX-only permission assertions, and subjects the standalone contact service to Ruff and Bandit in both the full forensic gate and CI.
+18. RC3 updates the vulnerable transitive sqlparse 0.5.5 lock to upstream 0.6.0 after the blocking PHASE-003 CI advisory scan identified four 2026 CVEs; no advisory suppression or application behavior change is introduced.
 
 ## Automated evidence
 
-- Django tests: **195 passed, 1 capability-based skip, 0 failed**
+- Last completed pre-RC3 Django suite: **195 passed, 1 capability-based skip, 0 failed**; RC3 full rerun pending
 - Application coverage: **94.99%**; minimum: **85%**
 - Ruff: **PASS**
 - Bandit: **PASS**
@@ -121,7 +122,12 @@ The authoritative repository qualification is GitHub Actions run `30133728843` o
 
 Verified controls include root-only generated secrets, strict configuration validation, Argon2 password hashing, CSRF and secure-cookie controls, login throttling, object-level mailbox authorization, safe HTML sanitization, protected attachments, receive-only SMTP, no public registration, no IMAP/POP3/submission in the reference deployment, MariaDB least privilege, systemd sandboxing, safe archive extraction, checksum verification and fail-closed CI/release gates.
 
-The network-enabled `pip-audit` command passed as a blocking step in GitHub Actions run `30133728843`. Future dependency changes must continue to pass the locked dependency, `pip check`, and online advisory gates.
+The historical pre-PHASE-003 `pip-audit` gate passed in GitHub Actions run `30133728843`.
+For the current PHASE-003 branch, run `32053931714` failed at the blocking advisory step because
+`sqlparse==0.5.5` was newly reported for CVE-2026-71491, CVE-2026-59894, CVE-2026-59893, and
+CVE-2026-54284. RC3 pins upstream sqlparse 0.6.0, which contains those security fixes. The RC3
+dependency audit, `pip check`, and all downstream CI gates remain mandatory; no vulnerability is
+ignored or waived.
 
 ## Performance review
 
@@ -141,6 +147,28 @@ mail-flow, ingestion schema, deployment-template, or package change. Local depen
 and coverage passed; the final overwrite verifier must pass before commit, and GitHub Actions must
 pass before remote qualification.
 
+## PHASE-003 audit boundary
+
+PHASE-003 changes only installer/recovery behavior, the Dovecot LMTP static-userdb template,
+one-shot ingestion verification semantics, narrowly qualified production MariaDB warnings, focused
+management-command/test contracts, release metadata, and required documentation. It adds no database
+migration, dependency, UI page, URL, permission model, outbound mail path, or data transformation.
+
+The structural forensic gate passes with zero blocking findings after regenerating the deterministic
+file inventory. RC4 additionally centralizes verified Bash runtime discovery for repository-level
+installer, operations, and forensic tooling: Windows prefers Git for Windows Bash over the WSL
+launcher, while Linux keeps the system Bash contract. This prevents an unavailable WSL/Docker
+Desktop backing disk from being reported as multiple MailStack shell syntax defects. A subsequent
+Windows run proved Git Bash selection was correct but exposed a second host-compatibility edge: the
+Windows Python installation provided `python` but no Git-Bash-visible `python3` command. The RC4
+audit harness now uses a process-local `BASH_ENV` bridge to map `python3` to the exact interpreter
+running the test harness on Windows only; `install.sh` and Ubuntu's production `python3` behavior
+remain unchanged. Dependency-free documentation, design, UI-foundation, template, installer,
+operations, Python compile, and shell-syntax gates pass locally. Dependency-backed
+Django/Ruff/Bandit/coverage and full-forensic qualification remain blocking in GitHub Actions because
+the local artifact builder does not contain or have network access to the pinned development
+environment.
+
 ## External acceptance gates
 
 Before stable promotion:
@@ -149,8 +177,8 @@ Before stable promotion:
 2. Preserve the successful GitHub CI baseline and require every subsequent release commit to pass all blocking gates.
 3. Install on a clean isolated Ubuntu Server 24.04 VPS.
 4. Verify DNS, MX, PTR/rDNS, TLS, firewall, unknown-recipient rejection, LMTP delivery, ingestion, authorization, contact delivery, backup, restore and restart recovery.
-5. Publish the first version as `v1.3.0-rc.1`; promote to stable only after acceptance.
+5. Publish `v1.3.0-rc.4` only after its blocking CI gates pass; promote to stable only after the remaining acceptance gates pass.
 
 ## Final classification
 
-The repository is approved for public publication as **MailStack 1.3.0 RC1**, not yet as a proven stable production release.
+The repository remains a **MailStack 1.3.0 RC4 release candidate**, not yet a proven stable production release. PHASE-003 source qualification is complete only when its blocking GitHub Actions run passes.

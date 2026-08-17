@@ -28,7 +28,7 @@
 
 It combines **Postfix**, **Dovecot LMTP**, **Django**, **MariaDB**, **Maildir**, **Gunicorn**, and **Nginx** in a hardened single-node reference deployment. MailStack provides a private browser-based inbox, administrator-managed users, object-level mailbox access, safe email rendering, protected attachments, live inbox updates, operational audit logs, backup and restore tooling, a public website, and an isolated contact service.
 
-> **Release status:** `v1.3.0-rc.1` remains a release candidate. Source, test, security, template, and release tooling are present, but clean Ubuntu 24.04 VPS acceptance and real external SMTP/LMTP verification are required before stable promotion.
+> **Release status:** `v1.3.0-rc.4` remains a release candidate. Clean Ubuntu 24.04 installation and real external SMTP/LMTP delivery have been exercised during the PHASE-003 hardening campaign; backup/restore, restart-recovery, legal, and final release-owner acceptance still gate stable promotion.
 
 ## Why MailStack
 
@@ -211,8 +211,8 @@ Build and verify a deterministic source release:
 ```bash
 python scripts/build_release.py --root .
 python scripts/verify_release.py \
-  dist/mailstack-1.3.0-rc.1-source.zip \
-  --checksum dist/mailstack-1.3.0-rc.1-source.zip.sha256
+  dist/mailstack-1.3.0-rc.4-source.zip \
+  --checksum dist/mailstack-1.3.0-rc.4-source.zip.sha256
 ```
 
 ## Security

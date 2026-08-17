@@ -11,7 +11,7 @@ ssl_key = </etc/letsencrypt/live/{{CERT_NAME}}/privkey.pem
 
 userdb {
   driver = static
-  args = uid=5000 gid=5000 home=/var/vmail/%d/%n
+  args = uid=5000 gid=5000 home=/var/vmail/%d/%n allow_all_users=yes
 }
 
 service lmtp {
