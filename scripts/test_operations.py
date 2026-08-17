@@ -3,14 +3,14 @@
 from __future__ import annotations
 
 import ipaddress
-import os
 import re
 import subprocess
 from pathlib import Path
 
+from shell_runtime import bash_syntax_command, resolve_bash
+
 ROOT = Path(__file__).resolve().parents[1]
 APP_SCRIPTS = ROOT / "mailbox-app/scripts"
-BASH = os.getenv("BASH_EXECUTABLE", "bash")
 
 
 def require(condition: bool, message: str) -> None:
@@ -21,12 +21,18 @@ def require(condition: bool, message: str) -> None:
 def read(name: str) -> str:
     path = APP_SCRIPTS / name
     require(path.is_file(), f"missing operational script: {name}")
-    result = subprocess.run([BASH, "-n", str(path)], capture_output=True, text=True)
+    result = subprocess.run(bash_syntax_command(path, cwd=ROOT), capture_output=True, text=True)
     require(result.returncode == 0, result.stdout + result.stderr)
     return path.read_text(encoding="utf-8")
 
 
 def main() -> int:
+    print(f"BASH_RUNTIME={resolve_bash()}")
+    shell_runtime = (ROOT / "scripts/shell_runtime.py").read_text(encoding="utf-8")
+    require("_windows_git_bash_candidates" in shell_runtime, "Git Bash discovery contract is missing")
+    require("BASH_EXECUTABLE" in shell_runtime, "Bash runtime override contract is missing")
+    require("MAILSTACK_BASH_OK" in shell_runtime, "Bash runtime probe contract is missing")
+
     backup = read("backup.sh")
     restore = read("restore.sh")
     health = read("health_check.sh")

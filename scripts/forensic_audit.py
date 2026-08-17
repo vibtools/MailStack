@@ -6,13 +6,15 @@ import argparse
 import ast
 import hashlib
 import ipaddress
-import json
 import os
+import json
 import re
 import subprocess
 import sys
 import tempfile
 from pathlib import Path
+
+from shell_runtime import bash_environment, bash_script_command, bash_syntax_command, resolve_bash
 
 REQUIRED = {
     "README.md",
@@ -37,6 +39,7 @@ REQUIRED = {
     "docs/FORENSIC_FILE_INVENTORY.json",
     "scripts/test_installer.py",
     "scripts/test_operations.py",
+    "scripts/shell_runtime.py",
     "scripts/validate_templates.py",
     "docs/FEATURE_MATRIX.md",
     "docs/FORENSIC_AUDIT_REPORT.md",
@@ -127,7 +130,6 @@ IPV4_LITERAL = re.compile(
     r"(?<![\d.])(?:\d{1,3}\.){3}\d{1,3}(?![\d.])"
 )
 
-BASH = os.getenv("BASH_EXECUTABLE", "bash")
 
 SECRET_ASSIGNMENT = re.compile(
     r"(?i)\b(?:password|passwd|secret(?:_key)?|api[_-]?key|access[_-]?key|token)\b"
@@ -153,8 +155,14 @@ def is_ignored(path: Path, root: Path) -> bool:
     return any(part in BLOCKED_DIRS or part in {"dist", "artifacts"} for part in relative.parts)
 
 
-def run(command: list[str], cwd: Path) -> tuple[int, str]:
-    completed = subprocess.run(command, cwd=cwd, text=True, capture_output=True)
+def run(command: list[str], cwd: Path, *, bash_runtime: bool = False) -> tuple[int, str]:
+    completed = subprocess.run(
+        command,
+        cwd=cwd,
+        text=True,
+        capture_output=True,
+        env=bash_environment() if bash_runtime else None,
+    )
     return completed.returncode, (completed.stdout + completed.stderr).strip()
 
 
@@ -244,7 +252,7 @@ def main() -> int:
                 findings.append(f"JSON_SYNTAX:{relative}:{exc.lineno}")
         elif path.suffix == ".sh" or path.name == "install.sh":
             shell_count += 1
-            code, output = run([BASH, "-n", str(path)], root)
+            code, output = run(bash_syntax_command(path, cwd=root), root, bash_runtime=True)
             if code:
                 findings.append(f"SHELL_SYNTAX:{relative}:{output}")
 
@@ -278,18 +286,25 @@ def main() -> int:
                         if re.search(r"__[A-Z][A-Z0-9_]*__", rendered_text):
                             findings.append(f"UNRESOLVED_PUBLIC_TEMPLATE_TOKEN:{rendered.relative_to(destination)}")
 
-    plan = [
-        BASH,
-        str(root / "install.sh"),
+    try:
+        bash_runtime = resolve_bash()
+    except RuntimeError as exc:
+        findings.append(f"BASH_RUNTIME:{exc}")
+        bash_runtime = None
+
+    plan = bash_script_command(
+        root / "install.sh",
         "--domain", "example.com",
         "--admin-email", "admin@example.com",
         "--server-ip", "203.0.113.10",
         "--non-interactive",
         "--plan",
-    ]
-    code, output = run(plan, root)
-    if code or "PLAN_VALIDATION=PASS" not in output:
-        findings.append(f"INSTALLER_PLAN:{output}")
+        cwd=root,
+    ) if bash_runtime else []
+    if plan:
+        code, output = run(plan, root, bash_runtime=True)
+        if code or "PLAN_VALIDATION=PASS" not in output:
+            findings.append(f"INSTALLER_PLAN:{output}")
 
     for command, label in (
         ([sys.executable, str(root / "scripts/manage_documents.py"), "--root", str(root), "check"], "USER_DOCUMENTATION_GATE"),
@@ -365,6 +380,8 @@ def main() -> int:
     print(f"FILES_SCANNED={file_count}")
     print(f"PYTHON_FILES={python_count}")
     print(f"SHELL_FILES={shell_count}")
+    if bash_runtime:
+        print(f"BASH_RUNTIME={bash_runtime}")
     if findings:
         for finding in sorted(set(findings)):
             print(f"FINDING={finding}")

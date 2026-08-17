@@ -4,7 +4,7 @@ title: Installation, Recovery and Inbound Delivery Reliability
 document_type: phase
 audience: users-operators-and-maintainers
 status: active
-version: 1.3.0-rc.2
+version: 1.3.0-rc.4
 last_reviewed: 2026-08-17
 phase_id: PHASE-003
 ---

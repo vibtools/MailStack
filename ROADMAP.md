@@ -29,7 +29,7 @@ This roadmap is directional. Security, data integrity and backward compatibility
 ## 1.3 RC hardening
 
 - PHASE-003 qualifies clean-install, reviewed partial-install repair, live-safe verification, and real external SMTP-to-LMTP delivery fixes discovered during Ubuntu 24.04 staging acceptance.
-- Keep 1.3.0-rc.2 as a release candidate until backup/restore, restart-recovery, final security/legal, and release-owner acceptance are complete.
+- Keep 1.3.0-rc.4 as a release candidate until backup/restore, restart-recovery, final security/legal, and release-owner acceptance are complete.
 
 ## 1.3 stable
 

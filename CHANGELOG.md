@@ -26,11 +26,25 @@ All notable repository-level changes are recorded here. Application history befo
 - Established `MAILSTACK-1.3.0-RC1-DOCS-BASELINE-001` as the protected feature and documentation baseline.
 - Added the root `documents/` user-documentation hub with a user manual, task-based how-to guide, administrator guide, baseline record and mandatory phase history.
 - Added deterministic documentation index and manifest synchronization, phase scaffolding, contract tests and CI policy enforcement so maintained feature changes cannot merge without the required user documentation and changelog updates.
+- Corrected the RC4 Windows audit harness so Git Bash maps installer-only `python3` calls to the exact Python interpreter running the local test process, without changing the Ubuntu production installer or requiring a machine-wide Windows alias.
 
 ### Compatibility
 
 - Preserved `VIBMAIL_*` environment variables, `vibmail-*` service names, `/etc/vibmail` paths, database identifiers, source directories, and legacy deployment contracts.
 - No application behavior, database migration operations, mail-flow, authentication, authorization, or deployment contract was intentionally changed. Legacy protocol headers such as `X-VibMail-CSRF` remain unchanged.
+
+## 1.3.0-rc.3 — 2026-08-17
+
+### Security
+
+- Upgraded the locked transitive `sqlparse` runtime from 0.5.5 to 0.6.0 after GitHub Actions run `32053931714` identified CVE-2026-71491, CVE-2026-59894, CVE-2026-59893, and CVE-2026-54284.
+- Kept Django at 5.2.16; its declared `sqlparse>=0.3.1` dependency accepts sqlparse 0.6.0, and MailStack's Python 3.12 runtime satisfies sqlparse 0.6.0's Python 3.10+ requirement.
+- Preserved all PHASE-003 installation, recovery, LMTP, ingestion, UI, route, schema, and deployment behavior; this maintenance delta changes only the vulnerable dependency pin plus required release metadata and verification records.
+
+### CI
+
+- Corrected RC2 qualification records that could be read as if the current PHASE-003 dependency audit had passed. The RC2 branch passed structural/documentation/installer/operations gates but stopped at the blocking online advisory gate.
+- Regenerated deterministic documentation, design, and forensic inventories for RC3. Full dependency-backed GitHub Actions requalification remains mandatory before merge or release.
 
 ## 1.3.0-rc.2 — 2026-08-17
 

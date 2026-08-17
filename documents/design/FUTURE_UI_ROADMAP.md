@@ -4,7 +4,7 @@ title: MailStack Future UI Roadmap
 document_type: design-reference
 audience: designers-developers-and-maintainers
 status: active
-version: 1.3.0-rc.2
+version: 1.3.0-rc.4
 last_reviewed: 2026-08-17
 ---
 

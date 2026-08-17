@@ -1,12 +1,39 @@
-# MailStack 1.3.0 RC2 release notes
+# MailStack 1.3.0 RC4 release notes
 
 ## Purpose
 
-Version 1.3.0 RC2 is a reliability-hardening release candidate built from the frozen 1.3.0 RC1
-baseline. It incorporates only the installation, partial-recovery, official-verification, MariaDB
-qualification, and inbound SMTP/LMTP fixes reproduced during the first live Ubuntu 24.04 staging
-acceptance campaign. Existing MailStack product features, UI/UX, routes, data model, receive-only
-scope, and deployment identifiers remain preserved.
+Version 1.3.0 RC4 is a cross-platform audit-tooling maintenance successor to RC3. It preserves the
+frozen 1.3.0 RC1 product baseline, all approved RC2 installation/recovery/inbound-delivery fixes, and
+the RC3 `sqlparse` 0.6.0 security update. RC4 changes only repository-level Bash runtime discovery
+used by installer, operations, and forensic contract tooling so Windows validation does not blindly
+invoke a broken WSL `bash.exe` launcher when Git Bash is available. Existing MailStack product
+features, UI/UX, routes, data model, receive-only scope, runtime dependencies, and deployment
+identifiers remain preserved.
+
+## Local Windows audit fix in RC4
+
+A Windows CMD qualification run showed documentation, design, UI-foundation, inventory, and template
+gates passing, while installer/operations shell checks failed before any MailStack shell code ran.
+The `bash` command resolved to the Windows WSL launcher, which failed to attach Docker Desktop's WSL2
+`ext4.vhdx` with `E_ACCESSDENIED`. The forensic audit then repeated the same environment failure for
+every shell syntax check, creating 16 cascading findings from one unusable Bash runtime.
+
+RC4 introduces verified Bash discovery for repository tooling. On Windows it prefers Git for Windows
+Bash, supports an explicit `BASH_EXECUTABLE` override, probes candidates before use, and passes
+repository-relative POSIX script paths. Linux/GitHub Actions continue to use the normal system Bash.
+If no usable Bash exists, the tools fail once with an actionable runtime diagnostic instead of
+misclassifying WSL startup failure as multiple MailStack shell syntax defects.
+
+## Security fix carried from RC3
+
+GitHub Actions run `32053931714` passed the source forensic audit, documentation, design, inventory,
+deployment-template, installer, and operations gates, then stopped at the blocking online dependency
+audit. `pip-audit` reported four vulnerabilities in `sqlparse==0.5.5`: CVE-2026-71491,
+CVE-2026-59894, CVE-2026-59893, and CVE-2026-54284, with 0.6.0 as the fixed version.
+
+RC3 introduced, and RC4 preserves, the existing transitive runtime pin to `sqlparse==0.6.0` in both the production lock and
+constraints. Django remains 5.2.16 and declares `sqlparse>=0.3.1`; sqlparse 0.6.0 requires Python
+3.10+, while MailStack remains fixed to Python 3.12. No new dependency is introduced.
 
 ## Fixed in RC2
 
@@ -33,7 +60,7 @@ scope, and deployment identifiers remain preserved.
 ## Compatibility
 
 - No database migration.
-- No dependency upgrade or new dependency.
+- One existing transitive dependency is security-upgraded: `sqlparse` 0.5.5 → 0.6.0; no new dependency is introduced.
 - No route, template, CSS, JavaScript, UI page, authorization, mailbox, message, public-site, or
   contact-workflow redesign.
 - No SMTP submission, IMAP, POP3, reply, forward, sent, draft, or public-registration feature.
@@ -52,7 +79,7 @@ Postfix queue, ingested, and displayed by the application.
 
 ## Release qualification
 
-RC2 must pass the full documentation, installer, operations, template, Ruff, Bandit, Django,
+RC4 must pass the full documentation, installer, operations, template, Ruff, Bandit, Django,
 coverage, forensic, deterministic-release, and CI gates. Clean Ubuntu 24.04 installation and real
 external SMTP/LMTP acceptance are required. Stable promotion remains blocked until backup/restore,
 restart-recovery, final security/legal, and release-owner acceptance are complete.
@@ -62,5 +89,4 @@ restart-recovery, final security/legal, and release-owner acceptance are complet
 RC1 established the configurable Ubuntu 24.04 installer, MariaDB/Postfix/Dovecot/Nginx/systemd
 templates, reproducible source packaging, public governance/security documentation, Django 5.2.16
 security pin, protected user/documentation baseline, UI design intake, and shared application shell.
-RC2 does not replace or redesign those foundations; it hardens the operational paths exercised by
-staging acceptance.
+RC4 does not replace or redesign those foundations; it preserves the RC2 operational hardening and RC3 dependency-security fix while hardening only cross-platform repository audit execution.

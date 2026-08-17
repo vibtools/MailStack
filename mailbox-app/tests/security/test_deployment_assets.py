@@ -122,6 +122,15 @@ def test_release_pins_and_verifies_django_security_patch():
     assert '"Django": "5.2.16"' in verify
 
 
+def test_sqlparse_security_release_is_pinned_consistently():
+    locked = read("requirements/locked.txt")
+    constraints = read("requirements/constraints.txt")
+
+    for source in (locked, constraints):
+        assert "sqlparse==0.6.0" in source
+        assert "sqlparse==0.5.5" not in source
+
+
 def test_release_source_cannot_be_the_live_application_tree():
     deploy = read("scripts/deploy_application.sh")
     preflight = read("scripts/preflight_v1_2_1.sh")

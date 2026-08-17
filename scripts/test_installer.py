@@ -2,22 +2,23 @@
 """Non-destructive contract tests for the root Ubuntu installer."""
 from __future__ import annotations
 
-import os
 import subprocess
 from pathlib import Path
 
+from shell_runtime import bash_environment, bash_script_command, resolve_bash
+
 ROOT = Path(__file__).resolve().parents[1]
 INSTALLER = ROOT / "install.sh"
-BASH = os.getenv("BASH_EXECUTABLE", "bash")
 
 
 def run(*arguments: str) -> subprocess.CompletedProcess[str]:
     return subprocess.run(
-        [BASH, str(INSTALLER), *arguments],
+        bash_script_command(INSTALLER, *arguments, cwd=ROOT),
         cwd=ROOT,
         text=True,
         capture_output=True,
         check=False,
+        env=bash_environment(),
     )
 
 
@@ -27,6 +28,25 @@ def require(condition: bool, message: str) -> None:
 
 
 def main() -> int:
+    print(f"BASH_RUNTIME={resolve_bash()}")
+    bridge = subprocess.run(
+        [
+            resolve_bash(),
+            "--noprofile",
+            "--norc",
+            "-c",
+            "python3 -c 'print(\"MAILSTACK_PYTHON3_BRIDGE_OK\")'",
+        ],
+        cwd=ROOT,
+        text=True,
+        capture_output=True,
+        check=False,
+        env=bash_environment(force_python3_bridge=True),
+    )
+    require(
+        bridge.returncode == 0 and "MAILSTACK_PYTHON3_BRIDGE_OK" in bridge.stdout,
+        bridge.stdout + bridge.stderr or "python3 compatibility bridge failed",
+    )
     valid = run(
         "--domain", "example.com",
         "--admin-email", "admin@example.com",

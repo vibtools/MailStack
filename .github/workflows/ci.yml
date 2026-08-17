@@ -125,5 +125,5 @@ jobs:
       - name: Release verification
         run: |
           python scripts/verify_release.py \
-            dist/mailstack-1.3.0-rc.2-source.zip \
-            --checksum dist/mailstack-1.3.0-rc.2-source.zip.sha256
+            dist/mailstack-1.3.0-rc.4-source.zip \
+            --checksum dist/mailstack-1.3.0-rc.4-source.zip.sha256

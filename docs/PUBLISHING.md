@@ -12,10 +12,10 @@ This repository is prepared for public hosting on GitHub, GitLab, Codeberg, or a
 4. Build and verify the deterministic release archive:
 
    ```bash
-   python scripts/build_release.py --root . --version 1.3.0-rc.2
+   python scripts/build_release.py --root . --version 1.3.0-rc.4
    python scripts/verify_release.py \
-     dist/mailstack-1.3.0-rc.2-source.zip \
-     --checksum dist/mailstack-1.3.0-rc.2-source.zip.sha256
+     dist/mailstack-1.3.0-rc.4-source.zip \
+     --checksum dist/mailstack-1.3.0-rc.4-source.zip.sha256
    ```
 
 5. Complete the clean Ubuntu 24.04 acceptance checklist before promoting a release candidate to production-ready.
@@ -27,7 +27,7 @@ From the audited repository root:
 ```bash
 git init
 git add .
-git commit -m "Release MailStack 1.3.0-rc.2"
+git commit -m "Release MailStack 1.3.0-rc.4"
 git branch -M main
 git remote add origin <YOUR-REPOSITORY-SSH-OR-HTTPS-URL>
 git push -u origin main
@@ -36,14 +36,14 @@ git push -u origin main
 Create an annotated release-candidate tag only after CI passes:
 
 ```bash
-git tag -a v1.3.0-rc.2 -m "MailStack 1.3.0 RC2"
-git push origin v1.3.0-rc.2
+git tag -a v1.3.0-rc.4 -m "MailStack 1.3.0 RC4"
+git push origin v1.3.0-rc.4
 ```
 
 Attach these files to the forge release:
 
-- `mailstack-1.3.0-rc.2-source.zip`
-- `mailstack-1.3.0-rc.2-source.zip.sha256`
+- `mailstack-1.3.0-rc.4-source.zip`
+- `mailstack-1.3.0-rc.4-source.zip.sha256`
 - `docs/RELEASE_NOTES_1.3.0.md`
 - `docs/FORENSIC_AUDIT_REPORT.md`
 
