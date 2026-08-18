@@ -1,142 +1,194 @@
-# Test report — MailStack 1.3.0 RC3
+# Test report — MailStack 1.3.1 source baseline verification
 
-**PHASE-003 verification date:** 2026-08-17
+**PHASE-004C verification date:** 2026-08-17
+**Latest published release candidate:** `v1.3.0-rc.4`
+**Repository source-baseline version:** `1.3.1`
 
-## Last completed dependency-backed application suite (pre-RC3)
+## Authoritative released-RC4 application suite
+
+The final released-RC4 qualification ran on Ubuntu 24.04 with Python 3.12 at commit
+`896dbcc2ed1f38d9c618bf0b712efe5923f92e56`.
 
 ```text
-Collected: 196
-Passed: 195
-Skipped: 1 — Windows symbolic-link capability unavailable
+Collected: 198
+Passed: 198
 Failed: 0
-Coverage: 94.99%
+Coverage: 95.00%
 Required coverage: 85%
 ```
 
-RC3 adds one focused deployment-security regression contract that requires both
-`requirements/locked.txt` and `requirements/constraints.txt` to pin `sqlparse==0.6.0` and reject
-the vulnerable 0.5.5 pin. The full RC3 collection/pass count is intentionally not claimed until the
-dependency-backed GitHub Actions rerun completes.
+The suite covers authentication, user management, mailbox membership isolation, mailbox lifecycle,
+Postfix recipient contracts, Maildir provisioning/ingestion, MIME parsing, HTML sanitization,
+attachment storage and authorization, duplicate handling, counters, live updates, reliability,
+security controls, responsive routes, documentation synchronization, draft blocking, and feature
+document policy enforcement.
 
-Covered areas include authentication, user management, mailbox membership isolation, mailbox lifecycle, Postfix contract behavior, Maildir provisioning/ingestion, MIME parsing, HTML sanitization, attachment storage and authorization, duplicate handling, counters, live updates, reliability, security controls, responsive routes, deterministic user-document synchronization, draft blocking and feature-document policy enforcement.
+## RC4 authoritative workflow evidence
 
-## Additional automated gates
-
-| Gate | Result |
+| Workflow / gate | Result |
 |---|---|
-| Mailbox application Ruff | PASS |
-| Mailbox application Bandit with repository policy | PASS |
-| Django system check (test settings) | PASS |
-| Django production `check --deploy` | PASS |
-| Migration drift | PASS — no changes detected |
-| Contact service tests | PASS — deterministic SQLite close and temporary-file cleanup verified |
-| Python compileall | PASS |
-| Shell `bash -n` for all shell scripts | PASS |
-| Deployment templates | PASS — 13 rendered |
+| Post-merge `main` CI run `32071701530` | PASS |
+| Tag CI run `32072699991` | PASS |
+| Release-artifact workflow `32072699830` | PASS |
+| Source safety audit | PASS |
+| Documentation and metadata validation | PASS |
+| Managed user-document synchronization | PASS |
+| Documentation system tests | PASS |
+| UI design intake integrity | PASS |
+| UI design tests | PASS |
+| Shared UI foundation contracts | PASS |
+| Feature documentation policy | PASS |
+| Forensic file inventory | PASS |
+| Deployment template validation | PASS |
 | Installer contract | PASS — 2 valid, 9 invalid plans |
-| Backup/restore/health contract | PASS |
-| Nginx final configuration syntax | PASS |
-| Nginx bootstrap configuration syntax | PASS |
-| systemd unit syntax | PASS |
-| `pip check` | PASS |
-| Source safety scan | PASS after generated files are removed |
-| Deterministic ZIP/manifest/checksum verification | PASS in GitHub CI |
-| Documentation and forensic inventory gates | PASS |
-| User-document synchronization and manifest gate | PASS |
-| Documentation change-policy contract tests | PASS |
-| UI design manifest synchronization and PNG integrity gate | PASS |
-| UI design contract tests | PASS |
-| Shared UI foundation dependency-free contracts | PASS — 8 tests |
-| Shared shell Django functional tests | PASS — 7 focused tests |
-| Standalone contact-service Ruff/Bandit | Enforced by the final verifier, full forensic gate, and CI |
-| Locked dependency advisory audit | PENDING RC4 requalification — RC2 run `32053931714` found four sqlparse 0.5.5 vulnerabilities; RC3/RC4 pin 0.6.0 |
-| Canonical stored-entry release packaging and ZIP metadata verification | PASS |
+| Backup/restore/health operations contracts | PASS |
+| Dependency vulnerability audit | PASS — no known vulnerabilities reported |
+| Ruff | PASS |
+| Bandit | PASS |
+| Django application tests and coverage | PASS — 198 / 198, 95.00% |
+| Contact service tests | PASS |
+| Contact service Ruff | PASS |
+| Contact service Bandit | PASS |
+| Django system checks | PASS |
+| Migration drift | PASS — no changes detected |
+| Shell syntax | PASS |
+| Full forensic gate | PASS — zero blocking findings |
+| Deterministic release build | PASS |
+| Release verification | PASS |
 
-## Runtime qualification
+The deterministic RC4 release archive is `mailstack-1.3.0-rc.4-source.zip` with SHA-256
+`58f06adea7c813e9861799d20e392441367bf64f6513d6e0634455d2011d4eac`. Release verification reported
+405 archive members and 404 manifest members.
 
-The last fully completed pre-PHASE-003 dependency-backed qualification remains GitHub Actions run
-`30133728843` on Ubuntu 24.04 with Python 3.12 at commit
-`1e1737edea2e6c922265a15d8584b56671820c65`. That historical evidence does not qualify RC4.
+## PHASE-004A branch CI closure
 
-For the PHASE-003 branch, GitHub Actions run `32053931714` at commit
-`7a800eb9f0b6d0e3fa347f4d7f05b5ad88a5e18f` passed source safety, documentation, design,
-forensic inventory, deployment-template, installer, and operations gates. It then failed at the
-blocking dependency vulnerability audit, so Ruff, Bandit, Django tests/coverage, Django checks,
-full forensic audit, and deterministic release steps were correctly skipped.
+GitHub Actions run `32087558399` passed on exact commit
+`586400e56b388873ecfcd8c67fc494a88dd73e31` using Ubuntu 24.04 and Python 3.12.13. The clean CI
+environment installed the repository's exact development pins, reported no broken requirements or
+known dependency vulnerabilities, passed all 198 Django tests at 95.00 percent coverage, and passed
+all documentation, design, installer, operations, forensic, release-build, and release-verification
+gates.
+
+## PHASE-004B release automation qualification
+
+PHASE-004B adds seven focused release-workflow contracts covering version normalization, RC/stable
+classification, tag identity, manual-dispatch non-publication, package-version mismatch rejection,
+successful-main-CI evidence matching, existing-release fail-close behavior, exact-main-head guarding,
+and required workflow protections. GitHub branch CI run `32093468669` passed on exact commit
+`ee90764335f8724727cea86e0af035c049c79e62` using Ubuntu 24.04 and Python 3.12.13. The run passed all
+seven release-workflow contracts, the dependency vulnerability audit, Ruff/Bandit, all 198 Django
+tests at 95.00 percent coverage, full forensic audit with 407 files/146 Python/13 shell files and zero
+blocking findings, and deterministic RC5 source build/verification. The deterministic archive SHA-256
+was `fdfff6c1e4ec409d950e3d612be1feab1ac7987f8d436c3ef3c0fc6ee1865bb5`. No fake public tag/release
+was created for testing; legitimate post-merge tag publication remains the end-to-end release event.
 
 ## Dependency advisory qualification
 
-The failed RC2 `pip-audit` gate reported four vulnerabilities in `sqlparse==0.5.5`:
-CVE-2026-71491, CVE-2026-59894, CVE-2026-59893, and CVE-2026-54284. Upstream sqlparse 0.6.0 is the
-security release containing fixes for those issues. RC3 introduced and RC4 preserves `sqlparse==0.6.0` in both
-`requirements/locked.txt` and `requirements/constraints.txt`. No advisory suppression is added.
-RC4 must pass `pip check`, the network-enabled `pip-audit` gate, and every subsequent CI stage before
-qualification.
+The earlier RC2 run `32053931714` stopped at the blocking advisory audit because
+`sqlparse==0.5.5` was reported for CVE-2026-71491, CVE-2026-59894, CVE-2026-59893, and
+CVE-2026-54284. RC3 introduced and RC4 preserved `sqlparse==0.6.0` in the production lock and
+constraints. RC4 then passed the online dependency audit with no known vulnerabilities reported.
+No advisory suppression was added for those four findings.
 
-## RC4 Windows Bash-runtime qualification
+## Historical Windows qualification context
 
-A Windows CMD run of the RC3 candidate passed documentation, managed-document, design, shared UI,
-forensic inventory, deployment-template, and `git diff --check` gates. `test_installer.py`,
-`test_operations.py`, and the shell portions of `forensic_audit.py` then failed before executing any
-MailStack shell logic because the generic `bash` executable resolved to the WSL launcher. WSL failed
-to attach Docker Desktop's `ext4.vhdx` with `E_ACCESSDENIED`. The forensic report's 16 findings were
-therefore cascading manifestations of one local shell-runtime failure, not 16 independent source
-defects.
+Before final RC4 CI, Windows validation exposed two host-tooling issues rather than application
+regressions: generic `bash` resolved to a failing WSL launcher, and Git Bash did not expose a
+`python3` command even though the host Python was available as `python`. RC4 centralized probed Bash
+runtime discovery and added a process-local Windows audit bridge mapping installer-only `python3`
+invocations to the exact harness interpreter. The Ubuntu production installer and its native
+`python3` contract were not changed.
 
-RC4 centralizes Bash discovery in `scripts/shell_runtime.py`. Windows prefers a probed Git for
-Windows Bash runtime, supports `BASH_EXECUTABLE`, and falls back only to candidates that pass a
-non-mutating startup probe. Installer plans and shell syntax checks use repository-relative POSIX
-paths so the same contracts remain valid on Linux and Git Bash. A follow-up Windows qualification
-showed that Git Bash correctly launched but did not expose a `python3` command even though the host
-provided `python`. The RC4 harness now supplies a process-local `BASH_ENV` bridge that maps
-installer-only `python3` calls to the exact Python interpreter running the test process. The bridge
-is regression-tested and does not alter the production installer, Ubuntu's native `python3` contract,
-or the developer machine.
+The older PHASE-002 Windows dependency-backed suite recorded 195 passes, one capability-based
+symbolic-link skip, and 94.99 percent coverage. Those figures remain historical local evidence; the
+198-pass, 95.00-percent Ubuntu RC4 workflow is the current authoritative release result.
 
 ## PHASE-003 installation/recovery reliability qualification
 
-Dependency-free local qualification for 1.3.0-rc.4 passes the documentation index/manifest gate,
-documentation contract tests, design manifest and PNG integrity tests, shared UI foundation
-contracts, deployment-template rendering, installer contracts, operations contracts, Python compile,
-shell syntax, forensic inventory generation/check, and the structural forensic audit. The installer
-contract specifically protects global `/var/log`, sanitized `vmail` command execution, provisioning
-runtime directories, early credential persistence, explicit repair idempotency, the Dovecot static
-userdb LMTP setting, and the existing MariaDB collation qualification.
+Installer contracts protect the global `/var/log` mode, sanitized `vmail` command execution,
+provisioning runtime directories, immediate credential persistence, explicit repair idempotency,
+the Dovecot static-userdb LMTP setting, and narrow MariaDB warning qualification. Ingestion tests
+protect exclusive locking for real workers while allowing one-shot dry-run verification beside the
+live worker without heartbeat mutation.
 
-The current artifact-building environment does not contain the repository's pinned Django/Ruff/Bandit
-dependencies and cannot download them, so the dependency-backed Django/coverage/lint/full-forensic
-gates are delegated to the mandatory Ubuntu 24.04 GitHub Actions run for the PHASE-003 commit. This
-does not waive those gates.
+The live staging campaign demonstrated real external Gmail delivery through Postfix and Dovecot
+LMTP into Maildir, queue drain, ingestion, and browser visibility after the accepted source fixes.
+An exact RC4 clean-host reinstall remains deferred until a fresh test VPS is available.
 
-The live staging campaign that motivated PHASE-003 demonstrated real external Gmail delivery through
-Postfix and Dovecot LMTP into Maildir, queue drain after the static-userdb correction, ingestion, and
-web-inbox visibility. A final clean installation from the exact RC4 source remains a release-candidate
-acceptance requirement before stable promotion.
+## PHASE-004A verification scope
 
-## Manual acceptance still required
+PHASE-004A changes documentation, version/release metadata, and generated manifests only. The
+assembled local candidate passed the following dependency-free/structural gates:
 
-On an isolated Ubuntu 24.04 VPS, verify installation, TLS issuance/renewal, external SMTP reception, Postfix lookup rejection for unknown/disabled recipients, Dovecot LMTP delivery, Maildir ingestion, login and authorization isolation, live updates, safe HTML, attachment downloads, contact delivery, backup, restore, and restart recovery.
+| PHASE-004A local gate | Result |
+|---|---|
+| Documentation validation | PASS — 46 required files, 59 local links checked |
+| Managed-document synchronization/check | PASS — 17 documents, 5 phases |
+| Documentation tests | PASS — 4 contracts |
+| Design manifest integrity | PASS — 25 source images |
+| Design tests | PASS — 4 contracts |
+| Shared UI foundation contracts | PASS — 8 contracts |
+| Deployment template validation | PASS — 13 templates |
+| Installer contracts | PASS — 2 valid, 9 invalid plans |
+| Operations contracts | PASS — 4 scripts |
+| Forensic inventory check | PASS — 404 maintained entries |
+| Structural forensic audit | PASS — 405 files scanned, 144 Python, 13 shell, zero blocking findings |
 
-## PHASE-002 qualification status
+The final assembled PHASE-004A delta was additionally checked with `git diff --check`; its branch CI
+closure is recorded above. The `1.3.0-rc.5` identity was the PHASE-004 development candidate at that
+time; the current owner-requested source-baseline mark is `1.3.1`.
 
-The shared shell passed eight dependency-free local contract tests covering required assets, frozen
-tokens, responsive breakpoints, current-route-only navigation, template control-flow balance, SVG
-integrity, preserved JavaScript runtime markers, and unsafe construct blocking. `node --check` also
-passed for `mailbox-app/static/js/app.js`.
+## PHASE-004C upgrade/rollback tooling qualification
 
-Seven focused Django shell tests passed. The complete local Django suite collected 196 tests: 195
-passed and one symbolic-link test was skipped because the Windows test environment does not expose
-the required capability. Coverage remained 94.99 percent. Ruff, Bandit, Django checks, migration
-drift, contact-service behavior, dependency consistency, installer, operations, template, design,
-documentation, and structural forensic gates passed in the recorded local workflow.
+PHASE-004C adds three maintained operational components: the generic `upgrade.sh` driver,
+`rollback_upgrade.sh`, and `verify_upgrade_archive.py`, plus a focused non-destructive contract suite.
+The local structural candidate passed deterministic archive/checksum fixture verification, canonical
+source-manifest checks, version ordering, migration-delta detection, bad-checksum fail-close behavior,
+Bash syntax checks, runtime-lock contracts, pre-mutation backup/rollback requirements, inbound-service
+continuity assertions, and migration-aware rollback refusal.
 
-The Windows cleanup failure was traced to Python's SQLite connection context semantics: transaction
-context exit did not close the file handle. `_connection()` now owns and closes the handle in a
-`finally` block, and the contact test explicitly verifies the closed state. The POSIX `0700`
-Maildir assertion now remains active only on POSIX runtimes. Standalone contact-service Ruff and
-Bandit checks are included in both the final verifier and GitHub Actions so this analysis scope
-cannot regress silently.
+| PHASE-004C local gate | Result |
+|---|---|
+| Upgrade/archive/rollback contracts | PASS |
+| Documentation validation | PASS — 46 required files, 59 local links checked |
+| Managed-document synchronization/check | PASS — 17 documents, 5 phases |
+| Documentation tests | PASS — 4 contracts |
+| Design manifest integrity | PASS — 25 source images |
+| Design tests | PASS — 4 contracts |
+| Shared UI foundation contracts | PASS — 8 contracts |
+| Deployment template validation | PASS — 13 templates |
+| Installer contracts | PASS — 2 valid, 9 invalid plans |
+| Existing operations contracts | PASS — 4 scripts |
+| Release-workflow contracts | PASS — 7 contracts |
+| Forensic inventory | PASS — 410 maintained entries plus the inventory file |
+| Structural forensic audit | PASS — 411 files, 148 Python, 15 shell, zero blocking findings |
 
-Final qualification still requires the PHASE-002 commit's GitHub Actions run. The last authoritative
-pre-phase baseline remains GitHub Actions run `30165905840` at commit
-`a4b5f40d85c0db1d278490af218f1a6040d40218`.
+PHASE-004C intentionally does not claim a live server upgrade. It changes operational tooling and
+documentation, not Django application business logic or schema. Dependency/security/application
+regression and the deterministic release build must still pass in the user's isolated Python 3.12
+validation and GitHub CI after the delta is applied. PHASE-004D owns the first real existing-VPS
+upgrade acceptance.
+
+## PHASE-004C GitHub CI failure and scoped correction
+
+GitHub Actions run `32097491341` executed exact PHASE-004C commit
+`47e62bb6c0acd0216fb261f47f85959655b489e0`. The run passed setup, dependency installation, source
+safety, documentation/design/UI contracts, documentation policy, forensic inventory, deployment
+templates, installer/operations/release-workflow contracts, all PHASE-004C upgrade/rollback contracts,
+and the dependency vulnerability audit. Ruff then reported exactly five findings, all in
+`mailbox-app/scripts/verify_upgrade_archive.py`: four line-length findings and one nested-`if`
+SIM102 finding. Because CI is fail-closed, Bandit, Django tests/coverage, contact tests, Django
+checks, shell syntax, the full forensic gate, deterministic build, and release verification were
+skipped in that run.
+
+The `1.3.1` correction changes only the Ruff representation of those verifier statements plus the
+version/release/baseline metadata required by the owner's explicit baseline mark. It does not change
+the verifier's conditions, error semantics, archive validation, migration comparison, or extraction
+logic. A new GitHub Actions run on the correction commit remains required before remote qualification
+or release publication.
+
+## Manual acceptance still outstanding before publishing `1.3.1` as production-ready
+
+A future isolated Ubuntu 24.04 acceptance campaign must cover the exact-source clean install,
+TLS/DNS/mail routing, unknown-recipient rejection, real inbound delivery, authorization isolation,
+contact delivery, backup, restore, restart/reboot recovery, and final release-owner/legal review.

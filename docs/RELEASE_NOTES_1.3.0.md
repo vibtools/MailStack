@@ -10,6 +10,16 @@ invoke a broken WSL `bash.exe` launcher when Git Bash is available. Existing Mai
 features, UI/UX, routes, data model, receive-only scope, runtime dependencies, and deployment
 identifiers remain preserved.
 
+## RC5 development: automated release publication
+
+PHASE-004B adds repository release automation for the next candidate without changing MailStack
+runtime behavior. A legitimate tag push must match repository/package version identity, point at the
+exact current `main` head, have successful `main` push CI for that SHA, and have no pre-existing
+GitHub Release. The read-only build job performs release identity checks, full forensic validation,
+deterministic source build, checksum verification, and Actions artifact upload. A separate tag-only
+write-scoped job re-proves remote eligibility and publishes the verified ZIP/SHA assets. RC tags are
+pre-releases and stable tags are normal/latest releases. Manual dispatch remains non-publishing.
+
 ## Local Windows audit fix in RC4
 
 A Windows CMD qualification run showed documentation, design, UI-foundation, inventory, and template
@@ -79,10 +89,17 @@ Postfix queue, ingested, and displayed by the application.
 
 ## Release qualification
 
-RC4 must pass the full documentation, installer, operations, template, Ruff, Bandit, Django,
-coverage, forensic, deterministic-release, and CI gates. Clean Ubuntu 24.04 installation and real
-external SMTP/LMTP acceptance are required. Stable promotion remains blocked until backup/restore,
-restart-recovery, final security/legal, and release-owner acceptance are complete.
+RC4 passed the full documentation, installer, operations, template, dependency-audit, Ruff, Bandit,
+Django, coverage, forensic, deterministic-release, and release-verification gates. Post-merge
+`main` CI run `32071701530`, tag CI run `32072699991`, and release-artifact workflow `32072699830`
+all completed successfully. The application suite passed 198 tests with 95.00 percent coverage, and
+the deterministic source archive SHA-256 is
+`58f06adea7c813e9861799d20e392441367bf64f6513d6e0634455d2011d4eac`.
+
+The PHASE-003 staging campaign validated real external SMTP-to-LMTP delivery after the accepted
+fixes. An exact RC4 clean-host reinstall was not repeated before publication and remains deferred
+until a fresh VPS is available. Stable promotion remains blocked on backup/restore acceptance,
+restart/reboot recovery, final ownership/license review, and release-owner acceptance.
 
 ## RC1 foundation preserved
 
@@ -90,3 +107,11 @@ RC1 established the configurable Ubuntu 24.04 installer, MariaDB/Postfix/Dovecot
 templates, reproducible source packaging, public governance/security documentation, Django 5.2.16
 security pin, protected user/documentation baseline, UI design intake, and shared application shell.
 RC4 does not replace or redesign those foundations; it preserves the RC2 operational hardening and RC3 dependency-security fix while hardening only cross-platform repository audit execution.
+
+## Controlled upgrade tooling
+
+- PHASE-004C adds a fail-closed existing-server source/runtime upgrade driver requiring the deterministic source ZIP and matching SHA-256.
+- The upgrader verifies canonical ZIP metadata and source manifest integrity, rejects same/downgrade and migration-history rewrites, creates a consistent data backup plus rollback snapshot before mutation, and stages application/public-site source outside the live tree.
+- New migration files require explicit acknowledgement. A failure after schema mutation begins refuses automatic source rollback and reports the coordinated backup/snapshot for reviewed reconciliation.
+- Postfix and Dovecot remain active during the source mutation window after the pre-upgrade consistent backup returns; Gunicorn, ingestion, and the contact worker are the application services stopped for replacement.
+- This release contains the mechanism and automated contracts only. The first real existing-VPS upgrade is deferred to PHASE-004D.

@@ -39,6 +39,12 @@ REQUIRED = {
     "docs/FORENSIC_FILE_INVENTORY.json",
     "scripts/test_installer.py",
     "scripts/test_operations.py",
+    "scripts/release_gate.py",
+    "scripts/test_release_workflow.py",
+    "scripts/test_upgrade.py",
+    "mailbox-app/scripts/upgrade.sh",
+    "mailbox-app/scripts/rollback_upgrade.sh",
+    "mailbox-app/scripts/verify_upgrade_archive.py",
     "scripts/shell_runtime.py",
     "scripts/validate_templates.py",
     "docs/FEATURE_MATRIX.md",
@@ -47,6 +53,7 @@ REQUIRED = {
     "docs/SECURITY_REVIEW.md",
     "docs/PERFORMANCE_REVIEW.md",
     "docs/RELEASE_NOTES_1.3.0.md",
+    "docs/RELEASE_NOTES_1.3.1.md",
     "documents/README.md",
     "documents/USER_MANUAL.md",
     "documents/HOW_TO_USE.md",
@@ -317,6 +324,8 @@ def main() -> int:
         ([sys.executable, str(root / "scripts/validate_templates.py")], "TEMPLATE_VALIDATION"),
         ([sys.executable, str(root / "scripts/test_installer.py")], "INSTALLER_CONTRACT"),
         ([sys.executable, str(root / "scripts/test_operations.py")], "OPERATIONS_CONTRACT"),
+        ([sys.executable, str(root / "scripts/test_release_workflow.py")], "RELEASE_WORKFLOW_CONTRACT"),
+        ([sys.executable, str(root / "scripts/test_upgrade.py")], "UPGRADE_ROLLBACK_CONTRACT"),
     ):
         code, output = run(command, root)
         if code:

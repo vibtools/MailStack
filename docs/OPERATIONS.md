@@ -49,3 +49,29 @@ sudo /opt/vibmail/app/scripts/restore.sh \
 
 See `docs/BACKUP_RESTORE.md` before restoring production data.
 
+
+## Controlled existing-server upgrade
+
+PHASE-004C provides the generic source/runtime upgrade and rollback mechanism. It is source-qualified
+only until the separate PHASE-004D real-VPS acceptance campaign. Review `docs/UPGRADE.md` before any
+live use.
+
+```bash
+sudo /opt/vibmail/app/scripts/upgrade.sh \
+  --archive /root/releases/mailstack-X.Y.Z-source.zip \
+  --checksum /root/releases/mailstack-X.Y.Z-source.zip.sha256 \
+  --confirm-upgrade
+```
+
+New migration files require `--allow-migrations` after review. Successful upgrades print the exact
+rollback snapshot and nested consistent data-backup paths. For a no-schema-change source/runtime
+rollback:
+
+```bash
+sudo /opt/vibmail/app/scripts/rollback_upgrade.sh \
+  --snapshot /var/backups/vibmail/upgrades/TIMESTAMP-from-X-to-Y \
+  --confirm-rollback
+```
+
+Do not treat that command as a database rollback. See `docs/UPGRADE.md` and
+`docs/BACKUP_RESTORE.md` for migration-aware recovery rules.

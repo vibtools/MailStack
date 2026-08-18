@@ -2,6 +2,41 @@
 
 All notable repository-level changes are recorded here. Application history before the open-source conversion remains in `mailbox-app/CHANGELOG.md`.
 
+## 1.3.1 — Unpublished source baseline
+
+### Documentation and forensic baseline
+
+- Finalized the published RC4 evidence in the forensic and test reports using the successful `main`, tag-CI, and release-artifact workflow results instead of the pre-release RC3/RC4-pending wording.
+- Established `MAILSTACK-1.3.0-RC4-OFFICIAL-SOURCE-BASELINE-001` as the current official source baseline, anchored to tag `v1.3.0-rc.4`, commit `896dbcc2ed1f38d9c618bf0b712efe5923f92e56`, tree `0d845b3d975949894c24581e6834aff7b33c30b4`, and deterministic source SHA-256 `58f06adea7c813e9861799d20e392441367bf64f6513d6e0634455d2011d4eac`.
+- Preserved the earlier RC1 documentation baseline as historical provenance instead of treating its source commit as the current release anchor.
+- Added the PHASE-004 release, upgrade, and operational-reliability record; PHASE-004A changes documentation, release metadata, and generated manifests only.
+
+### Release automation
+
+- Added a fail-closed release gate that requires tag/version/package-version agreement, the exact current `main` head, successful `main` push CI for the tagged SHA, and absence of an existing GitHub Release before publication.
+- Split tag release handling into a read-only verified-build job and a write-scoped publication job; manual `workflow_dispatch` remains validation/build-only.
+- Automated GitHub Release creation with deterministic source ZIP and SHA-256 assets, RC pre-release classification, stable latest classification, and overwrite/clobber prevention.
+- Added focused release-workflow contract tests and made them blocking in CI and the forensic audit.
+
+### Existing-server upgrade and rollback
+
+- Added a generic fail-closed existing-server upgrade driver that requires a deterministic source ZIP plus matching SHA-256, validates canonical archive/manifest/version integrity, stages outside the live tree, and rejects downgrade, same-version, removed-migration, or modified-migration targets.
+- Added explicit migration acknowledgement, a non-blocking runtime lock, a verified pre-mutation consistent data backup, source/runtime rollback snapshots, application/public-site staged replacement, dependency convergence, post-upgrade contract checks, and installation-marker provenance.
+- Preserved Postfix and Dovecot during the source mutation window after the consistent backup has completed, allowing accepted inbound mail to accumulate safely in Maildir while ingestion is paused.
+- Added migration-aware fail-closed recovery: automatic source/runtime rollback is allowed only when no new schema migration has begun; migration-capable failures require reviewed schema/data reconciliation instead of an automatic database restore that could discard newly accepted mail.
+- Added focused non-destructive upgrade/archive/rollback contract tests and made them blocking in CI and the full forensic audit.
+
+### Verification and CI correction
+
+- Corrected the five PHASE-004C Ruff findings in `verify_upgrade_archive.py` without changing archive, migration, upgrade, rollback, service, or data semantics.
+- Recorded GitHub Actions run `32097491341` as a failed qualification attempt: source safety, documentation, upgrade/rollback contracts, and dependency audit passed before Ruff stopped the workflow; downstream runtime/release gates were therefore not executed in that run.
+- Marked the next source-baseline identity as `1.3.1`, synchronized deterministic build/release examples, and moved automated publication to version-matched `docs/RELEASE_NOTES_1.3.1.md`. The version mark is not itself a production-readiness or GitHub-release claim.
+
+### Compatibility
+
+- PHASE-004C changes maintained operational tooling only; it does not add a database migration, application route, authorization/UI/mail-flow behavior, installer behavior, deployment-template rewrite, DNS/TLS change, or automatic host-configuration migration.
+- `v1.3.0-rc.4` and its published source identity remain immutable. `1.3.1` is the next frozen source-baseline version mark and remains unpublished until its GitHub/main CI and operational release gates are accepted.
+
 ## Unreleased — MailStack repository bootstrap
 
 ### Changed

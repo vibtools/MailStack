@@ -4,7 +4,7 @@ title: MailStack User Manual
 document_type: user-manual
 audience: mailbox-users
 status: active
-version: 1.3.0-rc.4
+version: 1.3.1
 last_reviewed: 2026-08-17
 ---
 
