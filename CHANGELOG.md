@@ -11,9 +11,16 @@ All notable repository-level changes are recorded here. Application history befo
 - Preserved the earlier RC1 documentation baseline as historical provenance instead of treating its source commit as the current release anchor.
 - Added the PHASE-004 release, upgrade, and operational-reliability record; PHASE-004A changes documentation, release metadata, and generated manifests only.
 
+### Release automation
+
+- Added a fail-closed release gate that requires tag/version/package-version agreement, the exact current `main` head, successful `main` push CI for the tagged SHA, and absence of an existing GitHub Release before publication.
+- Split tag release handling into a read-only verified-build job and a write-scoped publication job; manual `workflow_dispatch` remains validation/build-only.
+- Automated GitHub Release creation with deterministic source ZIP and SHA-256 assets, RC pre-release classification, stable latest classification, and overwrite/clobber prevention.
+- Added focused release-workflow contract tests and made them blocking in CI and the forensic audit.
+
 ### Compatibility
 
-- No application runtime, database schema, migration, route, authorization, UI, mail-flow, installer behavior, deployment template, or service configuration changes are introduced by PHASE-004A.
+- No application runtime, database schema, migration, route, authorization, UI, mail-flow, installer behavior, deployment template, or service configuration changes are introduced by PHASE-004A or PHASE-004B.
 - `v1.3.0-rc.4` and its published source identity remain immutable; `1.3.0-rc.5` is the next development-candidate version and is not yet a published release.
 
 ## Unreleased — MailStack repository bootstrap

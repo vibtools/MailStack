@@ -1,10 +1,10 @@
 # Forensic audit report — MailStack 1.3.0 RC5 development baseline
 
-**PHASE-004A audit date:** 2026-08-17
+**PHASE-004B audit date:** 2026-08-17
 **Repository development version:** `1.3.0-rc.5`
 **Latest published release candidate:** `v1.3.0-rc.4`
 **Target runtime:** Ubuntu Server 24.04 LTS and CPython 3.12
-**Current classification:** RC4 release qualification finalized; RC5 PHASE-004A CI requalification pending
+**Current classification:** RC4 release qualification finalized; PHASE-004A branch CI passed; RC5 PHASE-004B requalification pending
 
 ## Executive disposition
 
@@ -30,12 +30,17 @@
 | Restart/reboot recovery acceptance | PENDING |
 | Final ownership/license review | PENDING release owner |
 | PHASE-004A structural/local repository gates | PASS |
-| PHASE-004A GitHub CI | PENDING after branch push |
+| PHASE-004A branch GitHub CI run `32087558399` | PASS |
+| PHASE-004B release automation contracts | PASS locally — 7 focused contracts |
+| PHASE-004B structural forensic audit | PASS locally — 407 files, 146 Python, 13 shell, zero blocking findings |
+| PHASE-004B GitHub branch CI | PENDING after delta apply/push |
 
 **OFFICIAL_RC4_SOURCE_BASELINE:** PASS
 **RC4_OPEN_SOURCE_RELEASE_CANDIDATE:** PASS
-**PHASE_004A_LOCAL_QUALIFICATION:** PASS
-**RC5_DEVELOPMENT_REQUALIFICATION:** PENDING GITHUB CI
+**PHASE_004A_REMOTE_QUALIFICATION:** PASS — branch CI `32087558399`
+**PHASE_004B_LOCAL_QUALIFICATION:** PASS
+**PHASE_004B_REMOTE_QUALIFICATION:** PENDING GITHUB CI
+**RC5_DEVELOPMENT_REQUALIFICATION:** PENDING PHASE-004B GITHUB CI
 **STABLE_PRODUCTION_ACCEPTANCE:** PENDING
 
 ## Official RC4 baseline identity
@@ -129,6 +134,16 @@ and regenerates deterministic documentation/design/forensic manifests.
 PHASE-004A does not change application runtime logic, models, migrations, URLs, authorization,
 templates, CSS, JavaScript, mail flow, ingestion behavior, installer behavior, deployment templates,
 service definitions, database schema, DNS/TLS configuration, or the existing VPS.
+
+## PHASE-004B release automation boundary
+
+PHASE-004B changes repository release automation only. It adds a fail-closed Python release gate and
+focused contract tests, updates CI/full-forensic enforcement, and splits tag handling into a read-only
+verified-build job plus a tag-only publication job with `actions: read` and `contents: write`.
+Publication requires matching VERSION/package/tag identity, the exact current `main` head, successful
+`main` push CI for the tagged SHA, and proof that no release already exists. Deterministic ZIP/SHA
+assets are published without `--clobber` or release editing. Manual dispatch remains build-only.
+No application/runtime/deployment/VPS behavior is changed.
 
 ## Security review
 

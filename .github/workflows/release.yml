@@ -6,15 +6,22 @@ name: Release artifacts
     tags:
       - "v*"
 
-permissions:
-  contents: read
+permissions: {}
 
 jobs:
   build-verified-source:
     runs-on: ubuntu-24.04
     timeout-minutes: 30
+    permissions:
+      contents: read
+    outputs:
+      version: ${{ steps.identity.outputs.version }}
+      tag: ${{ steps.identity.outputs.tag }}
+      prerelease: ${{ steps.identity.outputs.prerelease }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
@@ -25,7 +32,21 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends default-libmysqlclient-dev build-essential pkg-config
       - name: Development dependencies
-        run: python -m pip install --disable-pip-version-check -r mailbox-app/requirements/development.txt
+        run: |
+          python -m pip install --disable-pip-version-check -r mailbox-app/requirements/development.txt
+          python -m pip check
+      - name: Validate release identity
+        id: identity
+        run: |
+          python scripts/release_gate.py \
+            --root . \
+            --event-name "$GITHUB_EVENT_NAME" \
+            --ref-type "$GITHUB_REF_TYPE" \
+            --ref-name "$GITHUB_REF_NAME" \
+            --sha "$GITHUB_SHA" \
+            --github-output "$GITHUB_OUTPUT"
+      - name: Release workflow contract tests
+        run: python scripts/test_release_workflow.py
       - name: Full forensic gate
         run: python scripts/forensic_audit.py --root . --full
       - name: Build source archive
@@ -38,10 +59,73 @@ jobs:
       - name: Upload verified artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: mailstack-source-${{ github.ref_name }}
+          name: mailstack-source-${{ github.run_id }}
           path: |
             dist/*.zip
             dist/*.sha256
             docs/RELEASE_NOTES_1.3.0.md
             docs/FORENSIC_AUDIT_REPORT.md
           if-no-files-found: error
+
+  publish-github-release:
+    if: github.event_name == 'push' && github.ref_type == 'tag'
+    needs: build-verified-source
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      actions: read
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Prove publication eligibility
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          python scripts/release_gate.py \
+            --root . \
+            --event-name "$GITHUB_EVENT_NAME" \
+            --ref-type "$GITHUB_REF_TYPE" \
+            --ref-name "$GITHUB_REF_NAME" \
+            --sha "$GITHUB_SHA" \
+            --repository "$GITHUB_REPOSITORY" \
+            --default-branch "main" \
+            --remote
+      - name: Download verified build artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p release-artifacts
+          gh run download "$GITHUB_RUN_ID" \
+            --repo "$GITHUB_REPOSITORY" \
+            --name "mailstack-source-${GITHUB_RUN_ID}" \
+            --dir release-artifacts
+      - name: Publish immutable-intent GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_VERSION: ${{ needs.build-verified-source.outputs.version }}
+          RELEASE_TAG: ${{ needs.build-verified-source.outputs.tag }}
+          RELEASE_PRERELEASE: ${{ needs.build-verified-source.outputs.prerelease }}
+        run: |
+          ZIP="release-artifacts/dist/mailstack-${RELEASE_VERSION}-source.zip"
+          SHA="release-artifacts/dist/mailstack-${RELEASE_VERSION}-source.zip.sha256"
+          test -f "$ZIP"
+          test -f "$SHA"
+
+          args=(
+            release create "$RELEASE_TAG"
+            "$ZIP"
+            "$SHA"
+            --repo "$GITHUB_REPOSITORY"
+            --verify-tag
+            --target "$GITHUB_SHA"
+            --title "MailStack ${RELEASE_VERSION}"
+            --notes-file docs/RELEASE_NOTES_1.3.0.md
+          )
+          if [[ "$RELEASE_PRERELEASE" == "true" ]]; then
+            args+=(--prerelease --latest=false)
+          else
+            args+=(--latest)
+          fi
+          gh "${args[@]}"

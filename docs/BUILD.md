@@ -26,6 +26,16 @@ python scripts/verify_release.py \
 
 The builder normalizes archive timestamps, preserves executable permissions, writes a source manifest, excludes generated/runtime artifacts and emits a SHA-256 checksum.
 
+## Automated GitHub publication
+
+The deterministic builder remains the canonical artifact producer. After the intended release commit
+is merged to `main` and exact-SHA `main` CI passes, push a matching `v<version>` tag. The release
+workflow re-runs the release gate/full forensic/build/verification path, stores the verified Actions
+artifact, and publishes the GitHub Release with the ZIP and `.sha256` asset.
+
+Manual workflow dispatch validates/builds only. Tag/version/package mismatches, non-current-main tags,
+missing successful `main` CI, and pre-existing releases fail closed.
+
 ## Stable promotion
 
 Do not change the version to `1.3.0` until every required human gate in `docs/PUBLIC_RELEASE_CHECKLIST.md` passes.

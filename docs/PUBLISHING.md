@@ -33,19 +33,25 @@ git remote add origin <YOUR-REPOSITORY-SSH-OR-HTTPS-URL>
 git push -u origin main
 ```
 
-Create an annotated release-candidate tag only after CI passes:
+Create an annotated release-candidate tag only after the intended release commit is the current
+`main` head and the exact `main` SHA has a successful push CI run:
 
 ```bash
 git tag -a v1.3.0-rc.5 -m "MailStack 1.3.0 RC5"
 git push origin v1.3.0-rc.5
 ```
 
-Attach these files to the forge release:
+The tag push triggers `.github/workflows/release.yml`. It fails closed unless the tag matches
+`VERSION`/`project.version`, points at the exact current `main` head, has successful `main` CI, and
+has no existing GitHub Release. The workflow rebuilds and verifies the deterministic source archive,
+keeps a GitHub Actions artifact, and automatically creates the GitHub Release with:
 
 - `mailstack-1.3.0-rc.5-source.zip`
 - `mailstack-1.3.0-rc.5-source.zip.sha256`
-- `docs/RELEASE_NOTES_1.3.0.md`
-- `docs/FORENSIC_AUDIT_REPORT.md`
+
+RC tags are published as pre-releases and are explicitly not marked latest; stable tags are normal
+latest releases. Manual `workflow_dispatch` is validation/build-only and cannot publish. Existing
+releases are never automatically edited, clobbered, or overwritten.
 
 ## Repository settings
 

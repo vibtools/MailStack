@@ -10,6 +10,16 @@ invoke a broken WSL `bash.exe` launcher when Git Bash is available. Existing Mai
 features, UI/UX, routes, data model, receive-only scope, runtime dependencies, and deployment
 identifiers remain preserved.
 
+## RC5 development: automated release publication
+
+PHASE-004B adds repository release automation for the next candidate without changing MailStack
+runtime behavior. A legitimate tag push must match repository/package version identity, point at the
+exact current `main` head, have successful `main` push CI for that SHA, and have no pre-existing
+GitHub Release. The read-only build job performs release identity checks, full forensic validation,
+deterministic source build, checksum verification, and Actions artifact upload. A separate tag-only
+write-scoped job re-proves remote eligibility and publishes the verified ZIP/SHA assets. RC tags are
+pre-releases and stable tags are normal/latest releases. Manual dispatch remains non-publishing.
+
 ## Local Windows audit fix in RC4
 
 A Windows CMD qualification run showed documentation, design, UI-foundation, inventory, and template

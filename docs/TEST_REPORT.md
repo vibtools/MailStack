@@ -1,6 +1,6 @@
 # Test report — MailStack 1.3.0 RC5 development baseline
 
-**PHASE-004A verification date:** 2026-08-17
+**PHASE-004B verification date:** 2026-08-17
 **Latest published release candidate:** `v1.3.0-rc.4`
 **Repository development version:** `1.3.0-rc.5`
 
@@ -59,6 +59,26 @@ document policy enforcement.
 The deterministic RC4 release archive is `mailstack-1.3.0-rc.4-source.zip` with SHA-256
 `58f06adea7c813e9861799d20e392441367bf64f6513d6e0634455d2011d4eac`. Release verification reported
 405 archive members and 404 manifest members.
+
+## PHASE-004A branch CI closure
+
+GitHub Actions run `32087558399` passed on exact commit
+`586400e56b388873ecfcd8c67fc494a88dd73e31` using Ubuntu 24.04 and Python 3.12.13. The clean CI
+environment installed the repository's exact development pins, reported no broken requirements or
+known dependency vulnerabilities, passed all 198 Django tests at 95.00 percent coverage, and passed
+all documentation, design, installer, operations, forensic, release-build, and release-verification
+gates.
+
+## PHASE-004B release automation qualification
+
+PHASE-004B adds seven focused release-workflow contracts covering version normalization, RC/stable
+classification, tag identity, manual-dispatch non-publication, package-version mismatch rejection,
+successful-main-CI evidence matching, existing-release fail-close behavior, exact-main-head guarding,
+and required workflow protections. The assembled candidate passes all seven contracts locally. They
+are blocking in the main CI workflow and are also invoked by the forensic audit. The structural
+forensic audit passes with 407 files scanned, 146 Python files, 13 shell files, and zero blocking
+findings. GitHub branch CI remains the final authority. No fake public tag/release is created for
+testing.
 
 ## Dependency advisory qualification
 

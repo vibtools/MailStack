@@ -79,6 +79,9 @@ jobs:
       - name: Backup and operations contract tests
         run: python scripts/test_operations.py
 
+      - name: Release workflow contract tests
+        run: python scripts/test_release_workflow.py
+
       - name: Dependency vulnerability audit
         run: python -m pip_audit --no-deps -r mailbox-app/requirements/locked.txt --progress-spinner off
 

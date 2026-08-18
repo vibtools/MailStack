@@ -39,6 +39,8 @@ REQUIRED = {
     "docs/FORENSIC_FILE_INVENTORY.json",
     "scripts/test_installer.py",
     "scripts/test_operations.py",
+    "scripts/release_gate.py",
+    "scripts/test_release_workflow.py",
     "scripts/shell_runtime.py",
     "scripts/validate_templates.py",
     "docs/FEATURE_MATRIX.md",
@@ -317,6 +319,7 @@ def main() -> int:
         ([sys.executable, str(root / "scripts/validate_templates.py")], "TEMPLATE_VALIDATION"),
         ([sys.executable, str(root / "scripts/test_installer.py")], "INSTALLER_CONTRACT"),
         ([sys.executable, str(root / "scripts/test_operations.py")], "OPERATIONS_CONTRACT"),
+        ([sys.executable, str(root / "scripts/test_release_workflow.py")], "RELEASE_WORKFLOW_CONTRACT"),
     ):
         code, output = run(command, root)
         if code:
