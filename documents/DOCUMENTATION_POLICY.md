@@ -4,7 +4,7 @@ title: Documentation Policy
 document_type: documentation-policy
 audience: contributors-and-maintainers
 status: active
-version: 1.3.2
+version: 1.3.3
 last_reviewed: 2026-08-18
 ---
 

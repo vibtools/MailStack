@@ -4,7 +4,7 @@ title: MailStack UI Implementation Status
 document_type: design-reference
 audience: designers-developers-and-maintainers
 status: active
-version: 1.3.2
+version: 1.3.3
 last_reviewed: 2026-08-18
 ---
 

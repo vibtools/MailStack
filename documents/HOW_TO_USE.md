@@ -4,7 +4,7 @@ title: How to Use MailStack
 document_type: how-to
 audience: mailbox-users-and-administrators
 status: active
-version: 1.3.2
+version: 1.3.3
 last_reviewed: 2026-08-18
 ---
 

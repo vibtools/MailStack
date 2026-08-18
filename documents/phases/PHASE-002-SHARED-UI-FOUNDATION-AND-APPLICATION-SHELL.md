@@ -4,7 +4,7 @@ title: Shared UI Foundation and Application Shell
 document_type: phase
 audience: users-operators-designers-and-maintainers
 status: active
-version: 1.3.2
+version: 1.3.3
 last_reviewed: 2026-08-18
 phase_id: PHASE-002
 ---
