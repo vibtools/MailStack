@@ -188,7 +188,7 @@ def test_workflow_contract() -> None:
         "--latest",
         'dist/*.zip',
         'dist/*.sha256',
-        'docs/RELEASE_NOTES_1.3.3.md',
+        'docs/RELEASE_NOTES_1.3.4.md',
     )
     for marker in required:
         assert marker in text, marker

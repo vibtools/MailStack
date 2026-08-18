@@ -4,7 +4,7 @@ title: MailStack Baseline
 document_type: baseline
 audience: maintainers-and-operators
 status: active
-version: 1.3.3
+version: 1.3.4-rc.1
 last_reviewed: 2026-08-18
 baseline_id: MAILSTACK-1.3.1-OFFICIAL-SOURCE-BASELINE-001
 source_commit: 039a6e6eea6e198b4b15612db9d2f208b6305a16

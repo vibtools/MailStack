@@ -15,7 +15,8 @@ All notable repository-level changes are recorded here. Application history befo
 ### Verification state
 
 - Local PHASE-006 focused qualification: 60 tests passed; targeted Ruff, Bandit, Django system check and migration-drift gates passed.
-- Full repository qualification, GitHub CI and controlled live acceptance remain pending; PHASE-006 is not yet marked complete.
+- PHASE-006 implementation commit `90175b7a4549cb67d874692081bd5b0484eddccc` passed GitHub Actions CI run `32183300485`.
+- Owner approved `1.3.4-rc.1` as the PHASE-006 live-acceptance pre-release identity; PR/main/tag publication and controlled live acceptance remain pending.
 
 ### Compatibility
 

@@ -4,7 +4,7 @@ title: Reader Integrity, Data Repair and Runtime Error Closure
 document_type: phase
 audience: users-operators-and-maintainers
 status: active
-version: 1.3.3
+version: 1.3.4-rc.1
 last_reviewed: 2026-08-18
 phase_id: PHASE-006
 ---
@@ -73,9 +73,10 @@ disables the unused control interface through `gunicorn.conf.py`; it does not re
 ## Verification
 
 Local focused qualification on Python 3.12 completed with 60 PHASE-006 tests passing. Targeted Ruff,
-Bandit, Django system checks and migration-drift checks passed after one import-order-only Ruff
-correction. Full repository qualification, GitHub CI and controlled live acceptance remain required
-before PHASE-006 is marked complete.
+Bandit, Django system checks and migration-drift checks passed. Implementation commit
+`90175b7a4549cb67d874692081bd5b0484eddccc` then passed GitHub Actions CI run `32183300485`.
+The owner approved `1.3.4-rc.1` as the PHASE-006 live-acceptance pre-release identity. PR/main/tag
+publication and controlled live acceptance remain required before PHASE-006 is complete.
 
 Controlled live acceptance must verify representative style-heavy HTML, plain-text fallback, dry-run
 and bounded existing-message repair, health/service status, and absence of the previously observed

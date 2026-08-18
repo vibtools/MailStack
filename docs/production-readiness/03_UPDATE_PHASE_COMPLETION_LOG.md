@@ -10,6 +10,7 @@ when a phase changes state so implementation cannot become unordered or ambiguou
 | Metric | Current value |
 |---|---|
 | Frozen baseline | MailStack `v1.3.3` |
+| PHASE-006 live-acceptance target | MailStack `v1.3.4-rc.1` pre-release |
 | Planned implementation phases | **2** |
 | Completed phases in this production-readiness cycle | **0 / 2** |
 | Remaining phases | **2 / 2** |
@@ -65,7 +66,7 @@ documentation/generated metadata are synchronized before branch qualification.
 ## Tests/evidence
 
 Local focused qualification: `60 passed`; targeted Ruff PASS; Bandit PASS; Django system check PASS;
-migration drift NONE. Full repository qualification, GitHub CI and controlled live acceptance remain pending.
+migration drift NONE. Implementation commit `90175b7a4549cb67d874692081bd5b0484eddccc` passed GitHub Actions CI run `32183300485`; owner-approved `1.3.4-rc.1` publication and controlled live acceptance remain pending.
 
 ## Known residual findings after phase
 
@@ -113,7 +114,7 @@ documentation/generated metadata are synchronized before branch qualification.
 ## Tests/evidence
 
 Local focused qualification: `60 passed`; targeted Ruff PASS; Bandit PASS; Django system check PASS;
-migration drift NONE. Full repository qualification, GitHub CI and controlled live acceptance remain pending.
+migration drift NONE. Implementation commit `90175b7a4549cb67d874692081bd5b0484eddccc` passed GitHub Actions CI run `32183300485`; owner-approved `1.3.4-rc.1` publication and controlled live acceptance remain pending.
 
 ## Known residual findings after phase
 
