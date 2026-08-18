@@ -101,7 +101,10 @@ def read_checksum(checksum_path: Path, archive: Path) -> str:
     return expected.lower()
 
 
-def verify_archive(archive_path: Path, checksum_path: Path) -> tuple[zipfile.ZipFile, str, str, dict[str, str]]:
+def verify_archive(
+    archive_path: Path,
+    checksum_path: Path,
+) -> tuple[zipfile.ZipFile, str, str, dict[str, str]]:
     expected = read_checksum(checksum_path, archive_path)
     actual = sha256(archive_path)
     if actual != expected:
@@ -221,13 +224,20 @@ def migration_map_from_archive(archive: zipfile.ZipFile, prefix: str) -> dict[st
             continue
         relative = name.removeprefix(marker)
         pure = PurePosixPath(relative)
-        if len(pure.parts) == 4 and pure.parts[0] == "apps" and pure.parts[2] == "migrations":
-            if re.fullmatch(r"[0-9].*\.py", pure.name):
-                result[relative] = sha256_bytes(archive.read(name))
+        if (
+            len(pure.parts) == 4
+            and pure.parts[0] == "apps"
+            and pure.parts[2] == "migrations"
+            and re.fullmatch(r"[0-9].*\.py", pure.name)
+        ):
+            result[relative] = sha256_bytes(archive.read(name))
     return result
 
 
-def compare_migrations(current: dict[str, str], target: dict[str, str]) -> tuple[list[str], list[str], list[str]]:
+def compare_migrations(
+    current: dict[str, str],
+    target: dict[str, str],
+) -> tuple[list[str], list[str], list[str]]:
     added = sorted(set(target) - set(current))
     removed = sorted(set(current) - set(target))
     modified = sorted(path for path in set(current) & set(target) if current[path] != target[path])
@@ -275,11 +285,13 @@ def main() -> int:
             package_version = str(pyproject["project"]["version"])
             if package_version != package_from_release(target_version):
                 raise UpgradeArchiveError(
-                    f"target package version mismatch: VERSION={target_version}, project.version={package_version}"
+                    "target package version mismatch: "
+                    f"VERSION={target_version}, project.version={package_version}"
                 )
             if target_order <= current_order:
                 raise UpgradeArchiveError(
-                    f"target version must be newer than current version: current={current_version}, target={target_version}"
+                    "target version must be newer than current version: "
+                    f"current={current_version}, target={target_version}"
                 )
 
             current_migrations = migration_map_from_current(app_root)

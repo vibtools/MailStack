@@ -1,10 +1,10 @@
-# Forensic audit report — MailStack 1.3.0 RC5 development baseline
+# Forensic audit report — MailStack 1.3.1 source baseline verification
 
 **PHASE-004C audit date:** 2026-08-17
-**Repository development version:** `1.3.0-rc.5`
+**Repository source-baseline version:** `1.3.1`
 **Latest published release candidate:** `v1.3.0-rc.4`
 **Target runtime:** Ubuntu Server 24.04 LTS and CPython 3.12
-**Current classification:** RC4 official baseline preserved; PHASE-004A/004B branch qualification passed; PHASE-004C locally source-qualified and pending GitHub requalification
+**Current classification:** 1.3.1 owner-marked source-baseline correction locally structurally qualified; GitHub requalification and live PHASE-004D acceptance remain pending
 
 ## Executive disposition
 
@@ -201,6 +201,9 @@ privilege, systemd confinement, archive safety, checksum verification, and fail-
 
 The published `v1.3.0-rc.4` source is a qualified release candidate and is the official frozen source
 baseline for PHASE-004. PHASE-004A corrects the documentation evidence around that baseline but does
-not retroactively modify or retag RC4. The working repository version `1.3.0-rc.5` remains a development candidate. PHASE-004B branch CI
-has passed, while PHASE-004C still requires dependency-backed GitHub CI and no live upgrade is claimed
-until the separately approved PHASE-004D acceptance campaign.
+not retroactively modify or retag RC4. The owner-marked working source baseline is `1.3.1` and remains unpublished. PHASE-004B branch CI
+has passed. PHASE-004C GitHub Actions run `32097491341` reached Ruff after all earlier gates passed,
+then failed on five style findings in the new archive verifier; downstream runtime/release gates were
+skipped. This scoped correction removes only those Ruff findings and synchronizes the requested 1.3.1
+baseline/release metadata. A fresh GitHub CI run is required before remote qualification, and no live
+upgrade is claimed until the separately approved PHASE-004D acceptance campaign.

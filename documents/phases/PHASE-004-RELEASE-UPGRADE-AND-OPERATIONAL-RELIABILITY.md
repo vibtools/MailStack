@@ -4,7 +4,7 @@ title: Release, Upgrade and Operational Reliability
 document_type: phase
 audience: users-operators-and-maintainers
 status: active
-version: 1.3.0-rc.5
+version: 1.3.1
 last_reviewed: 2026-08-17
 phase_id: PHASE-004
 ---
@@ -68,7 +68,8 @@ rollback tool that fails closed around archive integrity, migration risk, and re
 Treat `mailstack-1.3.0-rc.4-source.zip`, SHA-256
 `58f06adea7c813e9861799d20e392441367bf64f6513d6e0634455d2011d4eac`, tag `v1.3.0-rc.4`, and commit
 `896dbcc2ed1f38d9c618bf0b712efe5923f92e56` as the immutable official source baseline. The working
-repository version remains `1.3.0-rc.5`; do not retag or rewrite RC4. For future releases, merge the
+source-baseline version is `1.3.1`; do not retag or rewrite RC4, and do not publish `v1.3.1` until the
+new main/CI and remaining release-acceptance gates pass. For future releases, merge the
 release commit to `main`, require successful `main` CI, create the matching `v<version>` tag at the
 current `main` head, and push the tag. The release workflow then builds/verifies the deterministic
 source archive and publishes the GitHub Release automatically. `workflow_dispatch` validates and
@@ -112,6 +113,21 @@ PHASE-004C must pass its upgrade/archive/rollback contracts, existing installer/
 contracts, documentation/design/inventory gates, dependency/security/application CI, full forensic
 audit, and deterministic release build/verification. Its automated tests are non-destructive and do
 not claim a real host upgrade; PHASE-004D is the live acceptance boundary.
+
+## PHASE-004C CI correction and 1.3.1 baseline mark
+
+GitHub Actions run `32097491341` tested exact PHASE-004C commit
+`47e62bb6c0acd0216fb261f47f85959655b489e0`. All gates through the dependency vulnerability audit
+passed, including the focused upgrade/archive/rollback contracts. Ruff then stopped the workflow on
+four E501 line-length findings and one SIM102 nested-`if` finding in
+`mailbox-app/scripts/verify_upgrade_archive.py`; downstream runtime and release gates were skipped.
+The correction changes only formatting/control-expression layout needed for Ruff compliance and does
+not change upgrade/archive/migration/rollback behavior.
+
+At the owner's explicit request, the corrected source is version-marked `1.3.1` and the deterministic
+build/release documentation is synchronized to that identity. This is a source-baseline freeze, not
+a claim that the stable-looking version has passed the still-outstanding live PHASE-004D/operational
+acceptance or has been published as a GitHub Release.
 
 ## Documentation impact
 

@@ -1,8 +1,8 @@
-# Test report — MailStack 1.3.0 RC5 development baseline
+# Test report — MailStack 1.3.1 source baseline verification
 
 **PHASE-004C verification date:** 2026-08-17
 **Latest published release candidate:** `v1.3.0-rc.4`
-**Repository development version:** `1.3.0-rc.5`
+**Repository source-baseline version:** `1.3.1`
 
 ## Authoritative released-RC4 application suite
 
@@ -135,8 +135,8 @@ assembled local candidate passed the following dependency-free/structural gates:
 | Structural forensic audit | PASS — 405 files scanned, 144 Python, 13 shell, zero blocking findings |
 
 The final assembled PHASE-004A delta was additionally checked with `git diff --check`; its branch CI
-closure is recorded above. `1.3.0-rc.5` remains a development candidate until the complete intended
-RC5 line is merged, requalified on `main`, tagged, and published through the release workflow.
+closure is recorded above. The `1.3.0-rc.5` identity was the PHASE-004 development candidate at that
+time; the current owner-requested source-baseline mark is `1.3.1`.
 
 ## PHASE-004C upgrade/rollback tooling qualification
 
@@ -169,7 +169,25 @@ regression and the deterministic release build must still pass in the user's iso
 validation and GitHub CI after the delta is applied. PHASE-004D owns the first real existing-VPS
 upgrade acceptance.
 
-## Manual acceptance still outstanding before stable `1.3.0`
+## PHASE-004C GitHub CI failure and scoped correction
+
+GitHub Actions run `32097491341` executed exact PHASE-004C commit
+`47e62bb6c0acd0216fb261f47f85959655b489e0`. The run passed setup, dependency installation, source
+safety, documentation/design/UI contracts, documentation policy, forensic inventory, deployment
+templates, installer/operations/release-workflow contracts, all PHASE-004C upgrade/rollback contracts,
+and the dependency vulnerability audit. Ruff then reported exactly five findings, all in
+`mailbox-app/scripts/verify_upgrade_archive.py`: four line-length findings and one nested-`if`
+SIM102 finding. Because CI is fail-closed, Bandit, Django tests/coverage, contact tests, Django
+checks, shell syntax, the full forensic gate, deterministic build, and release verification were
+skipped in that run.
+
+The `1.3.1` correction changes only the Ruff representation of those verifier statements plus the
+version/release/baseline metadata required by the owner's explicit baseline mark. It does not change
+the verifier's conditions, error semantics, archive validation, migration comparison, or extraction
+logic. A new GitHub Actions run on the correction commit remains required before remote qualification
+or release publication.
+
+## Manual acceptance still outstanding before publishing `1.3.1` as production-ready
 
 A future isolated Ubuntu 24.04 acceptance campaign must cover the exact-source clean install,
 TLS/DNS/mail routing, unknown-recipient rejection, real inbound delivery, authorization isolation,

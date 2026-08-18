@@ -2,7 +2,7 @@
 
 All notable repository-level changes are recorded here. Application history before the open-source conversion remains in `mailbox-app/CHANGELOG.md`.
 
-## 1.3.0-rc.5 — Unreleased
+## 1.3.1 — Unpublished source baseline
 
 ### Documentation and forensic baseline
 
@@ -26,10 +26,16 @@ All notable repository-level changes are recorded here. Application history befo
 - Added migration-aware fail-closed recovery: automatic source/runtime rollback is allowed only when no new schema migration has begun; migration-capable failures require reviewed schema/data reconciliation instead of an automatic database restore that could discard newly accepted mail.
 - Added focused non-destructive upgrade/archive/rollback contract tests and made them blocking in CI and the full forensic audit.
 
+### Verification and CI correction
+
+- Corrected the five PHASE-004C Ruff findings in `verify_upgrade_archive.py` without changing archive, migration, upgrade, rollback, service, or data semantics.
+- Recorded GitHub Actions run `32097491341` as a failed qualification attempt: source safety, documentation, upgrade/rollback contracts, and dependency audit passed before Ruff stopped the workflow; downstream runtime/release gates were therefore not executed in that run.
+- Marked the next source-baseline identity as `1.3.1`, synchronized deterministic build/release examples, and moved automated publication to version-matched `docs/RELEASE_NOTES_1.3.1.md`. The version mark is not itself a production-readiness or GitHub-release claim.
+
 ### Compatibility
 
 - PHASE-004C changes maintained operational tooling only; it does not add a database migration, application route, authorization/UI/mail-flow behavior, installer behavior, deployment-template rewrite, DNS/TLS change, or automatic host-configuration migration.
-- `v1.3.0-rc.4` and its published source identity remain immutable; `1.3.0-rc.5` is the next development-candidate version and is not yet a published release.
+- `v1.3.0-rc.4` and its published source identity remain immutable. `1.3.1` is the next frozen source-baseline version mark and remains unpublished until its GitHub/main CI and operational release gates are accepted.
 
 ## Unreleased — MailStack repository bootstrap
 

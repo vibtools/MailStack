@@ -20,8 +20,8 @@ python scripts/forensic_audit.py --root . --full
 ```bash
 python scripts/build_release.py --root .
 python scripts/verify_release.py \
-  dist/mailstack-1.3.0-rc.5-source.zip \
-  --checksum dist/mailstack-1.3.0-rc.5-source.zip.sha256
+  dist/mailstack-1.3.1-source.zip \
+  --checksum dist/mailstack-1.3.1-source.zip.sha256
 ```
 
 The builder normalizes archive timestamps, preserves executable permissions, writes a source manifest, excludes generated/runtime artifacts and emits a SHA-256 checksum.
@@ -38,4 +38,4 @@ missing successful `main` CI, and pre-existing releases fail closed.
 
 ## Stable promotion
 
-Do not change the version to `1.3.0` until every required human gate in `docs/PUBLIC_RELEASE_CHECKLIST.md` passes.
+The `1.3.1` source baseline is an unpublished version mark. Do not create or push a stable release tag until every required human/operational gate in `docs/PUBLIC_RELEASE_CHECKLIST.md` passes.
