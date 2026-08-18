@@ -63,7 +63,7 @@ jobs:
           path: |
             dist/*.zip
             dist/*.sha256
-            docs/RELEASE_NOTES_1.3.1.md
+            docs/RELEASE_NOTES_1.3.3.md
             docs/FORENSIC_AUDIT_REPORT.md
           if-no-files-found: error
 
@@ -121,7 +121,7 @@ jobs:
             --verify-tag
             --target "$GITHUB_SHA"
             --title "MailStack ${RELEASE_VERSION}"
-            --notes-file docs/RELEASE_NOTES_1.3.1.md
+            --notes-file docs/RELEASE_NOTES_1.3.3.md
           )
           if [[ "$RELEASE_PRERELEASE" == "true" ]]; then
             args+=(--prerelease --latest=false)

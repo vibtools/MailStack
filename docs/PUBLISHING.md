@@ -12,10 +12,10 @@ This repository is prepared for public hosting on GitHub, GitLab, Codeberg, or a
 4. Build and verify the deterministic release archive:
 
    ```bash
-   python scripts/build_release.py --root . --version 1.3.1
+   python scripts/build_release.py --root . --version 1.3.3
    python scripts/verify_release.py \
-     dist/mailstack-1.3.1-source.zip \
-     --checksum dist/mailstack-1.3.1-source.zip.sha256
+     dist/mailstack-1.3.3-source.zip \
+     --checksum dist/mailstack-1.3.3-source.zip.sha256
    ```
 
 5. Complete the clean Ubuntu 24.04 acceptance checklist before promoting a release candidate to production-ready.
@@ -27,7 +27,7 @@ From the audited repository root:
 ```bash
 git init
 git add .
-git commit -m "Prepare MailStack 1.3.1 candidate"
+git commit -m "Prepare MailStack 1.3.3 candidate"
 git branch -M main
 git remote add origin <YOUR-REPOSITORY-SSH-OR-HTTPS-URL>
 git push -u origin main
@@ -37,8 +37,8 @@ Create the annotated stable-looking tag only after the intended release commit i
 `main` head and the exact `main` SHA has a successful push CI run:
 
 ```bash
-git tag -a v1.3.1 -m "MailStack 1.3.1"
-git push origin v1.3.1
+git tag -a v1.3.3 -m "MailStack 1.3.3"
+git push origin v1.3.3
 ```
 
 The tag push triggers `.github/workflows/release.yml`. It fails closed unless the tag matches
@@ -46,11 +46,11 @@ The tag push triggers `.github/workflows/release.yml`. It fails closed unless th
 has no existing GitHub Release. The workflow rebuilds and verifies the deterministic source archive,
 keeps a GitHub Actions artifact, and automatically creates the GitHub Release with:
 
-- `mailstack-1.3.1-source.zip`
-- `mailstack-1.3.1-source.zip.sha256`
+- `mailstack-1.3.3-source.zip`
+- `mailstack-1.3.3-source.zip.sha256`
 
 RC tags are published as pre-releases and are explicitly not marked latest; stable tags are normal
-latest releases. The `1.3.1` baseline must not be tagged/published until the outstanding operational and release-owner gates are accepted. Manual `workflow_dispatch` is validation/build-only and cannot publish. Existing
+latest releases. `v1.3.1` remains the frozen published baseline; the `1.3.3` PHASE-005A line must not be tagged until its branch/PR/main CI gates and release-owner review pass. Manual `workflow_dispatch` is validation/build-only and cannot publish. Existing
 releases are never automatically edited, clobbered, or overwritten.
 
 ## Repository settings

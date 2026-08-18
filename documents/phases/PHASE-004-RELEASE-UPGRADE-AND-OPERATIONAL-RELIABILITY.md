@@ -4,8 +4,8 @@ title: Release, Upgrade and Operational Reliability
 document_type: phase
 audience: users-operators-and-maintainers
 status: active
-version: 1.3.1
-last_reviewed: 2026-08-17
+version: 1.3.3
+last_reviewed: 2026-08-18
 phase_id: PHASE-004
 ---
 
@@ -128,6 +128,17 @@ At the owner's explicit request, the corrected source is version-marked `1.3.1` 
 build/release documentation is synchronized to that identity. This is a source-baseline freeze, not
 a claim that the stable-looking version has passed the still-outstanding live PHASE-004D/operational
 acceptance or has been published as a GitHub Release.
+
+## Final 1.3.1 release completion
+
+PHASE-004 completed its release publication path on 2026-08-18. Pull request #10 merged the qualified
+release line to `main` as commit `039a6e6eea6e198b4b15612db9d2f208b6305a16`; post-merge main CI
+passed, tag `v1.3.1` was created at that exact commit, and the automated release workflow published
+the deterministic source ZIP/checksum. The resulting immutable official baseline is
+`MAILSTACK-1.3.1-OFFICIAL-SOURCE-BASELINE-001` with tree
+`9437ba2ebac2033a229accd190268b8711d5b26e` and source SHA-256
+`517778967ca491974f315d231dfd43b3dba85fe86b47dcfc63e4c7051d1010bd`. Existing-VPS execution was
+intentionally deferred so PHASE-005A can be qualified first.
 
 ## Documentation impact
 

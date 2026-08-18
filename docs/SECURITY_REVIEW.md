@@ -1,4 +1,4 @@
-# Security review — MailStack 1.3.0
+# Security review — MailStack 1.3.3 PHASE-005A correction development
 
 ## Security posture
 
@@ -74,5 +74,9 @@ GitHub Actions.
 - JavaScript contract tests block `eval`, `new Function`, `innerHTML`, and `document.write` in the
   maintained application script.
 
-The shared shell does not change the existing message HTML sanitizer or sandbox. Message-reader
-hardening and redesign remain a separate security-focused phase.
+## PHASE-005A message-reader and live-transport review
+
+- The existing HTML sanitizer allowlist, URL checks, remote-image blocking, CSP, iframe sandbox, and no-referrer policy are unchanged. PHASE-005A changes presentation only: sanitized HTML is selected automatically when present, and plain text is the fallback.
+- The live-update JSON transport now requires the explicit `X-MailStack-Live-Request: 1` background-request header in addition to existing authentication and object scoping. Authenticated document navigation without that header redirects to the dashboard, preventing the transport payload from becoming a user-visible page.
+- The browser still uses same-origin credentials, `Accept: application/json`, no-store caching, bounded polling, and existing notification/backoff logic.
+- No compose/reply/forward capability, sanitizer relaxation, model/migration, attachment policy, mail-flow, or authorization change is introduced.

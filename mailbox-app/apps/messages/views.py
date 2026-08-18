@@ -11,6 +11,7 @@ from django.db.models import F, Max, Q, Sum
 from django.http import FileResponse, Http404, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
+from django.utils.html import strip_tags
 from django.utils.http import content_disposition_header
 from django.views.decorators.cache import never_cache
 from django.views.decorators.http import require_GET, require_http_methods, require_POST
@@ -25,6 +26,16 @@ from apps.mailboxes.validators import confined_path
 
 from .models import Attachment
 from .services import set_message_read_state, soft_delete_message
+
+LIVE_UPDATE_HEADER = "X-MailStack-Live-Request"
+
+
+def _message_preview(message, limit: int = 180) -> str:
+    source = message.text_body or strip_tags(message.sanitized_html_body or "")
+    normalized = " ".join(source.split())
+    if len(normalized) <= limit:
+        return normalized
+    return normalized[: limit - 1].rstrip() + "…"
 
 
 @login_required
@@ -49,6 +60,8 @@ def inbox(request, mailbox_uuid):
     elif attachment_filter == "no":
         queryset = queryset.filter(has_attachments=False)
     page_obj = Paginator(queryset, 30).get_page(request.GET.get("page"))
+    for item in page_obj.object_list:
+        item.ui_preview = _message_preview(item)
     record_audit(
         "inbox_access", request=request, target_type="mailbox", target_identifier=mailbox.email_address
     )
@@ -104,11 +117,20 @@ def safe_html(request, message_uuid):
         "message_html_view", request=request, target_type="message", target_identifier=str(message.uuid)
     )
     body = message.sanitized_html_body or "<p>No HTML body is available.</p>"
-    notice = (
-        "<div role='note' style='padding:.75rem;background:#fff3cd;"
-        "border:1px solid #ffe69c'>Remote content and active content are blocked.</div>"
+    document = (
+        "<!doctype html><html><head><meta charset='utf-8'>"
+        "<meta name='viewport' content='width=device-width,initial-scale=1'>"
+        "<style>"
+        "html{color:#172033;background:#fff;font-family:Arial,Helvetica,sans-serif;}"
+        "body{margin:0;padding:20px;line-height:1.55;overflow-wrap:anywhere;}"
+        "img{max-width:100%;height:auto;}table{max-width:100%;border-collapse:collapse;}"
+        "pre{white-space:pre-wrap;overflow-wrap:anywhere;}blockquote{margin-left:0;padding-left:14px;"
+        "border-left:3px solid #d9e1ee;color:#475467;}a{color:#0b4ff5;}"
+        "</style></head><body>"
+        + body
+        + "</body></html>"
     )
-    response = HttpResponse(notice + body, content_type="text/html; charset=utf-8")
+    response = HttpResponse(document, content_type="text/html; charset=utf-8")
     response["Cache-Control"] = "private, no-store"
     return response
 
@@ -176,10 +198,18 @@ def _iso(value):
     return value.isoformat() if value else None
 
 
+def _is_live_background_request(request) -> bool:
+    accepts_json = "application/json" in request.headers.get("Accept", "").lower()
+    return request.headers.get(LIVE_UPDATE_HEADER) == "1" or accepts_json
+
+
 @login_required
 @require_GET
 @never_cache
 def live_updates(request):
+    if not _is_live_background_request(request):
+        return redirect("dashboard:index")
+
     bootstrap = request.GET.get("bootstrap") == "1"
     try:
         cursor = max(0, int(request.GET.get("cursor", "0")))
@@ -202,6 +232,7 @@ def live_updates(request):
                     "sender_name": item.sender_name,
                     "sender_address": item.sender_address,
                     "subject": item.subject or "(No subject)",
+                    "preview": _message_preview(item),
                     "received_at": _iso(item.received_at),
                     "size_bytes": item.size_bytes,
                     "has_attachments": item.has_attachments,

@@ -152,13 +152,16 @@ def test_inbox_search_filters_detail_state_and_safe_html(client, admin_user, mai
 
     response = client.get(reverse("messages:detail", args=[mailbox.uuid, message.uuid]))
     assert response.status_code == 200
-    assert b"Plain body" in response.content
+    assert b'class="message-reader"' in response.content
+    assert b"Plain text" not in response.content
+    assert b"Safe HTML" not in response.content
+    assert b'sandbox=""' in response.content
     assert AuditLog.objects.filter(action="message_view").exists()
 
     html_response = client.get(reverse("messages:safe_html", args=[message.uuid]))
     assert html_response.status_code == 200
     assert b"Safe body" in html_response.content
-    assert b"Remote content" in html_response.content
+    assert b"Remote content" not in html_response.content
     assert "default-src 'none'" in html_response["Content-Security-Policy"]
     assert html_response["X-Frame-Options"] == "SAMEORIGIN"
 

@@ -2,7 +2,42 @@
 
 All notable repository-level changes are recorded here. Application history before the open-source conversion remains in `mailbox-app/CHANGELOG.md`.
 
-## 1.3.1 — Unpublished source baseline
+## 1.3.3 — PHASE-005A qualification correction
+
+### Corrected
+
+- Synchronized the 1.3.3 release identity across VERSION, CI/release workflows, deterministic artifact paths, managed documentation, and release-workflow contract tests after the failed qualification run exposed stale 1.3.2 metadata.
+- Removed the accidental empty repository-root `85%` file created when non-comment CMD guidance containing `>=85%` was interpreted as output redirection.
+- Corrected PHASE-005A import-order lint findings and regenerated forensic/document metadata so source-safety and Ruff gates evaluate the intended source tree.
+- Preserved live updates for browsers that still hold the previously immutable-cached `app.js`: the live endpoint accepts either the new explicit `X-MailStack-Live-Request: 1` header or the legacy `Accept: application/json` poll signature, while ordinary document navigation continues to redirect to the dashboard instead of exposing raw JSON.
+- Replaced the prose-paste handoff with an executable Windows CMD script whose explanatory lines are `REM` comments and whose gates stop on failure.
+
+### Compatibility
+
+- No model, migration, parser/sanitizer, mailbox permission, ingestion, Postfix/Dovecot, Maildir, MariaDB, attachment, installer, deployment-template, backup/restore, or upgrade/rollback behavior changes.
+- Published `v1.3.1` remains immutable official release provenance; `1.3.2` is retained only as failed development-qualification history and is not promoted as a release baseline.
+
+## 1.3.2 — PHASE-005A development
+
+### UI navigation reliability
+
+- Hardened the authenticated live-update transport so `/messages/live/` returns JSON only to MailStack background polling requests carrying the explicit `X-MailStack-Live-Request: 1` header; ordinary authenticated document navigation redirects to the dashboard instead of rendering raw JSON.
+- Preserved same-origin credentials, no-store responses, authorization filtering, bounded live payloads, polling backoff, notifications, and mailbox counter updates.
+
+### Compact mailbox and unified reader
+
+- Replaced the oversized mailbox header and generic message grid with a compact webmail-style inbox surface, integrated search/read/attachment filters, denser unread rows, message previews, attachment/size metadata, and responsive desktop/mobile behavior.
+- Added preview text derived only from the existing indexed plain body or sanitized HTML text; no model, migration, parser, or persistence change is introduced.
+- Removed the visible `Plain text` / `Safe HTML` tabs and replaced them with one message reader that automatically shows the existing sanitized HTML in the retained sandbox/no-referrer frame, or the indexed plain-text body when no HTML body exists.
+- Compact sender/routing metadata, actions, warnings, and attachments into the unified reader while preserving mark-unread, deletion permissions, attachment authorization, sanitizer policy, CSP, and receive-only boundaries.
+
+### Qualification and release metadata
+
+- Added PHASE-005A regression coverage for direct live-endpoint navigation, background JSON polling, compact inbox rendering, HTML-derived previews, unified HTML rendering, and plain-only fallback.
+- Synchronized the approved target identity to `1.3.2`, including CI deterministic-artifact verification and release-note file selection, without changing release-gate semantics.
+- Froze published `v1.3.1` as `MAILSTACK-1.3.1-OFFICIAL-SOURCE-BASELINE-001`, anchored to commit `039a6e6eea6e198b4b15612db9d2f208b6305a16`, tree `9437ba2ebac2033a229accd190268b8711d5b26e`, and deterministic source SHA-256 `517778967ca491974f315d231dfd43b3dba85fe86b47dcfc63e4c7051d1010bd`.
+
+## 1.3.1 — 2026-08-18
 
 ### Documentation and forensic baseline
 
@@ -35,7 +70,7 @@ All notable repository-level changes are recorded here. Application history befo
 ### Compatibility
 
 - PHASE-004C changes maintained operational tooling only; it does not add a database migration, application route, authorization/UI/mail-flow behavior, installer behavior, deployment-template rewrite, DNS/TLS change, or automatic host-configuration migration.
-- `v1.3.0-rc.4` and its published source identity remain immutable. `1.3.1` is the next frozen source-baseline version mark and remains unpublished until its GitHub/main CI and operational release gates are accepted.
+- `v1.3.0-rc.4` remains immutable historical release provenance. `v1.3.1` is the current frozen published source/release baseline; PHASE-005A develops `1.3.2` from that exact source without rewriting either historical tag.
 
 ## Unreleased — MailStack repository bootstrap
 

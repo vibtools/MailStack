@@ -149,11 +149,12 @@ const VibMail = (() => {
     link.href = message.detail_url;
     link.dataset.messageUuid = message.uuid;
 
-    const status = document.createElement("div");
+    const status = document.createElement("span");
     status.className = "message-status";
     status.setAttribute("aria-label", message.is_read ? "Read" : "Unread");
+    status.title = message.is_read ? "Read" : "Unread";
 
-    const sender = document.createElement("div");
+    const sender = document.createElement("span");
     sender.className = "message-sender";
     const senderStrong = document.createElement("strong");
     senderStrong.className = "truncate";
@@ -163,18 +164,36 @@ const VibMail = (() => {
     senderSmall.textContent = message.sender_address || "";
     sender.append(senderStrong, senderSmall);
 
-    const subject = document.createElement("div");
-    subject.className = "message-subject";
+    const content = document.createElement("span");
+    content.className = "message-content";
+    const subjectLine = document.createElement("span");
+    subjectLine.className = "message-subject-line";
     const subjectStrong = document.createElement("strong");
-    subjectStrong.className = "truncate";
+    subjectStrong.className = "message-subject-text";
     subjectStrong.textContent = message.subject || "(No subject)";
-    const subjectSmall = document.createElement("small");
-    subjectSmall.textContent = `${formatBytes(message.size_bytes)}${message.has_attachments ? " · Attachment" : ""}`;
-    subject.append(subjectStrong, subjectSmall);
+    subjectLine.append(subjectStrong);
+    if (message.preview) {
+      const preview = document.createElement("span");
+      preview.className = "message-preview";
+      preview.textContent = ` — ${message.preview}`;
+      subjectLine.append(preview);
+    }
+    const secondary = document.createElement("small");
+    secondary.className = "message-secondary";
+    if (message.has_attachments) {
+      const attachment = document.createElement("span");
+      attachment.className = "message-attachment";
+      attachment.textContent = "Attachment";
+      secondary.append(attachment, document.createTextNode(" · "));
+    }
+    secondary.append(document.createTextNode(formatBytes(message.size_bytes)));
+    content.append(subjectLine, secondary);
 
     const time = document.createElement("time");
-    time.textContent = formatDate(message.received_at, "Unknown date");
-    link.append(status, sender, subject, time);
+    time.className = "message-time";
+    time.textContent = formatShortDate(message.received_at);
+    if (message.received_at) time.dateTime = message.received_at;
+    link.append(status, sender, content, time);
     return link;
   }
 
@@ -257,7 +276,10 @@ const VibMail = (() => {
       }
       const response = await fetch(`${url}?${params.toString()}`, {
         credentials: "same-origin",
-        headers: { Accept: "application/json" },
+        headers: {
+          Accept: "application/json",
+          "X-MailStack-Live-Request": "1",
+        },
         cache: "no-store",
         signal: controller.signal,
       });
@@ -476,17 +498,6 @@ const VibMail = (() => {
     setupAppShell();
     setupUserMenu();
 
-    document.querySelectorAll("[data-tabs]").forEach((tabList) => {
-      const buttons = tabList.querySelectorAll("[data-tab-target]");
-      buttons.forEach((button) => {
-        button.addEventListener("click", () => {
-          buttons.forEach((item) => item.classList.remove("active"));
-          document.querySelectorAll(".tab-panel").forEach((panel) => panel.classList.remove("active"));
-          button.classList.add("active");
-          document.querySelector(`#tab-${button.dataset.tabTarget}`)?.classList.add("active");
-        });
-      });
-    });
 
     document.querySelectorAll(".status-form").forEach((form) => {
       form.addEventListener("submit", (event) => {

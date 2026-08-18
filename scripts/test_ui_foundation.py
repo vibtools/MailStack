@@ -134,13 +134,14 @@ def test_javascript_preserves_runtime_and_adds_accessible_shell() -> None:
         "shellTabindex",
         'event.key === "Escape"',
         "document.body.dataset.liveUrl",
+        '"X-MailStack-Live-Request": "1"',
         "BroadcastChannel",
         "Notification.requestPermission",
         "document.addEventListener(\"DOMContentLoaded\", VibMail.init)",
     )
     for marker in required:
         assert marker in javascript, f"missing JavaScript contract: {marker}"
-    prohibited = ("eval(", "new Function", ".innerHTML", "document.write(")
+    prohibited = ("eval(", "new Function", ".innerHTML", "document.write(", "data-tabs")
     for marker in prohibited:
         assert marker not in javascript, f"unsafe JavaScript construct found: {marker}"
     assert not re.search(r"https?://", javascript, flags=re.IGNORECASE)

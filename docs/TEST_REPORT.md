@@ -1,8 +1,8 @@
-# Test report — MailStack 1.3.1 source baseline verification
+# Test report — MailStack 1.3.3 PHASE-005A correction verification
 
-**PHASE-004C verification date:** 2026-08-17
-**Latest published release candidate:** `v1.3.0-rc.4`
-**Repository source-baseline version:** `1.3.1`
+**PHASE-005A verification date:** 2026-08-18
+**Immutable published baseline:** `v1.3.1`
+**Corrected development target:** `1.3.3`
 
 ## Authoritative released-RC4 application suite
 
@@ -192,3 +192,46 @@ or release publication.
 A future isolated Ubuntu 24.04 acceptance campaign must cover the exact-source clean install,
 TLS/DNS/mail routing, unknown-recipient rejection, real inbound delivery, authorization isolation,
 contact delivery, backup, restore, restart/reboot recovery, and final release-owner/legal review.
+## PHASE-005A local verification
+
+PHASE-005A adds focused Django regression tests for direct live-endpoint navigation, explicit background JSON polling, compact inbox preview rendering, unified sanitized-HTML selection, plain-only fallback, and HTML-derived live preview text. Existing live authorization, bounded-payload/query-count, search/filter/pagination, sandbox/no-referrer, XSS, attachment, mark-unread, delete-permission, and shared-shell tests remain in the suite.
+
+Dependency-free/local gates completed as follows:
+
+| PHASE-005A local gate | Result |
+|---|---|
+| Documentation validation | PASS — 46 required files, 60 local links |
+| Managed-document synchronization | PASS — 18 documents, 6 phases |
+| Documentation tests | PASS — 4 contracts |
+| Design manifest integrity | PASS — 25 PNG references |
+| Design tests | PASS — 4 contracts |
+| Shared UI foundation | PASS — 8 contracts |
+| JavaScript syntax | PASS |
+| Python syntax for changed Python files | PASS |
+| Deployment template validation | PASS — 13 templates |
+| Installer contracts | PASS — 2 valid, 9 invalid |
+| Operations contracts | PASS — 4 scripts |
+| Release-workflow contracts | PASS — 7 contracts |
+| Upgrade/archive/rollback contracts | PASS |
+| Forensic inventory | PASS — 414 maintained entries plus inventory |
+| Structural forensic audit | PASS — 415 files, 149 Python, 15 shell, zero blockers |
+| Deterministic 1.3.2 build/verification | PASS before report synchronization; final SHA regenerated after documentation/inventory finalization |
+
+The artifact environment does not contain supported CPython 3.12/Django/Ruff/Bandit dependencies and cannot reach the package index. Therefore the complete Django test/coverage, Ruff, Bandit, pip-audit, Django check/migration-drift, and full dependency-backed forensic gates are deliberately not claimed locally; they are mandatory in the user's isolated Python 3.12 environment and GitHub CI before merge/release.
+
+## PHASE-005A live acceptance boundary
+
+No existing-VPS mutation is performed by this patch. After 1.3.3 branch/PR/main/tag/release qualification, the existing server should be upgraded once using the PHASE-004 controlled upgrade mechanism, followed by browser acceptance of compact inbox/message rendering, direct-live-route redirect behavior, live polling, and preserved real inbound mail flow.
+
+## 1.3.2 failed qualification evidence
+
+The Windows Python 3.12.8 run collected 203 tests and completed with 202 passed, one symlink-capability
+skip, and 94.97% coverage. Django system check and migration drift checks passed; pip check, Bandit,
+pip-audit, contact-service, structural documentation/design/operations/release/upgrade contracts also
+passed. Ruff reported three `I001` import-order findings. The handoff transcript additionally shows an
+accidental empty `85%` file was staged and committed. GitHub Actions run `32128090322` failed at the
+source-safety inventory gate on that extra file, so the `1.3.2` branch SHA was never fully qualified.
+The later interrupted deterministic build is not counted as a PASS.
+
+The 1.3.3 corrective delta must run the complete qualification once after application. No previous
+`1.3.2` PASS is reused as final 1.3.3 qualification evidence.

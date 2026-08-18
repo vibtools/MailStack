@@ -1,8 +1,56 @@
 {% extends "base.html" %}
 {% block title %}{{ mailbox.email_address }} · MailStack{% endblock %}
 {% block content %}
-<div class="page-header"><div><div class="eyebrow">Mailbox inbox</div><h1><button type="button" class="copy-address heading-copy" data-copy-email="{{ mailbox.email_address }}" title="Copy email address">{{ mailbox.email_address }}</button></h1><p class="muted"><span data-live-mailbox-total="{{ mailbox.uuid }}">{{ mailbox.total_messages }}</span> messages · <span data-live-mailbox-unread="{{ mailbox.uuid }}">{{ mailbox.unread_messages }}</span> unread · <span class="badge badge-{{ mailbox.status }}">{{ mailbox.get_status_display }}</span></p></div><a class="btn" href="{% url 'mailboxes:list' %}">All mailboxes</a></div>
-<form method="get" class="filter-bar" role="search"><div class="grow"><label class="sr-only" for="q">Search sender or subject</label><input id="q" name="q" value="{{ query }}" placeholder="Search sender or subject"></div><select name="read" aria-label="Read state"><option value="">All messages</option><option value="unread" {% if request.GET.read == 'unread' %}selected{% endif %}>Unread</option><option value="read" {% if request.GET.read == 'read' %}selected{% endif %}>Read</option></select><select name="attachments" aria-label="Attachment filter"><option value="">Any attachment state</option><option value="yes" {% if request.GET.attachments == 'yes' %}selected{% endif %}>Has attachments</option><option value="no" {% if request.GET.attachments == 'no' %}selected{% endif %}>No attachments</option></select><button class="btn" type="submit">Filter</button></form>
-<section class="panel flush"><div class="message-list" data-live-inbox="{{ mailbox.uuid }}" data-live-inbox-enabled="{% if live_unfiltered_first_page %}true{% else %}false{% endif %}">{% for item in page_obj %}<a class="message-row {% if not item.is_read %}unread{% endif %}" data-message-uuid="{{ item.uuid }}" href="{% url 'messages:detail' mailbox.uuid item.uuid %}"><div class="message-status" aria-label="{% if item.is_read %}Read{% else %}Unread{% endif %}"></div><div class="message-sender"><strong class="truncate">{{ item.sender_name|default:item.sender_address|default:"Unknown sender" }}</strong><small class="truncate">{{ item.sender_address }}</small></div><div class="message-subject"><strong class="truncate">{{ item.subject|default:"(No subject)" }}</strong><small>{{ item.size_bytes|filesizeformat }}{% if item.has_attachments %} · Attachment{% endif %} · {{ item.get_parse_status_display }}</small></div><time>{{ item.received_at|date:"Y-m-d H:i"|default:"Unknown date" }}</time></a>{% empty %}<div class="empty-state" data-empty>No messages match this view.</div>{% endfor %}</div></section>
+<section class="mailbox-view" aria-labelledby="mailbox-title">
+  <header class="mailbox-view-header">
+    <div class="mailbox-heading">
+      <a class="mailbox-back-link" href="{% url 'mailboxes:list' %}">← All mailboxes</a>
+      <div class="mailbox-title-line">
+        <h1 id="mailbox-title"><button type="button" class="copy-address heading-copy" data-copy-email="{{ mailbox.email_address }}" title="Copy email address">{{ mailbox.email_address }}</button></h1>
+        <span class="badge badge-{{ mailbox.status }}">{{ mailbox.get_status_display }}</span>
+      </div>
+      <p class="mailbox-counts"><span data-live-mailbox-total="{{ mailbox.uuid }}">{{ mailbox.total_messages }}</span> messages <span aria-hidden="true">·</span> <span data-live-mailbox-unread="{{ mailbox.uuid }}">{{ mailbox.unread_messages }}</span> unread</p>
+    </div>
+  </header>
+
+  <form method="get" class="mailbox-filter-bar" role="search">
+    <div class="mailbox-search grow">
+      <label class="sr-only" for="q">Search sender or subject</label>
+      <input id="q" name="q" value="{{ query }}" placeholder="Search sender or subject" autocomplete="off">
+    </div>
+    <label class="sr-only" for="read-filter">Read state</label>
+    <select id="read-filter" name="read" aria-label="Read state">
+      <option value="">All messages</option>
+      <option value="unread" {% if request.GET.read == 'unread' %}selected{% endif %}>Unread</option>
+      <option value="read" {% if request.GET.read == 'read' %}selected{% endif %}>Read</option>
+    </select>
+    <label class="sr-only" for="attachment-filter">Attachment state</label>
+    <select id="attachment-filter" name="attachments" aria-label="Attachment filter">
+      <option value="">Any attachment</option>
+      <option value="yes" {% if request.GET.attachments == 'yes' %}selected{% endif %}>Has attachment</option>
+      <option value="no" {% if request.GET.attachments == 'no' %}selected{% endif %}>No attachment</option>
+    </select>
+    <button class="btn mailbox-filter-button" type="submit">Filter</button>
+  </form>
+
+  <div class="message-list" data-live-inbox="{{ mailbox.uuid }}" data-live-inbox-enabled="{% if live_unfiltered_first_page %}true{% else %}false{% endif %}">
+    {% for item in page_obj %}
+    <a class="message-row{% if not item.is_read %} unread{% endif %}" data-message-uuid="{{ item.uuid }}" href="{% url 'messages:detail' mailbox.uuid item.uuid %}">
+      <span class="message-status" aria-label="{% if item.is_read %}Read{% else %}Unread{% endif %}" title="{% if item.is_read %}Read{% else %}Unread{% endif %}"></span>
+      <span class="message-sender">
+        <strong class="truncate">{{ item.sender_name|default:item.sender_address|default:"Unknown sender" }}</strong>
+        <small class="truncate">{{ item.sender_address }}</small>
+      </span>
+      <span class="message-content">
+        <span class="message-subject-line"><strong class="message-subject-text">{{ item.subject|default:"(No subject)" }}</strong>{% if item.ui_preview %}<span class="message-preview"> — {{ item.ui_preview }}</span>{% endif %}</span>
+        <small class="message-secondary">{% if item.has_attachments %}<span class="message-attachment">Attachment</span><span aria-hidden="true"> · </span>{% endif %}{{ item.size_bytes|filesizeformat }}</small>
+      </span>
+      <time class="message-time" datetime="{{ item.received_at|date:'c' }}">{{ item.received_at|date:"M d, H:i"|default:"Unknown date" }}</time>
+    </a>
+    {% empty %}
+    <div class="empty-state mailbox-empty" data-empty>No messages match this view.</div>
+    {% endfor %}
+  </div>
+</section>
 {% include "pagination.html" with page_obj=page_obj %}
 {% endblock %}

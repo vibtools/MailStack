@@ -11,12 +11,14 @@ MailStack does not expose a public REST API in this release. The supported inter
 | Mailboxes | `/mailboxes/` | authenticated, object scoped |
 | Mailbox administration | `/mailboxes/create/`, status/delete routes | authorized administrators |
 | Messages | `/messages/`, detail/read/delete routes | authenticated, object scoped |
-| Live updates | `/messages/live/` | authenticated, membership filtered |
+| Live updates | `/messages/live/` | authenticated, membership filtered, MailStack background-request header required for JSON |
 | User management | `/accounts/users/` | MailStack administrators |
 | Health | `/health/` | service probe |
 | Readiness | `/ready/` | service/database probe |
 
 Route names and exact patterns are defined in `mailbox-app/config/urls.py` and each app's `urls.py`.
+
+The live-update route is an internal browser transport, not a document page. MailStack JavaScript sends `X-MailStack-Live-Request: 1`; an authenticated top-level navigation without that header redirects to the dashboard instead of returning raw JSON.
 
 ## Public contact endpoint
 

@@ -4,8 +4,8 @@ title: MailStack UI Implementation Status
 document_type: design-reference
 audience: designers-developers-and-maintainers
 status: active
-version: 1.3.1
-last_reviewed: 2026-08-17
+version: 1.3.3
+last_reviewed: 2026-08-18
 ---
 
 # MailStack UI implementation status
@@ -34,10 +34,10 @@ phase records, CI evidence, or staging acceptance.
 | Local logo and icon assets | Implemented locally | Canonical logo copy and validated SVG sprite |
 | Responsive shell | Implemented locally | Desktop collapse, tablet/mobile drawer, compact mobile shell |
 | Released RC4 dependency-backed qualification | Verified in GitHub CI | 198 passed, 0 failed, 95.00% coverage; main and tag CI passed |
-| Existing page redesign | Not started | One page per subsequent patch |
-| Secure message-reader redesign | Not started | Dedicated security-focused phase required |
+| Inbox/message page redesign | Implemented locally in PHASE-005A | Compact inbox and unified message reader; remote CI and live acceptance pending |
+| Secure message-reader presentation | Implemented locally in PHASE-005A | Existing sanitizer, CSP, sandbox, and no-referrer isolation preserved |
 | Future feature implementation | Not started | Separate architecture phases required |
-| Integrated regression audit | Not started | Runs after all approved page patches |
+| PHASE-005A integrated regression audit | In progress | Structural/local gates run before GitHub dependency-backed qualification |
 | Staging/live UI acceptance | Not started | Runs after integrated CI qualification |
 
 ## Change control
