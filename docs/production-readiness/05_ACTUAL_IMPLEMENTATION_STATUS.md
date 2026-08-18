@@ -70,9 +70,10 @@ and what remains. This file must reflect evidence, not planned marketing languag
 | Add/Edit user UI | FUNCTIONAL BUT NOT ACCEPTED | Oversized controls/help spacing |
 | Authenticated footer | FUNCTIONAL BUT REJECTED UX | Public/promotional links appear in operational app |
 
-## PHASE-006 expected actual additions
+## PHASE-006 implementation candidate — locally qualified, live acceptance pending
 
-After PHASE-006 is complete, this section must be converted from `EXPECTED` to `WORKING VERIFIED` with evidence.
+The PHASE-006 source implementation is locally focused-qualified but is not yet a production/live acceptance claim.
+The current production baseline defects listed above remain authoritative until controlled deployment and live repair acceptance pass.
 
 - corrected safe HTML parser/sanitizer;
 - readable style-heavy HTML emails;

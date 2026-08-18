@@ -93,10 +93,10 @@
     },
     {
       "kind": "text",
-      "lines": 166,
+      "lines": 185,
       "path": "CHANGELOG.md",
-      "sha256": "f06f5cb6d72d28b9d58daff8dcb68e07c0a29723f86a01e9db27cdad0a0da8f2",
-      "size_bytes": 16029
+      "sha256": "757f89a1f0aa761f5a1bd26af24567935316f5cee539bf9b1e1e9a5e2e5f3a78",
+      "size_bytes": 17358
     },
     {
       "kind": "text",
@@ -719,10 +719,101 @@
     },
     {
       "kind": "text",
-      "lines": 68,
+      "lines": 82,
+      "path": "docs/production-readiness/00_OFFICIAL_BASELINE_FREEZE.md",
+      "sha256": "b4365142a774edf47e38392e8d2491a10cfb54d7c2fbbe738fe1186fd33ae6ea",
+      "size_bytes": 4236
+    },
+    {
+      "kind": "text",
+      "lines": 311,
+      "path": "docs/production-readiness/01_PRODUCTION_READINESS_FORENSIC_REPORT.md",
+      "sha256": "60b3378adcccf94d276222167eb21075f2ffac80cab614291282f119230fc522",
+      "size_bytes": 13766
+    },
+    {
+      "kind": "text",
+      "lines": 289,
+      "path": "docs/production-readiness/02_TWO_PHASE_A_TO_Z_ROADMAP.md",
+      "sha256": "5051f26390bd66a9f109d72b07aeb7c1625aff0d4f760c9f258431319164ebbd",
+      "size_bytes": 11709
+    },
+    {
+      "kind": "text",
+      "lines": 146,
+      "path": "docs/production-readiness/03_UPDATE_PHASE_COMPLETION_LOG.md",
+      "sha256": "72ae140cbf22c9f266f1a0f0f5622a9fc027d00310c78c5f7b157aaaad1d8114",
+      "size_bytes": 5173
+    },
+    {
+      "kind": "text",
+      "lines": 159,
+      "path": "docs/production-readiness/04_ERROR_HANDLING_REGISTER_AND_PLAN.md",
+      "sha256": "7e49d0ab71ed2c02ddd60b528164b8e925b0af037c37b6d30c5eb4f9cb1d3abf",
+      "size_bytes": 7138
+    },
+    {
+      "kind": "text",
+      "lines": 127,
+      "path": "docs/production-readiness/05_ACTUAL_IMPLEMENTATION_STATUS.md",
+      "sha256": "891956b2be3103a4c6f0dce077b5c24efd8a0c8d5c54278933d02c0e47ae496e",
+      "size_bytes": 5853
+    },
+    {
+      "kind": "text",
+      "lines": 131,
+      "path": "docs/production-readiness/06_UI_DESIGN_REFERENCE_AND_DEFECT_MATRIX.md",
+      "sha256": "c25ac9c8a35b1238ed8f551fccdd3d850bfbf4bb64dc60bec4436b9a4477f91d",
+      "size_bytes": 4995
+    },
+    {
+      "kind": "text",
+      "lines": 162,
+      "path": "docs/production-readiness/07_PRODUCTION_ACCEPTANCE_GATE.md",
+      "sha256": "32ad5fbfa83fc18b8ec528ca17cb5e5c265dc8711a182d15f7ac0467482eeca4",
+      "size_bytes": 5871
+    },
+    {
+      "kind": "text",
+      "lines": 108,
+      "path": "docs/production-readiness/08_CHANGE_CONTROL_AND_SCOPE_LOCK.md",
+      "sha256": "743a9b453bb978db712451c2bbf4378f8b1cd581e298a6fc4b37f7fa387e13cc",
+      "size_bytes": 3233
+    },
+    {
+      "kind": "text",
+      "lines": 83,
+      "path": "docs/production-readiness/09_RELEASE_AND_UPDATE_EXECUTION_POLICY.md",
+      "sha256": "5a3d7aaaace29a9df7d4688a45e88751c70a2cf9c9335d0f30390050d607ca46",
+      "size_bytes": 2989
+    },
+    {
+      "kind": "text",
+      "lines": 133,
+      "path": "docs/production-readiness/10_TEST_AND_ACCEPTANCE_MATRIX.md",
+      "sha256": "c04f91d234d88042ec0645e7174ef819182314a81e52c35e0fd39c682ccd23a9",
+      "size_bytes": 4436
+    },
+    {
+      "kind": "text",
+      "lines": 114,
+      "path": "docs/production-readiness/11_EXISTING_MESSAGE_REPAIR_AND_BACKFILL_PLAN.md",
+      "sha256": "9d24f69f1f38f4417a3b3d4e85777042dace521e4eabe64ac21164d39d564a00",
+      "size_bytes": 4323
+    },
+    {
+      "kind": "text",
+      "lines": 58,
+      "path": "docs/production-readiness/README.md",
+      "sha256": "5b7ede52d67ea67fa02653d90346733aed2a46bcf0cbcb48c92a52549cbc9beb",
+      "size_bytes": 3590
+    },
+    {
+      "kind": "text",
+      "lines": 89,
       "path": "documents/ADMIN_GUIDE.md",
-      "sha256": "d7ecd6fc82533efa84be7137806e187e1987792950724523d6d45998c4ea9607",
-      "size_bytes": 3850
+      "sha256": "3e45b2db3b7b3a1e35646e740395a3c84e4a9083356fa74c802be31b9f504641",
+      "size_bytes": 4713
     },
     {
       "kind": "text",
@@ -733,10 +824,10 @@
     },
     {
       "kind": "text",
-      "lines": 233,
+      "lines": 245,
       "path": "documents/DOCUMENTATION_MANIFEST.json",
-      "sha256": "3d30391368f83f24bedd83aead7cfa9045f71e4496dbe0f4e7e9939852142ec3",
-      "size_bytes": 8904
+      "sha256": "2ee291ce9edd3fafc14dd7494d39683d9cc157bbf2d9e0156bc0623095b420c7",
+      "size_bytes": 9470
     },
     {
       "kind": "text",
@@ -754,17 +845,17 @@
     },
     {
       "kind": "text",
-      "lines": 55,
+      "lines": 56,
       "path": "documents/README.md",
-      "sha256": "c7771ce012e5f6649cf7ca3f299e53d6e4c53c0de60fee96d5a8a13440266ac1",
-      "size_bytes": 3990
+      "sha256": "9b778653ccdcf8f9b1a4dfb93f4ab7d5deec074bb046388396f14b0b999045bf",
+      "size_bytes": 4187
     },
     {
       "kind": "text",
-      "lines": 89,
+      "lines": 92,
       "path": "documents/USER_MANUAL.md",
-      "sha256": "951d3643e7272352fcd55253f6dbe538b1eedb4140f10706bfafc0aa6dc08b6d",
-      "size_bytes": 4835
+      "sha256": "3ff5d681629e0e429fa823ebc6e44416dce9608af0a8336fb63df1a506f1db93",
+      "size_bytes": 5111
     },
     {
       "kind": "text",
@@ -856,6 +947,13 @@
       "path": "documents/phases/PHASE-005-UI-NAVIGATION-RELIABILITY-AND-COMPACT-MAILBOX-READER.md",
       "sha256": "198f20d9732395701ac5ebb57d2e3d3a74d437e7b1a657630f697cf46a60b545",
       "size_bytes": 6080
+    },
+    {
+      "kind": "text",
+      "lines": 88,
+      "path": "documents/phases/PHASE-006-READER-INTEGRITY-DATA-REPAIR-AND-RUNTIME-ERROR-CLOSURE.md",
+      "sha256": "78f216009e84b7decbb5061c0214ea7d6ac6ea178f401eccd8d7d6d027cc71ab",
+      "size_bytes": 4125
     },
     {
       "kind": "text",
@@ -1861,6 +1959,33 @@
     },
     {
       "kind": "text",
+      "lines": 116,
+      "path": "mailbox-app/apps/ingestion/management/commands/repair_message_bodies.py",
+      "python": {
+        "classes": [
+          "Command",
+          "Counters"
+        ],
+        "functions": [],
+        "imports": [
+          "__future__",
+          "apps.ingestion.repair",
+          "apps.messages.models",
+          "dataclasses",
+          "django.core.management.base",
+          "logging",
+          "uuid"
+        ],
+        "methods": [
+          "Command.add_arguments",
+          "Command.handle"
+        ]
+      },
+      "sha256": "80fe7355a31bfe501d2bae601aa9161657209c046568a0813b976969765e5780",
+      "size_bytes": 4256
+    },
+    {
+      "kind": "text",
       "lines": 15,
       "path": "mailbox-app/apps/ingestion/management/commands/update_mailbox_counters.py",
       "python": {
@@ -1895,16 +2020,18 @@
     },
     {
       "kind": "text",
-      "lines": 237,
+      "lines": 302,
       "path": "mailbox-app/apps/ingestion/parser.py",
       "python": {
         "classes": [
           "ParsedAttachment",
-          "ParsedMessage"
+          "ParsedMessage",
+          "_SanitizerPreprocessor"
         ],
         "functions": [
           "_decode_part",
           "_parse_date",
+          "_prepare_html_for_sanitizer",
           "_safe_attribute",
           "decode_header_value",
           "parse_message",
@@ -1923,15 +2050,58 @@
           "email.parser",
           "email.utils",
           "hashlib",
+          "html.parser",
           "re",
           "typing",
           "unicodedata",
           "urllib.parse"
         ],
+        "methods": [
+          "_SanitizerPreprocessor.__init__",
+          "_SanitizerPreprocessor._safe_image",
+          "_SanitizerPreprocessor.handle_charref",
+          "_SanitizerPreprocessor.handle_data",
+          "_SanitizerPreprocessor.handle_endtag",
+          "_SanitizerPreprocessor.handle_entityref",
+          "_SanitizerPreprocessor.handle_startendtag",
+          "_SanitizerPreprocessor.handle_starttag"
+        ]
+      },
+      "sha256": "723bb35243227336217c40ebfe30e5eaa6909e34184baa3993bed9d7f10d7efb",
+      "size_bytes": 9904
+    },
+    {
+      "kind": "text",
+      "lines": 100,
+      "path": "mailbox-app/apps/ingestion/repair.py",
+      "python": {
+        "classes": [
+          "BodyRepairError",
+          "BodyRepairResult",
+          "RepairSourceMismatch",
+          "RepairSourceMissing",
+          "RepairSourceTooLarge"
+        ],
+        "functions": [
+          "repair_message_bodies",
+          "source_path_for_message"
+        ],
+        "imports": [
+          "__future__",
+          "apps.mailboxes.validators",
+          "apps.messages.models",
+          "dataclasses",
+          "django.conf",
+          "django.core.exceptions",
+          "django.db",
+          "logging",
+          "parser",
+          "pathlib"
+        ],
         "methods": []
       },
-      "sha256": "6d96cce0a42b0d1be6a46152dab41147fc32cb1055f4279746e97da26793d83f",
-      "size_bytes": 7527
+      "sha256": "145d92de9bbaabec63dcc60efc3730937c41561d06be93a0db3c357e5acc51d8",
+      "size_bytes": 3429
     },
     {
       "kind": "text",
@@ -3178,6 +3348,19 @@
     },
     {
       "kind": "text",
+      "lines": 4,
+      "path": "mailbox-app/gunicorn.conf.py",
+      "python": {
+        "classes": [],
+        "functions": [],
+        "imports": [],
+        "methods": []
+      },
+      "sha256": "2b9a64df502abec178de24c99671b01cde4ca391ecad592e661488e3119993b5",
+      "size_bytes": 244
+    },
+    {
+      "kind": "text",
       "lines": 16,
       "path": "mailbox-app/manage.py",
       "python": {
@@ -3569,10 +3752,10 @@
     },
     {
       "kind": "text",
-      "lines": 77,
+      "lines": 76,
       "path": "mailbox-app/templates/messages/detail.html",
-      "sha256": "d27e7ad4f252c22265e205867adbca51117e72a21518a6c5778eda4db1e2ca76",
-      "size_bytes": 4921
+      "sha256": "8a224584e9689aa951312ab5bfce50cd28fe4431051eaf8aca454266dbe62e4c",
+      "size_bytes": 4800
     },
     {
       "kind": "text",
@@ -3703,6 +3886,13 @@
       "path": "mailbox-app/tests/fixtures/html_script.eml",
       "sha256": "1fddd6d606bf680ddecd89f5b3d02357a2d5bc57c040e3ca5e8573b69b860200",
       "size_bytes": 598
+    },
+    {
+      "kind": "text",
+      "lines": 24,
+      "path": "mailbox-app/tests/fixtures/html_style_heavy.eml",
+      "sha256": "770ae1e2bea47ebcec32fcffc618bcab9631f3c711e206f1b414ea12858b3d01",
+      "size_bytes": 633
     },
     {
       "kind": "text",
@@ -3863,8 +4053,8 @@
         ],
         "methods": []
       },
-      "sha256": "63f45f2894211f02ab6bd9e6e17fa4d2b381dd759a863d89525be5464ebb5e5d",
-      "size_bytes": 3514
+      "sha256": "dbfdc45271d3a74ce1abc136bb59f26a1233fab5a1d01d0ec8571bd858f55b9e",
+      "size_bytes": 3518
     },
     {
       "kind": "text",
@@ -4037,6 +4227,36 @@
     },
     {
       "kind": "text",
+      "lines": 141,
+      "path": "mailbox-app/tests/integration/test_message_body_repair.py",
+      "python": {
+        "classes": [],
+        "functions": [
+          "_ingest_fixture",
+          "test_repair_message_bodies_dry_run_then_mutation_preserves_state",
+          "test_repair_message_bodies_preserves_attachment_identity",
+          "test_repair_message_bodies_reports_missing_and_mismatched_sources",
+          "test_repair_message_bodies_requires_explicit_confirmation"
+        ],
+        "imports": [
+          "__future__",
+          "apps.ingestion.service",
+          "apps.mailboxes.services",
+          "apps.messages.models",
+          "django.core.management",
+          "django.core.management.base",
+          "django.utils",
+          "io",
+          "pathlib",
+          "pytest"
+        ],
+        "methods": []
+      },
+      "sha256": "76debe4485b77e3e077922db19dc8e1a6a2d255bda04fa395cbb86b449a06c92",
+      "size_bytes": 4844
+    },
+    {
+      "kind": "text",
       "lines": 546,
       "path": "mailbox-app/tests/integration/test_v1_2_access_live_delete.py",
       "python": {
@@ -4158,7 +4378,7 @@
     },
     {
       "kind": "text",
-      "lines": 171,
+      "lines": 179,
       "path": "mailbox-app/tests/security/test_deployment_assets.py",
       "python": {
         "classes": [],
@@ -4167,6 +4387,7 @@
           "test_backup_quiesces_and_restarts_mail_services",
           "test_clean_install_and_deploy_create_mail_roots",
           "test_dependency_audit_isolated_and_fail_closed",
+          "test_gunicorn_25_control_socket_is_disabled_for_hardened_runtime",
           "test_management_scripts_force_production_environment",
           "test_mariadb_application_role_is_scoped_away_from_mailserver_ddl",
           "test_production_mariadb_warning_qualification_is_narrow_and_documented",
@@ -4186,8 +4407,8 @@
         ],
         "methods": []
       },
-      "sha256": "eb134d939bba5c099d0412c4825ac97c6222956522537439a52b02fae916d013",
-      "size_bytes": 7228
+      "sha256": "e02505d5ba01d0b5adfc4cfc34d86c57bef4b6063c569062ca18044a0b98fbbd",
+      "size_bytes": 7565
     },
     {
       "kind": "text",
@@ -4303,7 +4524,7 @@
     },
     {
       "kind": "text",
-      "lines": 252,
+      "lines": 282,
       "path": "mailbox-app/tests/unit/test_parser_storage.py",
       "python": {
         "classes": [
@@ -4326,8 +4547,10 @@
           "test_parse_message_fixture_matrix",
           "test_parse_message_recovers_from_parser_exception",
           "test_parse_message_security_fixtures",
+          "test_parse_message_style_heavy_html_is_readable_without_css_leak",
           "test_parse_message_warns_when_sender_is_missing",
           "test_safe_filename",
+          "test_sanitize_html_drops_style_block_text_and_remote_image_nodes",
           "test_sanitize_html_links_urls_but_never_linkifies_email_addresses",
           "test_sanitize_html_removes_active_and_remote_content",
           "test_sha256_bytes",
@@ -4363,8 +4586,8 @@
           "FallbackPart.get_payload"
         ]
       },
-      "sha256": "696b33171cd5d23b16336ffd66945a1b4e9c4e9e179caf047036d9d1089f0d3b",
-      "size_bytes": 8226
+      "sha256": "50be65eb4d7ccd1e971b3aac92612819fe06059ccb2a47d9a819c5a9ce112321",
+      "size_bytes": 9479
     },
     {
       "kind": "text",
@@ -5330,15 +5553,15 @@
   },
   "summary": {
     "binary_files": 25,
-    "files": 415,
-    "python_classes": 76,
-    "python_files": 149,
-    "python_functions": 453,
-    "python_methods": 61,
+    "files": 434,
+    "python_classes": 84,
+    "python_files": 153,
+    "python_functions": 464,
+    "python_methods": 71,
     "shell_files": 15,
     "shell_functions": 41,
-    "text_files": 390,
-    "total_bytes": 31794098,
-    "total_text_lines": 29455
+    "text_files": 409,
+    "total_bytes": 31896022,
+    "total_text_lines": 31989
   }
 }

@@ -13,15 +13,15 @@ when a phase changes state so implementation cannot become unordered or ambiguou
 | Planned implementation phases | **2** |
 | Completed phases in this production-readiness cycle | **0 / 2** |
 | Remaining phases | **2 / 2** |
-| Current implementation state | Planning/documentation only |
-| Runtime implementation started | No |
+| Current implementation state | PHASE-006 implementation locally qualified; GitHub/live acceptance pending |
+| Runtime implementation started | Yes — PHASE-006 |
 | Production-ready acceptance | Not yet |
 
 ## Phase status ledger
 
 | Phase | State | What must be completed | Completion evidence |
 |---|---|---|---|
-| PHASE-006 | **PENDING** | Reader integrity, safe existing-message repair, runtime error closure, reader regressions | Not yet recorded |
+| PHASE-006 | **IMPLEMENTATION QUALIFIED / LIVE PENDING** | Reader integrity, safe existing-message repair, runtime error closure, reader regressions | Local focused qualification: 60 passed; Ruff/Bandit/Django/migration gates PASS |
 | PHASE-007 | **PENDING / BLOCKED BY PHASE-006** | Compact UI system, responsive refinement, final CI/live/E2E acceptance | Not yet recorded |
 
 ---
@@ -30,7 +30,7 @@ when a phase changes state so implementation cannot become unordered or ambiguou
 
 ## Status
 
-**PENDING**
+**IMPLEMENTATION QUALIFIED LOCALLY / LIVE ACCEPTANCE PENDING**
 
 ## Baseline at phase start
 
@@ -49,15 +49,23 @@ Must equal the official v1.3.3 frozen identity documented in `00_OFFICIAL_BASELI
 
 ## Features/fixes actually completed
 
-None yet. This section is replaced with exact implemented items after the phase passes.
+- sanitizer removes non-body style/active blocks with their contents before allowlist cleaning;
+- blocked remote image nodes are omitted rather than rendered as broken residue;
+- permanent protected-rendering banner removed while sandbox/no-referrer remain;
+- controlled existing-message body repair command added with dry-run, targeting, limits and explicit confirmation;
+- repair preserves message identity/state/source/attachments and updates only parser-derived body fields;
+- unused Gunicorn control interface disabled without weakening systemd filesystem confinement;
+- focused PHASE-006 regression coverage added.
 
 ## Files changed
 
-None yet.
+Ten implementation/test paths are currently changed in the local PHASE-006 candidate; managed
+documentation/generated metadata are synchronized before branch qualification.
 
 ## Tests/evidence
 
-None yet.
+Local focused qualification: `60 passed`; targeted Ruff PASS; Bandit PASS; Django system check PASS;
+migration drift NONE. Full repository qualification, GitHub CI and controlled live acceptance remain pending.
 
 ## Known residual findings after phase
 
@@ -65,7 +73,7 @@ Not yet assessed.
 
 ## Phase completion decision
 
-`PENDING`
+`PENDING — controlled live acceptance still required`
 
 ## Remaining after PHASE-006
 
@@ -99,11 +107,13 @@ None yet.
 
 ## Files changed
 
-None yet.
+Ten implementation/test paths are currently changed in the local PHASE-006 candidate; managed
+documentation/generated metadata are synchronized before branch qualification.
 
 ## Tests/evidence
 
-None yet.
+Local focused qualification: `60 passed`; targeted Ruff PASS; Bandit PASS; Django system check PASS;
+migration drift NONE. Full repository qualification, GitHub CI and controlled live acceptance remain pending.
 
 ## Known residual findings after phase
 

@@ -9,6 +9,7 @@ from email import policy
 from email.header import decode_header, make_header
 from email.parser import BytesParser
 from email.utils import getaddresses, parsedate_to_datetime
+from html.parser import HTMLParser
 from typing import Any
 from urllib.parse import urlparse
 
@@ -55,6 +56,76 @@ SAFE_ATTRIBUTES = {
     "*": ["class"],
 }
 CONTROL_RE = re.compile(r"[\x00-\x1f\x7f]+")
+
+DROP_CONTENT_TAGS = frozenset({"head", "script", "style", "noscript", "template", "title"})
+SAFE_DATA_IMAGE_PREFIXES = (
+    "data:image/png;base64,",
+    "data:image/jpeg;base64,",
+    "data:image/gif;base64,",
+    "data:image/webp;base64,",
+)
+
+
+class _SanitizerPreprocessor(HTMLParser):
+    """Remove non-display/active blocks and unusable remote images before Bleach."""
+
+    def __init__(self) -> None:
+        super().__init__(convert_charrefs=False)
+        self.output: list[str] = []
+        self._suppressed_depth = 0
+
+    @staticmethod
+    def _safe_image(attrs: list[tuple[str, str | None]]) -> bool:
+        source = next((value or "" for name, value in attrs if name.lower() == "src"), "")
+        return source.lower().startswith(SAFE_DATA_IMAGE_PREFIXES)
+
+    def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+        lowered = tag.lower()
+        if self._suppressed_depth:
+            if lowered in DROP_CONTENT_TAGS:
+                self._suppressed_depth += 1
+            return
+        if lowered in DROP_CONTENT_TAGS:
+            self._suppressed_depth = 1
+            return
+        if lowered == "img" and not self._safe_image(attrs):
+            return
+        self.output.append(self.get_starttag_text() or f"<{lowered}>")
+
+    def handle_startendtag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+        lowered = tag.lower()
+        if self._suppressed_depth or lowered in DROP_CONTENT_TAGS:
+            return
+        if lowered == "img" and not self._safe_image(attrs):
+            return
+        self.output.append(self.get_starttag_text() or f"<{lowered}/>")
+
+    def handle_endtag(self, tag: str) -> None:
+        lowered = tag.lower()
+        if self._suppressed_depth:
+            if lowered in DROP_CONTENT_TAGS:
+                self._suppressed_depth -= 1
+            return
+        self.output.append(f"</{lowered}>")
+
+    def handle_data(self, data: str) -> None:
+        if not self._suppressed_depth:
+            self.output.append(data)
+
+    def handle_entityref(self, name: str) -> None:
+        if not self._suppressed_depth:
+            self.output.append(f"&{name};")
+
+    def handle_charref(self, name: str) -> None:
+        if not self._suppressed_depth:
+            self.output.append(f"&#{name};")
+
+
+def _prepare_html_for_sanitizer(value: str) -> str:
+    parser = _SanitizerPreprocessor()
+    parser.feed(value or "")
+    parser.close()
+    return "".join(parser.output)
 
 
 @dataclass(slots=True)
@@ -117,14 +188,7 @@ def _safe_attribute(tag: str, name: str, value: str) -> bool:
     if lowered.startswith("on") or lowered == "style":
         return False
     if tag == "img" and lowered == "src":
-        return value.lower().startswith(
-            (
-                "data:image/png;base64,",
-                "data:image/jpeg;base64,",
-                "data:image/gif;base64,",
-                "data:image/webp;base64,",
-            )
-        )
+        return value.lower().startswith(SAFE_DATA_IMAGE_PREFIXES)
     if tag == "a" and lowered == "href":
         parsed = urlparse(value)
         return parsed.scheme.lower() in {"", "http", "https", "mailto"}
@@ -139,11 +203,12 @@ def sanitize_html(value: str) -> str:
         strip=True,
         strip_comments=True,
     )
-    cleaned = cleaner.clean(value or "")
+    prepared = _prepare_html_for_sanitizer(value)
+    cleaned = cleaner.clean(prepared)
     return bleach.linkifier.Linker(
         callbacks=[bleach.callbacks.nofollow, bleach.callbacks.target_blank],
         parse_email=False,
-    ).linkify(cleaned)
+    ).linkify(cleaned).strip()
 
 
 def _decode_part(part) -> str:

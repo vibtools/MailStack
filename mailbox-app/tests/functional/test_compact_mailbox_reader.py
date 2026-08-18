@@ -55,7 +55,7 @@ def test_unified_reader_prefers_sanitized_html_and_preserves_sandbox(client, adm
     assert 'class="email-frame unified-email-frame"' in body
     assert 'sandbox=""' in body
     assert 'referrerpolicy="no-referrer"' in body
-    assert "Protected rendering" in body
+    assert "Protected rendering" not in body
     assert "Plain body" not in body
     assert "Plain text" not in body
     assert "Safe HTML" not in body

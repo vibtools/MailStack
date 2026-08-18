@@ -1,0 +1,24 @@
+From: Harpoon Example <sender@example.test>
+To: mailbox1@example.com
+Date: Tue, 18 Aug 2026 10:30:00 +0000
+Subject: Style-heavy HTML regression
+Message-ID: <style-heavy@example.test>
+MIME-Version: 1.0
+Content-Type: text/html; charset=utf-8
+
+<!doctype html>
+<html>
+<head>
+<style>
+#outlook a { padding: 0; }
+body { width: 100% !important; }
+.ReadMsgBody { width: 100%; }
+.ExternalClass { width: 100%; }
+</style>
+<script>alert(1)</script>
+</head>
+<body>
+<table><tr><td><h1>Welcome to Harpoon!</h1><p>This content must stay readable.</p></td></tr></table>
+<img src="https://tracker.example.test/open.gif" alt="intercom">
+</body>
+</html>

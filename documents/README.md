@@ -8,7 +8,7 @@ relevant user manual, how-to guide, or administrator guide.
 
 ```bash
 python scripts/manage_documents.py new-phase \
-  --phase-id PHASE-006 \
+  --phase-id PHASE-007 \
   --title "Feature title" \
   --summary "What the phase changes for users"
 
@@ -40,6 +40,7 @@ required documentation update.
 | [How to Use MailStack](HOW_TO_USE.md) | How To | mailbox-users-and-administrators | active | 1.3.3 |
 | [Documentation and Feature Baseline](phases/PHASE-000-BASELINE.md) | Phase | users-operators-and-maintainers | active | 1.3.3 |
 | [Installation, Recovery and Inbound Delivery Reliability](phases/PHASE-003-INSTALLATION-RECOVERY-AND-INBOUND-DELIVERY-RELIABILITY.md) | Phase | users-operators-and-maintainers | active | 1.3.3 |
+| [Reader Integrity, Data Repair and Runtime Error Closure](phases/PHASE-006-READER-INTEGRITY-DATA-REPAIR-AND-RUNTIME-ERROR-CLOSURE.md) | Phase | users-operators-and-maintainers | active | 1.3.3 |
 | [Release, Upgrade and Operational Reliability](phases/PHASE-004-RELEASE-UPGRADE-AND-OPERATIONAL-RELIABILITY.md) | Phase | users-operators-and-maintainers | active | 1.3.3 |
 | [Shared UI Foundation and Application Shell](phases/PHASE-002-SHARED-UI-FOUNDATION-AND-APPLICATION-SHELL.md) | Phase | users-operators-designers-and-maintainers | active | 1.3.3 |
 | [UI Design Intake Baseline](phases/PHASE-001-UI-DESIGN-INTAKE-BASELINE.md) | Phase | users-operators-designers-and-maintainers | active | 1.3.3 |
