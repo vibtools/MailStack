@@ -30,7 +30,7 @@ dependencies = [
   "Django==5.2.16",
   "argon2-cffi==25.1.0",
   "bleach==6.4.0",
-  "filelock==3.20.3",
+  "filelock==3.32.3",
   "gunicorn==25.1.0",
   "mysqlclient==2.2.7",
   "python-dotenv==1.2.2",
