@@ -4,7 +4,7 @@ title: MailStack User Manual
 document_type: user-manual
 audience: mailbox-users
 status: active
-version: 1.3.3
+version: 1.3.4-rc.1
 last_reviewed: 2026-08-18
 ---
 
@@ -61,7 +61,10 @@ The message screen uses one unified reader. If sanitized HTML is available it is
 automatically inside the existing sandboxed, no-referrer protected frame. If no sanitized HTML body
 is available, MailStack shows the indexed plain-text body as the readable fallback. There are no
 separate plain-text/HTML tabs. Remote and active HTML content remain blocked by the existing
-sanitizer and content-security policy.
+sanitizer and content-security policy. Style-heavy messages are sanitized so removed style/active
+blocks do not appear as raw CSS text, and blocked remote image nodes are omitted instead of being
+loaded automatically. The reader does not display a permanent security banner; the protections
+remain active silently.
 
 Sender identity is shown first, while full To/CC/mailbox/time/size/parse-status metadata is available
 from the expandable recipient summary. A delete action appears only when the current account has

@@ -56,6 +56,7 @@ REQUIRED = {
     "docs/RELEASE_NOTES_1.3.1.md",
     "docs/RELEASE_NOTES_1.3.2.md",
     "docs/RELEASE_NOTES_1.3.3.md",
+    "docs/RELEASE_NOTES_1.3.4.md",
     "documents/README.md",
     "documents/USER_MANUAL.md",
     "documents/HOW_TO_USE.md",

@@ -27,6 +27,14 @@ def test_clean_install_and_deploy_create_mail_roots():
     assert "UID/GID 5000" in deploy
 
 
+def test_gunicorn_25_control_socket_is_disabled_for_hardened_runtime():
+    config = read("gunicorn.conf.py")
+    gunicorn = read("deployment/systemd/vibmail-gunicorn.service")
+    assert "control_socket_disable = True" in config
+    assert "WorkingDirectory=/opt/vibmail/app" in gunicorn
+    assert "ProtectSystem=strict" in gunicorn
+
+
 def test_systemd_runtime_directories_are_isolated():
     gunicorn = read("deployment/systemd/vibmail-gunicorn.service")
     ingestion = read("deployment/systemd/vibmail-ingestion.service")

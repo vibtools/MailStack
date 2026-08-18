@@ -2,6 +2,26 @@
 
 All notable repository-level changes are recorded here. Application history before the open-source conversion remains in `mailbox-app/CHANGELOG.md`.
 
+## Unreleased — PHASE-006 reader integrity and repair
+
+### Corrected
+
+- Prevented stripped HTML `<style>`/head/active blocks from leaking CSS text into the visible message body while preserving the deny-by-default sanitizer posture.
+- Removed blocked remote image nodes so tracking/remote images do not leave broken-image residue in the protected reader.
+- Removed the permanent protected-rendering banner from the normal reader while retaining sandbox, no-referrer, sanitizer, URL and active-content restrictions.
+- Added a bounded, idempotent existing-message body repair path that re-parses verified Maildir source without delete/re-ingest behavior and preserves message identity/state/attachments.
+- Disabled the unused Gunicorn control interface through source-level configuration rather than weakening systemd filesystem confinement.
+
+### Verification state
+
+- Local PHASE-006 focused qualification: 60 tests passed; targeted Ruff, Bandit, Django system check and migration-drift gates passed.
+- PHASE-006 implementation commit `90175b7a4549cb67d874692081bd5b0484eddccc` passed GitHub Actions CI run `32183300485`.
+- Owner approved `1.3.4-rc.1` as the PHASE-006 live-acceptance pre-release identity; PR/main/tag publication and controlled live acceptance remain pending.
+
+### Compatibility
+
+- No database migration, Postfix/Dovecot/LMTP/Maildir routing change, authorization redesign, outbound feature, broad UI redesign, installer change, or version bump is included.
+
 ## 1.3.3 — PHASE-005A qualification correction
 
 ### Corrected

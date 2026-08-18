@@ -62,8 +62,25 @@ def test_sanitize_html_removes_active_and_remote_content():
     assert "onclick" not in lowered
     assert "javascript:" not in lowered
     assert "tracker.test" not in lowered
+    assert "alert(1)" not in lowered
+    assert "<img" in lowered
     assert "data:image/png;base64,aa==" in lowered
     assert "Text" in cleaned
+
+
+def test_sanitize_html_drops_style_block_text_and_remote_image_nodes():
+    cleaned = sanitize_html(
+        "<html><head><style>#outlook a{padding:0}.ReadMsgBody{width:100%}</style></head>"
+        "<body><p>Readable email content</p>"
+        "<img src='https://tracker.test/pixel.png' alt='intercom'></body></html>"
+    )
+    lowered = cleaned.lower()
+    assert "#outlook" not in lowered
+    assert ".readmsgbody" not in lowered
+    assert "tracker.test" not in lowered
+    assert "intercom" not in lowered
+    assert "<img" not in lowered
+    assert "Readable email content" in cleaned
 
 
 @pytest.mark.parametrize(
@@ -71,6 +88,7 @@ def test_sanitize_html_removes_active_and_remote_content():
     [
         "plain_text.eml",
         "html.eml",
+        "html_style_heavy.eml",
         "multipart_alternative.eml",
         "nested_multipart.eml",
         "utf8_subject.eml",
@@ -89,6 +107,18 @@ def test_parse_message_fixture_matrix(fixtures_dir: Path, fixture_name: str):
     assert isinstance(parsed.text_body, str)
     assert isinstance(parsed.sanitized_html_body, str)
     assert isinstance(parsed.warnings, list)
+
+
+def test_parse_message_style_heavy_html_is_readable_without_css_leak(fixtures_dir: Path):
+    parsed = parse_message((fixtures_dir / "html_style_heavy.eml").read_bytes())
+    lowered = parsed.sanitized_html_body.lower()
+    assert "Welcome to Harpoon!" in parsed.sanitized_html_body
+    assert "This content must stay readable." in parsed.sanitized_html_body
+    assert "#outlook" not in lowered
+    assert ".readmsgbody" not in lowered
+    assert "alert(1)" not in lowered
+    assert "tracker.example.test" not in lowered
+    assert "intercom" not in lowered
 
 
 def test_parse_message_extracts_headers_bodies_and_attachments(fixtures_dir: Path):

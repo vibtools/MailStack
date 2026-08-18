@@ -4,7 +4,7 @@ title: MailStack Administrator Guide
 document_type: admin-guide
 audience: mailstack-administrators
 status: active
-version: 1.3.3
+version: 1.3.4-rc.1
 last_reviewed: 2026-08-18
 ---
 
@@ -39,6 +39,27 @@ and leaves the local part permanently reserved.
 
 Review assignments before granting destructive permissions. Ordinary users can see only assigned
 mailboxes. Message and mailbox deletion controls remain hidden unless policy allows them.
+
+## Existing-message body repair
+
+After deploying a reader/sanitizer correction, already-indexed messages are repaired only through the
+maintained management command; normal duplicate ingestion does not rewrite an existing message body.
+Run a bounded dry-run first:
+
+```text
+python manage.py repair_message_bodies --dry-run --limit 500
+```
+
+After reviewing the result counters and errors, explicitly authorize the bounded mutation:
+
+```text
+python manage.py repair_message_bodies --confirm-repair --limit 500
+```
+
+Use `--mailbox <local-part>` or `--message <uuid>` for targeted repair. The command verifies the
+associated Maildir source and updates only parser-derived body fields. It must not delete/re-ingest
+messages or recreate attachments, and it preserves UUID, mailbox membership, read/unread state,
+deletion state, source identity and attachment records.
 
 ## Operational health
 
