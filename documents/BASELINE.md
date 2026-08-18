@@ -4,7 +4,7 @@ title: MailStack Baseline
 document_type: baseline
 audience: maintainers-and-operators
 status: active
-version: 1.3.2
+version: 1.3.3
 last_reviewed: 2026-08-18
 baseline_id: MAILSTACK-1.3.1-OFFICIAL-SOURCE-BASELINE-001
 source_commit: 039a6e6eea6e198b4b15612db9d2f208b6305a16
@@ -23,7 +23,7 @@ The current immutable official source/release baseline is
 
 The earlier published `v1.3.0-rc.4` baseline remains immutable historical release provenance. It is
 not rewritten or retagged by the 1.3.1 freeze. PHASE-005A starts from the exact 1.3.1 source tree and
-marks the approved development target as `1.3.2`; that working version does not replace this official
+records the failed first development target `1.3.2` and the corrected development target `1.3.3`; that working version does not replace this official
 baseline until its branch, PR, main, tag, release, and owner acceptance gates complete.
 
 ## Qualification status
@@ -48,8 +48,8 @@ attachments, live polling, audit logging, and established runtime identifiers. I
 submission, outbound sending, IMAP, POP3, public registration, campaigns, or multi-node operation.
 
 PHASE-005A is UI/presentation scoped. Its only server-side behavior exception is a narrow guard that
-requires the explicit MailStack background-request header before returning the live-update JSON
-payload. Models, migrations, parser/sanitizer policy, permissions, mail flow, deployment templates,
+accepts the explicit MailStack background-request header or the legacy JSON `Accept` signature before returning the live-update JSON
+payload, preserving cached-client compatibility while rejecting ordinary document navigation. Models, migrations, parser/sanitizer policy, permissions, mail flow, deployment templates,
 and operational upgrade/rollback semantics remain frozen.
 
 ## Change control

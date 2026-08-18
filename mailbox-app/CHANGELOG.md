@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.3.3 — PHASE-005A qualification correction (development)
+
+- Preserved legacy cached live-poller compatibility by accepting `Accept: application/json` as a background live request alongside the new explicit request header; ordinary document navigation remains redirected away from raw JSON.
+- Corrected PHASE-005A import-order lint findings; no mailbox business/data/security semantics changed.
+- Retained the compact inbox, unified safe message reader, sanitizer/sandbox controls, and receive-only architecture unchanged.
+
 ## 1.3.2 — PHASE-005A compact mailbox UI (development)
 
 - Prevented authenticated top-level navigation to the live-update transport from rendering raw JSON; MailStack JavaScript now sends an explicit background-request header and ordinary document requests return to the dashboard UI.

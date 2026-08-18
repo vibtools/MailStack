@@ -20,7 +20,6 @@ from apps.mailboxes.services import ProvisioningError, provision_mailbox
 from apps.messages.models import Attachment, Message
 from apps.messages.services import recalculate_mailbox_counters
 
-
 LIVE_HEADERS = {
     "HTTP_ACCEPT": "application/json",
     "HTTP_X_MAILSTACK_LIVE_REQUEST": "1",

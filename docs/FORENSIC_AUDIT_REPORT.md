@@ -1,10 +1,10 @@
-# Forensic audit report — MailStack 1.3.2 PHASE-005A development verification
+# Forensic audit report — MailStack 1.3.3 PHASE-005A correction verification
 
 **PHASE-005A audit date:** 2026-08-18
 **Immutable official baseline:** `v1.3.1` / `039a6e6eea6e198b4b15612db9d2f208b6305a16` / tree `9437ba2ebac2033a229accd190268b8711d5b26e`
-**Development target:** `1.3.2`
+**Corrected development target:** `1.3.3`
 **Target runtime:** Ubuntu Server 24.04 LTS and CPython 3.12
-**Current classification:** PHASE-005A locally structurally qualified; dependency-backed Python 3.12/GitHub CI and live-VPS acceptance pending
+**Current classification:** 1.3.2 qualification failed; 1.3.3 corrective candidate under requalification; live-VPS acceptance pending
 
 ## Executive disposition
 
@@ -205,6 +205,22 @@ privilege, systemd confinement, archive safety, checksum verification, and fail-
 6. Confirm copyright ownership and third-party license compatibility.
 7. Obtain final release-owner acceptance before promoting `1.3.0` stable.
 
+## PHASE-005A 1.3.2 failure and 1.3.3 corrective findings
+
+The Windows qualification captured Python 3.12.8, 202 passed plus one host-capability symlink skip,
+94.97% coverage, Django system-check PASS, no migration drift, dependency audit with no known
+vulnerabilities, Bandit PASS, and contact-service PASS. Ruff reported three `I001` import-order
+findings. The malformed prose-paste CMD handoff also created an unintended empty `85%` file. GitHub
+Actions run `32128090322` for commit `76540ccf48d1a4d44175b5e3b120e91d0b8c226e` failed in the
+source-safety audit because the extra file made `docs/FORENSIC_FILE_INVENTORY.json` stale, so later
+CI gates were skipped and that SHA is not qualified.
+
+A separate compatibility review found that the released Nginx static policy caches `/static/` for
+seven days with `immutable`, while the legacy poller sends `Accept: application/json` without the new
+custom header. Requiring only the custom header would therefore temporarily break live polling for
+a browser retaining old JavaScript across upgrade. The 1.3.3 guard accepts either trusted polling
+signature while continuing to reject ordinary document navigation.
+
 ## Final disposition
 
-Published `v1.3.1` is now the immutable official source/release baseline for PHASE-005A. The approved `1.3.2` development delta closes the raw-JSON document-navigation boundary and implements the compact inbox/unified message reader without changing receive-only business/data/mail-flow contracts. Local structural and deterministic-build gates pass; supported Python 3.12 dependency-backed regression, GitHub branch/PR/main CI, tag/release publication, and the later controlled existing-VPS upgrade remain explicit follow-on gates.
+Published `v1.3.1` remains the immutable official source/release baseline for PHASE-005A. The corrected `1.3.3` development delta closes the raw-JSON document-navigation boundary and implements the compact inbox/unified message reader without changing receive-only business/data/mail-flow contracts. Local structural and deterministic-build gates pass; supported Python 3.12 dependency-backed regression, GitHub branch/PR/main CI, tag/release publication, and the later controlled existing-VPS upgrade remain explicit follow-on gates.

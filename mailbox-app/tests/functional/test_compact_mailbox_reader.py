@@ -3,7 +3,6 @@ from __future__ import annotations
 import pytest
 from django.urls import reverse
 
-
 LIVE_HEADERS = {
     "HTTP_ACCEPT": "application/json",
     "HTTP_X_MAILSTACK_LIVE_REQUEST": "1",
@@ -23,6 +22,10 @@ def test_live_updates_require_background_request_header(client, admin_user):
     background = client.get(url, {"bootstrap": 1}, **LIVE_HEADERS)
     assert background.status_code == 200
     assert background["Content-Type"].startswith("application/json")
+
+    legacy = client.get(url, {"bootstrap": 1}, HTTP_ACCEPT="application/json")
+    assert legacy.status_code == 200
+    assert legacy["Content-Type"].startswith("application/json")
 
 
 @pytest.mark.django_db

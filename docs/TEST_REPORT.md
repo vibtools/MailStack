@@ -1,8 +1,8 @@
-# Test report — MailStack 1.3.2 PHASE-005A development verification
+# Test report — MailStack 1.3.3 PHASE-005A correction verification
 
 **PHASE-005A verification date:** 2026-08-18
 **Immutable published baseline:** `v1.3.1`
-**Development target:** `1.3.2`
+**Corrected development target:** `1.3.3`
 
 ## Authoritative released-RC4 application suite
 
@@ -221,4 +221,17 @@ The artifact environment does not contain supported CPython 3.12/Django/Ruff/Ban
 
 ## PHASE-005A live acceptance boundary
 
-No existing-VPS mutation is performed by this patch. After 1.3.2 branch/PR/main/tag/release qualification, the existing server should be upgraded once using the PHASE-004 controlled upgrade mechanism, followed by browser acceptance of compact inbox/message rendering, direct-live-route redirect behavior, live polling, and preserved real inbound mail flow.
+No existing-VPS mutation is performed by this patch. After 1.3.3 branch/PR/main/tag/release qualification, the existing server should be upgraded once using the PHASE-004 controlled upgrade mechanism, followed by browser acceptance of compact inbox/message rendering, direct-live-route redirect behavior, live polling, and preserved real inbound mail flow.
+
+## 1.3.2 failed qualification evidence
+
+The Windows Python 3.12.8 run collected 203 tests and completed with 202 passed, one symlink-capability
+skip, and 94.97% coverage. Django system check and migration drift checks passed; pip check, Bandit,
+pip-audit, contact-service, structural documentation/design/operations/release/upgrade contracts also
+passed. Ruff reported three `I001` import-order findings. The handoff transcript additionally shows an
+accidental empty `85%` file was staged and committed. GitHub Actions run `32128090322` failed at the
+source-safety inventory gate on that extra file, so the `1.3.2` branch SHA was never fully qualified.
+The later interrupted deterministic build is not counted as a PASS.
+
+The 1.3.3 corrective delta must run the complete qualification once after application. No previous
+`1.3.2` PASS is reused as final 1.3.3 qualification evidence.

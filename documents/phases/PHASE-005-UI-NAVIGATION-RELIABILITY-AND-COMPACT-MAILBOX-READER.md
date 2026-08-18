@@ -4,7 +4,7 @@ title: UI Navigation Reliability and Compact Mailbox Reader
 document_type: phase
 audience: users-operators-designers-and-maintainers
 status: active
-version: 1.3.2
+version: 1.3.3
 last_reviewed: 2026-08-18
 phase_id: PHASE-005
 ---
@@ -60,7 +60,7 @@ Maildir, MariaDB, public-site/contact behavior, deployment templates, installer,
 PHASE-004 upgrade/rollback semantics. No compose, reply, forward, sent, draft, IMAP, POP3, or public
 registration capability is added.
 
-The version-specific CI/release artifact paths are synchronized from `1.3.1` to the approved `1.3.2`
+The version-specific CI/release artifact paths are synchronized from `1.3.1` to the corrected `1.3.3`
 target so the existing release workflow verifies and publishes the correct deterministic artifact
 and release-note file. This is version metadata synchronization, not a release-workflow behavior
 redesign.
@@ -74,12 +74,29 @@ responsive CSS, existing live authorization and query-bound tests, the complete 
 Ruff, Bandit, dependency audit, Django/migration checks, documentation/design/inventory gates, full
 forensic audit, and deterministic source build/release verification. Local artifact qualification is
 not represented as live-VPS acceptance; the first existing-server update remains deferred until the
-1.3.2 release line is remotely qualified.
+1.3.3 release line is remotely qualified.
+
+## PHASE-005A qualification correction
+
+The first `1.3.2` branch qualification attempt is retained as failed development evidence rather than
+as a release baseline. Local testing found three Ruff `I001` import-order findings, and the Windows
+CMD handoff accidentally created an empty repository-root file named `85%` when explanatory text
+containing `>=85%` was pasted into `cmd.exe`. GitHub Actions run `32128090322` then failed closed in
+the source-safety gate because that extra file made the forensic inventory stale; later CI gates did
+not execute on that SHA.
+
+The `1.3.3` correction removes only that accidental file, normalizes the affected imports, regenerates
+the inventory/document metadata, and preserves the PHASE-005A runtime design. It also accepts the
+legacy `Accept: application/json` polling signature in addition to the new explicit live-request
+header so browsers holding the previously immutable-cached `app.js` do not temporarily lose live
+updates after upgrade. Ordinary browser document requests still redirect to the dashboard and do not
+receive raw JSON. No sanitizer, schema, authorization, mail-flow, deployment-template, or upgrade
+semantics are changed.
 
 ## Documentation impact
 
 This phase updates the root and application changelogs, README release status/build examples, user
 manual/how-to message-reading guidance, baseline record, UI implementation status, API/security and
-feature documentation, 1.3.2 release notes, build/publishing/release-process examples, generated
+feature documentation, 1.3.2 historical qualification notes, 1.3.3 correction release notes, build/publishing/release-process examples, generated
 documentation/design/forensic inventories, and this phase record. Historical `v1.3.1` release notes
 and immutable release artifacts are retained unchanged.

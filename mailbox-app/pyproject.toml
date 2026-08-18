@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "mailstack"
-version = "1.3.2"
+version = "1.3.3"
 description = "MailStack self-hosted receive-only mail server and shared team inbox"
 authors = [{ name = "Vib Tools" }]
 maintainers = [{ name = "Vib Tools" }]
@@ -63,6 +63,10 @@ exclude = ["migrations", "staticfiles", ".audit-venv", ".venv", "venv"]
 [tool.ruff.lint]
 select = ["E", "F", "I", "B", "S", "UP", "SIM", "C4"]
 ignore = ["S101", "S105", "S106"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["apps", "config"]
+known-third-party = ["django", "filelock", "pytest"]
 
 [tool.ruff.lint.per-file-ignores]
 "tests/**/*.py" = ["S", "B017"]

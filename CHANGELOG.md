@@ -2,6 +2,20 @@
 
 All notable repository-level changes are recorded here. Application history before the open-source conversion remains in `mailbox-app/CHANGELOG.md`.
 
+## 1.3.3 — PHASE-005A qualification correction
+
+### Corrected
+
+- Removed the accidental empty repository-root `85%` file created when non-comment CMD guidance containing `>=85%` was interpreted as output redirection.
+- Corrected PHASE-005A import-order lint findings and regenerated forensic/document metadata so source-safety and Ruff gates evaluate the intended source tree.
+- Preserved live updates for browsers that still hold the previously immutable-cached `app.js`: the live endpoint accepts either the new explicit `X-MailStack-Live-Request: 1` header or the legacy `Accept: application/json` poll signature, while ordinary document navigation continues to redirect to the dashboard instead of exposing raw JSON.
+- Replaced the prose-paste handoff with an executable Windows CMD script whose explanatory lines are `REM` comments and whose gates stop on failure.
+
+### Compatibility
+
+- No model, migration, parser/sanitizer, mailbox permission, ingestion, Postfix/Dovecot, Maildir, MariaDB, attachment, installer, deployment-template, backup/restore, or upgrade/rollback behavior changes.
+- Published `v1.3.1` remains immutable official release provenance; `1.3.2` is retained only as failed development-qualification history and is not promoted as a release baseline.
+
 ## 1.3.2 — PHASE-005A development
 
 ### UI navigation reliability

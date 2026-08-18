@@ -27,7 +27,6 @@ from apps.mailboxes.validators import confined_path
 from .models import Attachment
 from .services import set_message_read_state, soft_delete_message
 
-
 LIVE_UPDATE_HEADER = "X-MailStack-Live-Request"
 
 
@@ -199,11 +198,16 @@ def _iso(value):
     return value.isoformat() if value else None
 
 
+def _is_live_background_request(request) -> bool:
+    accepts_json = "application/json" in request.headers.get("Accept", "").lower()
+    return request.headers.get(LIVE_UPDATE_HEADER) == "1" or accepts_json
+
+
 @login_required
 @require_GET
 @never_cache
 def live_updates(request):
-    if request.headers.get(LIVE_UPDATE_HEADER) != "1":
+    if not _is_live_background_request(request):
         return redirect("dashboard:index")
 
     bootstrap = request.GET.get("bootstrap") == "1"
