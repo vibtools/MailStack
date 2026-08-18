@@ -28,7 +28,7 @@
 
 It combines **Postfix**, **Dovecot LMTP**, **Django**, **MariaDB**, **Maildir**, **Gunicorn**, and **Nginx** in a hardened single-node reference deployment. MailStack provides a private browser-based inbox, administrator-managed users, object-level mailbox access, safe email rendering, protected attachments, live inbox updates, operational audit logs, backup and restore tooling, a public website, and an isolated contact service.
 
-> **Release status:** `v1.3.0-rc.4` remains the latest published release candidate. The repository source baseline is now marked `1.3.1` for the PHASE-004C verification/fix freeze; this version is not yet a published GitHub release or a production-readiness claim. PHASE-003 staging validated real external SMTP/LMTP delivery after the accepted fixes; backup/restore, restart/reboot, clean-host, legal, and final release-owner acceptance remain separate operational gates.
+> **Release status:** `v1.3.1` is the current published, deterministic source/release baseline. PHASE-005A develops `1.3.2` from that exact frozen source to harden the live-update UI boundary and deliver a compact mailbox/unified message reader. The existing VPS has not yet been upgraded to this development line; live upgrade acceptance remains a separate post-release operational gate.
 
 ## Why MailStack
 
@@ -38,7 +38,7 @@ MailStack is designed for teams that need:
 - shared mailbox access with per-user authorization;
 - a receive-only mail security model;
 - durable Maildir storage and recoverable indexing;
-- protected attachment delivery and sanitized HTML email;
+- protected attachment delivery and unified sanitized-HTML/plain-text message reading;
 - auditable administration and operational recovery;
 - reproducible installation and release tooling.
 
@@ -52,7 +52,7 @@ MailStack is **not** intended to be a complete replacement for Gmail, Microsoft 
 - Object-level mailbox isolation
 - Shared mailbox memberships
 - Mailbox create, enable, disable, and soft-delete lifecycle
-- Search, pagination, read/unread state, and attachment filters
+- Compact webmail-style inbox with search, pagination, read/unread state, attachment filters, and message previews
 - Live inbox polling and browser notification support
 
 ### Receive-only mail stack
@@ -211,8 +211,8 @@ Build and verify a deterministic source release:
 ```bash
 python scripts/build_release.py --root .
 python scripts/verify_release.py \
-  dist/mailstack-1.3.1-source.zip \
-  --checksum dist/mailstack-1.3.1-source.zip.sha256
+  dist/mailstack-1.3.2-source.zip \
+  --checksum dist/mailstack-1.3.2-source.zip.sha256
 ```
 
 ## Security

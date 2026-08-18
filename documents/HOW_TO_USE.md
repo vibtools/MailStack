@@ -4,8 +4,8 @@ title: How to Use MailStack
 document_type: how-to
 audience: mailbox-users-and-administrators
 status: active
-version: 1.3.1
-last_reviewed: 2026-08-17
+version: 1.3.2
+last_reviewed: 2026-08-18
 ---
 
 # How to use MailStack
@@ -40,13 +40,20 @@ mailbox from the mailbox list.
 
 1. Open **Mailboxes** and select **Open inbox**.
 2. Search by sender address or subject when needed.
-3. Use the read-state filter for **Unread** or **Read** messages.
+3. Use the compact read-state filter for **Unread** or **Read** messages.
 4. Use the attachment filter for messages with or without attachments.
-5. Open a message to view its metadata, plain text, safe HTML, and attachments.
-6. Select **Mark unread** when the message should return to the unread queue.
+5. Select a compact message row. The row shows sender, subject, short preview, attachment/size
+   metadata, and received time.
+6. Read the message in the unified reader. Sanitized HTML is selected automatically when available;
+   otherwise the indexed plain-text body is shown.
+7. Expand the recipient summary when full To/CC/mailbox/time/size/status metadata is needed.
+8. Select **Mark unread** when the message should return to the unread queue.
 
-Opening a message marks it read. Live updates are available on an unfiltered first inbox page and
-on the dashboard.
+Opening a message marks it read. The visible plain-text/HTML format tabs have been removed; the
+existing sanitizer, sandbox, no-referrer policy, and remote/active-content blocking remain in force.
+Live updates are available on an unfiltered first inbox page and on the dashboard. Direct browser
+navigation to the internal live-update endpoint is returned to the application UI instead of
+displaying its JSON transport payload.
 
 ## Download an attachment
 

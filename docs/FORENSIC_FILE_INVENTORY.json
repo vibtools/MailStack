@@ -74,14 +74,14 @@
       "kind": "text",
       "lines": 135,
       "path": ".github/workflows/ci.yml",
-      "sha256": "3622f22f4aa5fa5d1bf89b17d7807cc6f837ec92d70229dbc35b284820419c71",
+      "sha256": "6f58707e6b18f9d547f69f56cce845dd06026d0632653750a10a8188b7789040",
       "size_bytes": 4291
     },
     {
       "kind": "text",
       "lines": 131,
       "path": ".github/workflows/release.yml",
-      "sha256": "a6543e8464e093e05d083f2d82566d9e209480778cf2689e30441d491955b53e",
+      "sha256": "6dc6bc0710efef665c8fa231f8c8374a56183a019da16467d68e5fe9c2585256",
       "size_bytes": 4418
     },
     {
@@ -93,10 +93,10 @@
     },
     {
       "kind": "text",
-      "lines": 131,
+      "lines": 151,
       "path": "CHANGELOG.md",
-      "sha256": "f2bcc49e9eeccf027add792cb3b10b2a2f579e13eedbf5163dc7d11b1b1c5d31",
-      "size_bytes": 12361
+      "sha256": "d9960e4890b04f2359b8c457f470a6c4c62e2bc6d9679866229bf8eff981b65b",
+      "size_bytes": 14517
     },
     {
       "kind": "text",
@@ -137,8 +137,8 @@
       "kind": "text",
       "lines": 314,
       "path": "README.md",
-      "sha256": "2b1c0efbecd82fe86822628a72a2db26c454758016d9c086633d1ac2a0db1980",
-      "size_bytes": 13196
+      "sha256": "fb764bb48c99a363b26f1ee6a557149815ec3d46cd1adb7ce1717318879a8ee5",
+      "size_bytes": 13192
     },
     {
       "kind": "text",
@@ -165,7 +165,7 @@
       "kind": "text",
       "lines": 1,
       "path": "VERSION",
-      "sha256": "10e2e117b01523891ca271a615ae36e9d5e52348fd7d642f66727602c1b8dcbe",
+      "sha256": "33158972a53877b421cfe2598b8d93cab169963a4964b45ee889e85349979018",
       "size_bytes": 6
     },
     {
@@ -277,8 +277,8 @@
       "kind": "text",
       "lines": 581,
       "path": "design/DESIGN_MANIFEST.json",
-      "sha256": "7192a7c8fd128c90fc58ad1609d21a1853ce0654d3f28a98ce30aa7727e4f069",
-      "size_bytes": 21138
+      "sha256": "b87143bec7894a6ebe012107267fe5b75b5076f408d527b931d49f7f0b70abfc",
+      "size_bytes": 21163
     },
     {
       "kind": "text",
@@ -439,10 +439,10 @@
     },
     {
       "kind": "text",
-      "lines": 27,
+      "lines": 29,
       "path": "docs/API_REFERENCE.md",
-      "sha256": "758f5e4e826fd4d51749016108e14efa6ba52a2ccecb96c0d9eb999417d25533",
-      "size_bytes": 1452
+      "sha256": "e92ea7f2e9146c6c6be9013d642396b953d9aa54cc6d080389dc7b56916f1f92",
+      "size_bytes": 1759
     },
     {
       "kind": "text",
@@ -469,8 +469,8 @@
       "kind": "text",
       "lines": 41,
       "path": "docs/BUILD.md",
-      "sha256": "76a2e43a20c3d2e9f0de047c21802d43cf68671eb127489f53b982eaf9780748",
-      "size_bytes": 1456
+      "sha256": "1f93f4276659039e52bf5fac2998e589f38604fa6268d512921b3c269c89031d",
+      "size_bytes": 1524
     },
     {
       "kind": "text",
@@ -516,10 +516,10 @@
     },
     {
       "kind": "text",
-      "lines": 26,
+      "lines": 27,
       "path": "docs/FEATURE_MATRIX.md",
-      "sha256": "4b01db4ee35b75ac02f20b173549792116265cbd592092bcf189a8ae3bee5ee4",
-      "size_bytes": 2531
+      "sha256": "26ceb61faf9a3106f8e3b03701fa537f875ff3a7282ab656da00317e13f11211",
+      "size_bytes": 2789
     },
     {
       "kind": "text",
@@ -537,10 +537,10 @@
     },
     {
       "kind": "text",
-      "lines": 209,
+      "lines": 210,
       "path": "docs/FORENSIC_AUDIT_REPORT.md",
-      "sha256": "71bf39fbd6550b6e6607281e2f82f411e0b4b03614e4a1754043edf7e17f7f0a",
-      "size_bytes": 12463
+      "sha256": "a543d05c28a8419d47cfe3e516721bd16aa560eacf0bdec5da322fc95c8aefe9",
+      "size_bytes": 13871
     },
     {
       "kind": "text",
@@ -623,8 +623,8 @@
       "kind": "text",
       "lines": 67,
       "path": "docs/PUBLISHING.md",
-      "sha256": "2ac720ae114b5d0dacf01330cd3fba4f8bab412af1aecb6742c75e4f33e7b90c",
-      "size_bytes": 3002
+      "sha256": "861a406a2e91e091eb46f901230b1a8fe69c1131a7e9e7574ab3973f9e1e8a49",
+      "size_bytes": 3040
     },
     {
       "kind": "text",
@@ -656,9 +656,16 @@
     },
     {
       "kind": "text",
+      "lines": 39,
+      "path": "docs/RELEASE_NOTES_1.3.2.md",
+      "sha256": "dd7e4445a6d6e406f108df9dff42c8babd62369583215caf898ef501bcab971c",
+      "size_bytes": 2291
+    },
+    {
+      "kind": "text",
       "lines": 16,
       "path": "docs/RELEASE_PROCESS.md",
-      "sha256": "40091dbd439861d5028c72d9d9b668f15dd71c8f48ddc3a7d9635a950dcc09db",
+      "sha256": "436000211130f1517148871ffd36bcb6e7c7361cc51ef77b4325ffebdd03fae9",
       "size_bytes": 1619
     },
     {
@@ -670,17 +677,17 @@
     },
     {
       "kind": "text",
-      "lines": 78,
+      "lines": 82,
       "path": "docs/SECURITY_REVIEW.md",
-      "sha256": "5932185782f375e75cbd931727004afdb68549d796cc000fd537dee4f404a12e",
-      "size_bytes": 5077
+      "sha256": "96fda3ff20b84dbfbfceffe0dd495c85b3db04d81eaf95772d6d462271bb7e77",
+      "size_bytes": 5869
     },
     {
       "kind": "text",
-      "lines": 194,
+      "lines": 224,
       "path": "docs/TEST_REPORT.md",
-      "sha256": "9fc597cae2aa5be46cc12e39ca3458e68f84060d1adfdee381352c77dad6f082",
-      "size_bytes": 10711
+      "sha256": "b7237075da6eeb7902c87e46a79f8c26f408883e99d66d2ba76ea0e5bc74b621",
+      "size_bytes": 13060
     },
     {
       "kind": "text",
@@ -707,134 +714,141 @@
       "kind": "text",
       "lines": 68,
       "path": "documents/ADMIN_GUIDE.md",
-      "sha256": "018a50bca6cc47ef51adda6104dc77a306aee87abeee7d9410f7f3f13e3182f3",
+      "sha256": "64f8ab643b67f0eab21d3f0848a38f4b1806a0282c0343669ab2f990a2585997",
       "size_bytes": 3850
     },
     {
       "kind": "text",
-      "lines": 70,
+      "lines": 64,
       "path": "documents/BASELINE.md",
-      "sha256": "5343fed8ab585b7f19341b7727e8dadb0279d3f3ee06dfb06992dd687e3fbeb8",
-      "size_bytes": 3847
+      "sha256": "19676a07732f1eda070e701d748a817a0e139f9a5c36d52213108fcdb6d728a4",
+      "size_bytes": 3441
     },
     {
       "kind": "text",
-      "lines": 221,
+      "lines": 233,
       "path": "documents/DOCUMENTATION_MANIFEST.json",
-      "sha256": "dd4967dcc579af807a16aaee228d8380d70bca7ed6e2944072f6ba15a5407795",
-      "size_bytes": 8339
+      "sha256": "e27310f50f53e515aebf6aac1e243fb85d6b124a1764cb9140678c8ab135cce8",
+      "size_bytes": 8904
     },
     {
       "kind": "text",
       "lines": 76,
       "path": "documents/DOCUMENTATION_POLICY.md",
-      "sha256": "c8910661b15e941c6e2db493973f6e3bdaeba64ad8554eb227d1245c8c20c9a5",
+      "sha256": "02d81a0b927e29e5f8beba1d462a4da2c4afb8c193b7dd6820afbde9ea50da76",
       "size_bytes": 3184
     },
     {
       "kind": "text",
-      "lines": 76,
+      "lines": 83,
       "path": "documents/HOW_TO_USE.md",
-      "sha256": "364f048cd26bd0f564f7a47c26b4624942981bbdf748d9ba7c28ceba705b65a5",
-      "size_bytes": 3248
+      "sha256": "71005407a86b1eaff19fc8e33ee2ae8c1b096d92f6fcc29c0fb41fbe7b744fcc",
+      "size_bytes": 3858
     },
     {
       "kind": "text",
-      "lines": 54,
+      "lines": 55,
       "path": "documents/README.md",
-      "sha256": "570e8b3d5c078a70fc346c9bb15d83adac28316f968944c71920e7212affa794",
-      "size_bytes": 3788
+      "sha256": "7fdcc1b001b808cd3203e458470b69d51a4ab1c61d385df70624e592fd774c1f",
+      "size_bytes": 3990
     },
     {
       "kind": "text",
-      "lines": 82,
+      "lines": 89,
       "path": "documents/USER_MANUAL.md",
-      "sha256": "778de1cec3ef89171fd2768064940c21c5f0d8f444e5376e4b43123cb3a58f13",
-      "size_bytes": 4213
+      "sha256": "a96cc95090f38bedf8b39faf16b101501eb81627ab88c719b27acc9674845149",
+      "size_bytes": 4835
     },
     {
       "kind": "text",
       "lines": 46,
       "path": "documents/design/ACCESSIBILITY_SPECIFICATION.md",
-      "sha256": "c9224cc17caca417a5eb0d363b7b472e250890edef028b01edc7d58cec753aa3",
+      "sha256": "750bea7e03091a4a672243110fe1a3a89d4da5b40cd90155bb4647974857c04b",
       "size_bytes": 2182
     },
     {
       "kind": "text",
       "lines": 55,
       "path": "documents/design/COMPONENT_MATRIX.md",
-      "sha256": "957a04577dc899fd9f457b59e029a1b4d50b6ab5c6089f6a415339cd20cbe5e5",
+      "sha256": "edc82f14189bb1ea8123c78cf80d48276fc3ddb2cc7d2ccb0e23943731b65405",
       "size_bytes": 3460
     },
     {
       "kind": "text",
       "lines": 52,
       "path": "documents/design/FUTURE_UI_ROADMAP.md",
-      "sha256": "078989742c6aab70840e48ccf887c472f538079e48a73811eb48b0506d9a413a",
+      "sha256": "0aadc7e4680adb0fb07dd6cdae68875a3dbc9a3f1e7760eeab7fb417b1302160",
       "size_bytes": 1562
     },
     {
       "kind": "text",
       "lines": 48,
       "path": "documents/design/IMPLEMENTATION_STATUS.md",
-      "sha256": "ad807f84993961013133f0c8e136c4fc5d636fd6051e352e6fb7d01b43e1be9f",
-      "size_bytes": 2513
+      "sha256": "d8ff3a004f5c62e1eedd8f3fa90f1c05a050672bbdcd6b8a0c1193804f4da3da",
+      "size_bytes": 2691
     },
     {
       "kind": "text",
       "lines": 51,
       "path": "documents/design/RESPONSIVE_SPECIFICATION.md",
-      "sha256": "b540f41863ec20c34871d1b0abf39517a40a2ec1a183128d8ce321e9d7a8867a",
+      "sha256": "38f12753650192b88316ff84c313cf72eae75681af459bd00388461e2baf8854",
       "size_bytes": 2022
     },
     {
       "kind": "text",
-      "lines": 62,
+      "lines": 65,
       "path": "documents/design/SCREEN_CATALOG.md",
-      "sha256": "0f45bcdddea7a40c6bcaa753bcc5b8d7c49a2d66f383003c87244ae865c007a6",
-      "size_bytes": 3287
+      "sha256": "2feb31f3b67fd0a4cdfd7c37216ffb431508192dfd111e19f681045c1616d378",
+      "size_bytes": 3480
     },
     {
       "kind": "text",
       "lines": 89,
       "path": "documents/design/UI_FOUNDATION.md",
-      "sha256": "38b97a9c193ad8a7a5b21d031535afa72b3e5fc3b9f6772abe37c1379dc0c459",
+      "sha256": "0e7b640bc0c57ac8f9450926580e853cbbb1d45edb853d1759dbf1461f5fa800",
       "size_bytes": 3753
     },
     {
       "kind": "text",
       "lines": 59,
       "path": "documents/phases/PHASE-000-BASELINE.md",
-      "sha256": "9c04cd5594cd07cc487f47fe7e6fd751775ba202232b84db3385e959f1ceba57",
+      "sha256": "e86a91e5e4196e17a228daebb7421c5cbe7efdd2ddd578584c3d69e398466023",
       "size_bytes": 2538
     },
     {
       "kind": "text",
       "lines": 68,
       "path": "documents/phases/PHASE-001-UI-DESIGN-INTAKE-BASELINE.md",
-      "sha256": "b30ca3041469b56b1c3256cab99d10b12f3d00241043cb449d466ecbde352154",
+      "sha256": "c5826cf4b4f48ca9e320fd631bf62a2b0f6cca506c69b1acaf39968db37db32a",
       "size_bytes": 2765
     },
     {
       "kind": "text",
       "lines": 98,
       "path": "documents/phases/PHASE-002-SHARED-UI-FOUNDATION-AND-APPLICATION-SHELL.md",
-      "sha256": "a1e2f224910ad0eea4d43f87f0734f3ecbd394e804497b7e6cc3c8a5ec2567dc",
+      "sha256": "d04b803df3cd1b3dc5733243b3499508895b3fb39ab5b9c87aa0e77e162c53cd",
       "size_bytes": 5488
     },
     {
       "kind": "text",
       "lines": 86,
       "path": "documents/phases/PHASE-003-INSTALLATION-RECOVERY-AND-INBOUND-DELIVERY-RELIABILITY.md",
-      "sha256": "2b63990b712eeab3c7e28f948385a3485667a4397a4c9f0b4a731e72165393df",
+      "sha256": "c32855febd8cbdc97ffa0caa24387fd1435eff881af83b12a2667af222ccb9cf",
       "size_bytes": 5050
     },
     {
       "kind": "text",
-      "lines": 142,
+      "lines": 153,
       "path": "documents/phases/PHASE-004-RELEASE-UPGRADE-AND-OPERATIONAL-RELIABILITY.md",
-      "sha256": "964c57e99da6bc7b63e5ee577129cf7aa45770e9bdc4c70e630bfac502dba828",
-      "size_bytes": 9368
+      "sha256": "f273699f2bcb25049569bda7dfdab4374840b325dc74dd3814a2f271bc524a73",
+      "size_bytes": 10061
+    },
+    {
+      "kind": "text",
+      "lines": 85,
+      "path": "documents/phases/PHASE-005-UI-NAVIGATION-RELIABILITY-AND-COMPACT-MAILBOX-READER.md",
+      "sha256": "d384752fa5f7c13fef71fdcf406254728a58e177330f097e0f73cacd0925d908",
+      "size_bytes": 4845
     },
     {
       "kind": "text",
@@ -881,10 +895,10 @@
     },
     {
       "kind": "text",
-      "lines": 88,
+      "lines": 95,
       "path": "mailbox-app/CHANGELOG.md",
-      "sha256": "c47ddb63ffb221477ce9d4901e14ad67a26870a4fbf1ffc2bc2514b5d1da6637",
-      "size_bytes": 5891
+      "sha256": "4b926fe8928cb947a97236668ece413874d5f2dc16d68731951569f99566e5cd",
+      "size_bytes": 6679
     },
     {
       "kind": "text",
@@ -2692,12 +2706,13 @@
     },
     {
       "kind": "text",
-      "lines": 268,
+      "lines": 295,
       "path": "mailbox-app/apps/messages/views.py",
       "python": {
         "classes": [],
         "functions": [
           "_iso",
+          "_message_preview",
           "attachment_download",
           "inbox",
           "live_updates",
@@ -2720,6 +2735,7 @@
           "django.http",
           "django.shortcuts",
           "django.urls",
+          "django.utils.html",
           "django.utils.http",
           "django.views.decorators.cache",
           "django.views.decorators.http",
@@ -2729,8 +2745,8 @@
         ],
         "methods": []
       },
-      "sha256": "3e3c99ee38ea3861bd3a2791b47c628d24ebd5bb8b6e46ea4b21931f5aa36c99",
-      "size_bytes": 10256
+      "sha256": "7e307f61f69e164d55c169159e7d22a003b64aaf55bb7df82a3b1fd971a3d395",
+      "size_bytes": 11379
     },
     {
       "kind": "text",
@@ -3175,7 +3191,7 @@
       "kind": "text",
       "lines": 80,
       "path": "mailbox-app/pyproject.toml",
-      "sha256": "adfb3bb65672b6c0723c80a73def340a586f4dff623a6f4b41dab44053fc9723",
+      "sha256": "9d08ee4ba7db435af9c6c9552f147a434d542a259b13190936de48a55ca36b2f",
       "size_bytes": 2408
     },
     {
@@ -3435,8 +3451,8 @@
       "kind": "text",
       "lines": 7,
       "path": "mailbox-app/static/css/app.css",
-      "sha256": "14abca400e3209482f0d6513dfcc926eaaff062259d523f79a9a304ed86da2f8",
-      "size_bytes": 12559
+      "sha256": "ddbcd7c0e3d350d33e822d3e09f163d76d69caa65363719c845dd9a7b4edb398",
+      "size_bytes": 17510
     },
     {
       "kind": "text",
@@ -3454,10 +3470,10 @@
     },
     {
       "kind": "text",
-      "lines": 512,
+      "lines": 523,
       "path": "mailbox-app/static/js/app.js",
-      "sha256": "7d3337241e78a772969ec37a41b69c9ea5f22a105a35f14fe12cb7b6f0f005dd",
-      "size_bytes": 18848
+      "sha256": "af0d95ec5651fb19b3481a0a341e8952232ed14d372e91041126f6ca1bed3042",
+      "size_bytes": 19142
     },
     {
       "kind": "text",
@@ -3545,17 +3561,17 @@
     },
     {
       "kind": "text",
-      "lines": 9,
+      "lines": 77,
       "path": "mailbox-app/templates/messages/detail.html",
-      "sha256": "a18ebccd77879c4e85f7919df3f9acc7b1804a7367d88ad21fbb6075296f67c5",
-      "size_bytes": 3355
+      "sha256": "d27e7ad4f252c22265e205867adbca51117e72a21518a6c5778eda4db1e2ca76",
+      "size_bytes": 4921
     },
     {
       "kind": "text",
-      "lines": 8,
+      "lines": 56,
       "path": "mailbox-app/templates/messages/inbox.html",
-      "sha256": "431984e878957fab3faea75cad364f2d2ecf50ad667fdc138ad6e209131d9f83",
-      "size_bytes": 2802
+      "sha256": "7bcb6c11b13bbab28d0669b243fe00d9c2f26780cfb74cf9c9df5ebf94b210a0",
+      "size_bytes": 3810
     },
     {
       "kind": "text",
@@ -3821,7 +3837,30 @@
     },
     {
       "kind": "text",
-      "lines": 54,
+      "lines": 89,
+      "path": "mailbox-app/tests/functional/test_compact_mailbox_reader.py",
+      "python": {
+        "classes": [],
+        "functions": [
+          "test_compact_inbox_renders_preview_without_legacy_body_tabs",
+          "test_live_payload_uses_html_text_as_preview_when_plain_body_is_missing",
+          "test_live_updates_require_background_request_header",
+          "test_plain_only_message_uses_unified_plain_fallback",
+          "test_unified_reader_prefers_sanitized_html_and_preserves_sandbox"
+        ],
+        "imports": [
+          "__future__",
+          "django.urls",
+          "pytest"
+        ],
+        "methods": []
+      },
+      "sha256": "318c3890d84942839a219f2b0bda7e890f17dd92db09b966e6f7aef6a7c4c8a9",
+      "size_bytes": 3333
+    },
+    {
+      "kind": "text",
+      "lines": 64,
       "path": "mailbox-app/tests/functional/test_responsive_and_routes.py",
       "python": {
         "classes": [],
@@ -3839,8 +3878,8 @@
         ],
         "methods": []
       },
-      "sha256": "cf0ec039b5ea829efcf6cdef5e823f6e7c89732eefc7e203cd66a5c44eaf780e",
-      "size_bytes": 1941
+      "sha256": "f1f1c3a525afeb9f39341725639b30e47d9236ce55b325392fc30a796f82225c",
+      "size_bytes": 2300
     },
     {
       "kind": "text",
@@ -3884,7 +3923,7 @@
     },
     {
       "kind": "text",
-      "lines": 281,
+      "lines": 284,
       "path": "mailbox-app/tests/integration/test_auth_views.py",
       "python": {
         "classes": [],
@@ -3918,8 +3957,8 @@
         ],
         "methods": []
       },
-      "sha256": "f3cfb0bbf7e95df33bdf6e7cc1097d64b9f6c2ec27beb7686b58ccd826dd0131",
-      "size_bytes": 11321
+      "sha256": "8b28feea3ff1269e42cd3f2107048ac9c5c45b25653465fa0e838fa55c0f08f6",
+      "size_bytes": 11479
     },
     {
       "kind": "text",
@@ -3990,7 +4029,7 @@
     },
     {
       "kind": "text",
-      "lines": 538,
+      "lines": 547,
       "path": "mailbox-app/tests/integration/test_v1_2_access_live_delete.py",
       "python": {
         "classes": [],
@@ -4050,8 +4089,8 @@
         ],
         "methods": []
       },
-      "sha256": "150ebedef70943178e56adcb618b0aa11c856d8b4c75495478db58b46b148caf",
-      "size_bytes": 21659
+      "sha256": "dead1a828d1b7cdac1cc0e45cfac06341efeaf12604fac2d1075e70f7df3e8fe",
+      "size_bytes": 21965
     },
     {
       "kind": "text",
@@ -4763,7 +4802,7 @@
     },
     {
       "kind": "text",
-      "lines": 406,
+      "lines": 407,
       "path": "scripts/forensic_audit.py",
       "python": {
         "classes": [],
@@ -4789,8 +4828,8 @@
         ],
         "methods": []
       },
-      "sha256": "5238686caff6906b9a69417df0cd0eb66a942d440fc13ceb9d80cc608bb9fc1e",
-      "size_bytes": 14867
+      "sha256": "2d70f1560a0a7da77a32ed78c37d33cd9038cb90903c50f9812848265f202136",
+      "size_bytes": 14902
     },
     {
       "kind": "text",
@@ -5162,12 +5201,12 @@
         ],
         "methods": []
       },
-      "sha256": "2796bcdb10d427c00d4bf778ab6281883f6cb7c479f2b430e15a072e96bffeee",
+      "sha256": "105ce11d3630675998878f2d0491637bb29b826e1f5ee0d95420ec0644ff05ea",
       "size_bytes": 6570
     },
     {
       "kind": "text",
-      "lines": 215,
+      "lines": 216,
       "path": "scripts/test_ui_foundation.py",
       "python": {
         "classes": [],
@@ -5191,8 +5230,8 @@
         ],
         "methods": []
       },
-      "sha256": "c77bf4bbdacc4848a0de4a271df9b8978b61b7b4da77737b4f6c2f3cc3e29eb8",
-      "size_bytes": 7417
+      "sha256": "1e555a71f80dee2ee53153f6df958c86e424ccba92ad83dbb44797f50a694462",
+      "size_bytes": 7473
     },
     {
       "kind": "text",
@@ -5274,7 +5313,7 @@
       "size_bytes": 6930
     }
   ],
-  "release_version": "1.3.1",
+  "release_version": "1.3.2",
   "schema_version": 1,
   "scope": "All maintained repository files excluding generated archives, caches, build output and this inventory file itself.",
   "self_entry": {
@@ -5283,15 +5322,15 @@
   },
   "summary": {
     "binary_files": 25,
-    "files": 411,
+    "files": 414,
     "python_classes": 76,
-    "python_files": 148,
-    "python_functions": 446,
+    "python_files": 149,
+    "python_functions": 452,
     "python_methods": 61,
     "shell_files": 15,
     "shell_functions": 41,
-    "text_files": 386,
-    "total_bytes": 31754565,
-    "total_text_lines": 28846
+    "text_files": 389,
+    "total_bytes": 31785732,
+    "total_text_lines": 29337
   }
 }

@@ -4,8 +4,8 @@ title: MailStack UI Screen Catalog
 document_type: design-reference
 audience: designers-developers-and-maintainers
 status: active
-version: 1.3.1
-last_reviewed: 2026-08-17
+version: 1.3.2
+last_reviewed: 2026-08-18
 ---
 
 # MailStack UI screen catalog
@@ -54,6 +54,9 @@ as implemented.
 The machine-readable authority is `design/DESIGN_MANIFEST.json`. Original misspellings and mixed
 capitalization remain only in immutable source filenames; display names and stable IDs are
 corrected in the catalog.
+
+PHASE-005A applies the current `UI-011` Inbox reference to a compact receive-only inbox and unified
+message reader. This does not activate any planned/future feature or outbound-mail control.
 
 ## Change control
 

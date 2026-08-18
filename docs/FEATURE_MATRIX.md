@@ -14,9 +14,10 @@ The open-source work was performed as an additive and compatibility-preserving c
 | Maildir ingestion and restart-safe duplicate protection | Preserved | Reliability, parser/storage, and ingestion tests |
 | Oversized-message handling | Preserved | Ingestion tests |
 | Safe MIME parsing and HTML sanitization | Preserved | Parser and security tests |
+| Unified message reader | Added presentation layer | Sanitized-HTML auto-selection, plain fallback, retained sandbox/no-referrer tests |
 | Attachment isolation and protected downloads | Preserved | Storage, authorization, and Nginx template checks |
-| Search, pagination, counters, read/unread state | Preserved | Message and integration tests |
-| Live inbox polling and new-message notification payloads | Preserved | Live-access integration tests |
+| Search, pagination, counters, read/unread state | Preserved with compact inbox presentation | Message and PHASE-005A functional/integration tests |
+| Live inbox polling and new-message notification payloads | Preserved and UI-guarded | Live-access tests plus direct-navigation/background-header PHASE-005A regression |
 | Audit trail and health endpoints | Preserved and hardened | Audit/service tests and production deploy checks |
 | Public static website | Preserved and parameterized | Public-site renderer and template audit |
 | CSRF-protected, rate-limited contact form | Preserved and parameterized | Contact-service test suite |

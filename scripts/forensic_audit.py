@@ -54,6 +54,7 @@ REQUIRED = {
     "docs/PERFORMANCE_REVIEW.md",
     "docs/RELEASE_NOTES_1.3.0.md",
     "docs/RELEASE_NOTES_1.3.1.md",
+    "docs/RELEASE_NOTES_1.3.2.md",
     "documents/README.md",
     "documents/USER_MANUAL.md",
     "documents/HOW_TO_USE.md",

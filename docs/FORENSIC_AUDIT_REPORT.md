@@ -1,10 +1,10 @@
-# Forensic audit report — MailStack 1.3.1 source baseline verification
+# Forensic audit report — MailStack 1.3.2 PHASE-005A development verification
 
-**PHASE-004C audit date:** 2026-08-17
-**Repository source-baseline version:** `1.3.1`
-**Latest published release candidate:** `v1.3.0-rc.4`
+**PHASE-005A audit date:** 2026-08-18
+**Immutable official baseline:** `v1.3.1` / `039a6e6eea6e198b4b15612db9d2f208b6305a16` / tree `9437ba2ebac2033a229accd190268b8711d5b26e`
+**Development target:** `1.3.2`
 **Target runtime:** Ubuntu Server 24.04 LTS and CPython 3.12
-**Current classification:** 1.3.1 owner-marked source-baseline correction locally structurally qualified; GitHub requalification and live PHASE-004D acceptance remain pending
+**Current classification:** PHASE-005A locally structurally qualified; dependency-backed Python 3.12/GitHub CI and live-VPS acceptance pending
 
 ## Executive disposition
 
@@ -176,6 +176,14 @@ findings, and the focused upgrade/archive/rollback contract suite. No live VPS u
 PHASE-004D is the real existing-server acceptance boundary. GitHub CI requalification remains pending
 after the PHASE-004C delta is applied and pushed.
 
+## PHASE-005A UI/navigation reliability boundary
+
+The PHASE-005A delta starts from the exact released 1.3.1 Git tree and is restricted to the mailbox/message presentation layer, the live-polling request header/guard, focused tests, version-specific CI/release metadata, and required documentation/manifests. It does not change models, migrations, parser/sanitizer rules, object authorization, message deletion semantics, attachment storage/download authorization, Postfix/Dovecot, Maildir, MariaDB, installer, deployment templates, backup/restore, or PHASE-004 upgrade/rollback behavior.
+
+The raw-JSON failure mode is closed by requiring `X-MailStack-Live-Request: 1` before the authenticated live endpoint returns JSON. MailStack JavaScript sends that header; ordinary authenticated document navigation redirects to the dashboard. The compact inbox and unified reader remove the visible body-format tabs while preserving the existing sanitized-HTML sandbox/no-referrer boundary and plain-text fallback.
+
+Dependency-free/local qualification completed with 18 managed documents/6 phases, 25 verified design PNGs, 4 documentation tests, 4 design tests, 8 UI-foundation contracts, 13 deployment templates, installer and operations contracts, 7 release-workflow contracts, upgrade/rollback contracts, generated forensic inventory, and a structural forensic scan of 415 files / 149 Python / 15 shell with zero blocking findings. The artifact environment has Python 3.13 only and no package-network access, so the supported Python 3.12 Django/Ruff/Bandit/pip-audit suite is not fabricated here and remains mandatory in the user's isolated environment and GitHub CI.
+
 ## Security review
 
 The RC4 source remains pinned to Django 5.2.16, Python 3.12, and `sqlparse==0.6.0`. The blocking
@@ -199,11 +207,4 @@ privilege, systemd confinement, archive safety, checksum verification, and fail-
 
 ## Final disposition
 
-The published `v1.3.0-rc.4` source is a qualified release candidate and is the official frozen source
-baseline for PHASE-004. PHASE-004A corrects the documentation evidence around that baseline but does
-not retroactively modify or retag RC4. The owner-marked working source baseline is `1.3.1` and remains unpublished. PHASE-004B branch CI
-has passed. PHASE-004C GitHub Actions run `32097491341` reached Ruff after all earlier gates passed,
-then failed on five style findings in the new archive verifier; downstream runtime/release gates were
-skipped. This scoped correction removes only those Ruff findings and synchronizes the requested 1.3.1
-baseline/release metadata. A fresh GitHub CI run is required before remote qualification, and no live
-upgrade is claimed until the separately approved PHASE-004D acceptance campaign.
+Published `v1.3.1` is now the immutable official source/release baseline for PHASE-005A. The approved `1.3.2` development delta closes the raw-JSON document-navigation boundary and implements the compact inbox/unified message reader without changing receive-only business/data/mail-flow contracts. Local structural and deterministic-build gates pass; supported Python 3.12 dependency-backed regression, GitHub branch/PR/main CI, tag/release publication, and the later controlled existing-VPS upgrade remain explicit follow-on gates.

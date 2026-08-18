@@ -21,6 +21,12 @@ from apps.messages.models import Attachment, Message
 from apps.messages.services import recalculate_mailbox_counters
 
 
+LIVE_HEADERS = {
+    "HTTP_ACCEPT": "application/json",
+    "HTTP_X_MAILSTACK_LIVE_REQUEST": "1",
+}
+
+
 @pytest.fixture
 def ordinary_user(db):
     return get_user_model().objects.create_user(
@@ -314,7 +320,7 @@ def test_attachment_access_is_scoped(client, ordinary_user, mailbox, message):
 def test_live_endpoint_bootstrap_then_returns_new_message(client, ordinary_user, assigned_mailbox):
     client.force_login(ordinary_user)
     url = reverse("messages:live_updates")
-    first = client.get(url, {"cursor": 0, "bootstrap": 1})
+    first = client.get(url, {"cursor": 0, "bootstrap": 1}, **LIVE_HEADERS)
     assert first.status_code == 200
     assert first.json()["messages"] == []
     assert "private" in first["Cache-Control"] and "no-store" in first["Cache-Control"]
@@ -329,7 +335,7 @@ def test_live_endpoint_bootstrap_then_returns_new_message(client, ordinary_user,
         parsed_at=timezone.now(),
     )
     recalculate_mailbox_counters(assigned_mailbox)
-    second = client.get(url, {"cursor": first.json()["cursor"]})
+    second = client.get(url, {"cursor": first.json()["cursor"]}, **LIVE_HEADERS)
     payload = second.json()
     assert [item["uuid"] for item in payload["messages"]] == [str(created.uuid)]
     assert payload["summary"]["total_unread"] == 1
@@ -353,7 +359,7 @@ def test_live_endpoint_never_leaks_unassigned_mailbox(client, ordinary_user, ass
         parsed_at=timezone.now(),
     )
     client.force_login(ordinary_user)
-    response = client.get(reverse("messages:live_updates"), {"cursor": 0})
+    response = client.get(reverse("messages:live_updates"), {"cursor": 0}, **LIVE_HEADERS)
     payload = response.json()
     assert [item["uuid"] for item in payload["messages"]] == [str(visible.uuid)]
     assert all(item["mailbox"] != private.email_address for item in payload["messages"])
@@ -375,6 +381,8 @@ def test_frontend_contains_live_polling_notifications_and_copy_controls():
     root = Path(__file__).resolve().parents[2]
     javascript = (root / "static" / "js" / "app.js").read_text(encoding="utf-8")
     assert 'params.set("bootstrap", "1")' in javascript
+    assert '"X-MailStack-Live-Request": "1"' in javascript
+    assert "data-tabs" not in javascript
     assert "Notification.requestPermission" in javascript
     assert "BroadcastChannel" in javascript
     assert "navigator.clipboard.writeText" in javascript
@@ -444,7 +452,7 @@ def test_live_endpoint_payload_is_bounded(client, admin_user, mailbox):
             parsed_at=timezone.now(),
         )
     client.force_login(admin_user)
-    payload = client.get(reverse("messages:live_updates"), {"cursor": 0}).json()
+    payload = client.get(reverse("messages:live_updates"), {"cursor": 0}, **LIVE_HEADERS).json()
     assert len(payload["messages"]) == 2
     assert payload["has_more"] is True
     assert len(payload["mailboxes"]) == 1
@@ -501,7 +509,7 @@ def test_live_endpoint_query_count_does_not_scale_with_mailboxes(client, ordinar
     )
     client.force_login(ordinary_user)
     with CaptureQueriesContext(connection) as queries:
-        response = client.get(reverse("messages:live_updates"), {"cursor": 0, "bootstrap": 1})
+        response = client.get(reverse("messages:live_updates"), {"cursor": 0, "bootstrap": 1}, **LIVE_HEADERS)
     assert response.status_code == 200
     assert len(queries) <= 12
 
@@ -533,6 +541,7 @@ def test_live_endpoint_returns_requested_visible_authorized_mailboxes(client, or
             "bootstrap": 1,
             "mailboxes": f"{visible.uuid},{hidden.uuid},not-a-uuid",
         },
+        **LIVE_HEADERS,
     ).json()
 
     assert [row["uuid"] for row in payload["mailboxes"]] == [str(visible.uuid)]

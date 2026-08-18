@@ -1,6 +1,13 @@
 # Changelog
 
-## 1.3.1 — Unpublished source baseline
+## 1.3.2 — PHASE-005A compact mailbox UI (development)
+
+- Prevented authenticated top-level navigation to the live-update transport from rendering raw JSON; MailStack JavaScript now sends an explicit background-request header and ordinary document requests return to the dashboard UI.
+- Rebuilt the inbox as a compact webmail-style list with short previews, unread emphasis, integrated filters, responsive rows, and live-row visual parity.
+- Replaced separate plain-text and safe-HTML tabs with one unified message reader that automatically uses the existing sanitized HTML sandbox when available and a plain-text fallback otherwise.
+- Preserved sanitizer/CSP/sandbox controls, models/migrations, authorization, mark-unread/delete semantics, attachment handling, ingestion, and receive-only mail flow.
+
+## 1.3.1 — 2026-08-18
 
 - PHASE-004C controlled existing-server upgrade tooling now verifies deterministic release ZIP/SHA assets, creates a coordinated data backup and source rollback snapshot before mutation, stages application/public-site source, converges Python dependencies, gates migrations explicitly, preserves mail-facing services during the source mutation window, and performs post-upgrade verification.
 - Added a reviewed source/runtime rollback command that verifies snapshot checksums and refuses implicit database/Maildir restoration or unacknowledged forward-schema rollback.

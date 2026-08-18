@@ -1,9 +1,77 @@
 {% extends "base.html" %}
 {% block title %}{{ email_message.subject|default:"Message" }} · MailStack{% endblock %}
 {% block content %}
-<div class="page-header"><div><div class="eyebrow">Received email</div><h1 class="wrap-anywhere">{{ email_message.subject|default:"(No subject)" }}</h1><p class="muted"><button type="button" class="copy-address" data-copy-email="{{ mailbox.email_address }}" title="Copy email address">{{ mailbox.email_address }}</button></p></div><a class="btn" href="{% url 'messages:inbox' mailbox.uuid %}">Return to inbox</a></div>
-<section class="panel message-meta"><dl><div><dt>From</dt><dd class="wrap-anywhere">{{ email_message.sender_name }} {% if email_message.sender_address %}&lt;{{ email_message.sender_address }}&gt; <button type="button" class="copy-mini" data-copy-email="{{ email_message.sender_address }}">Copy</button>{% endif %}</dd></div><div><dt>To</dt><dd class="wrap-anywhere">{{ email_message.recipient_addresses|join:", "|default:"Not available" }}</dd></div>{% if email_message.cc_addresses %}<div><dt>CC</dt><dd class="wrap-anywhere">{{ email_message.cc_addresses|join:", " }}</dd></div>{% endif %}<div><dt>Received</dt><dd>{{ email_message.received_at|date:"Y-m-d H:i:s T"|default:"Unknown" }}</dd></div><div><dt>Size</dt><dd>{{ email_message.size_bytes|filesizeformat }}</dd></div><div><dt>Status</dt><dd><span class="badge badge-{{ email_message.parse_status }}">{{ email_message.get_parse_status_display }}</span> · Read</dd></div></dl>{% if email_message.parse_warning %}<div class="alert alert-warning"><strong>Parsing warning:</strong> {{ email_message.parse_warning }}</div>{% endif %}</section>
-<div class="toolbar"><form method="post" action="{% url 'messages:mark_state' mailbox.uuid email_message.uuid %}">{% csrf_token %}<input type="hidden" name="state" value="unread"><button class="btn" type="submit">Mark unread</button></form>{% if can_delete_message %}<a class="btn btn-danger" href="{% url 'messages:delete' mailbox.uuid email_message.uuid %}">Delete message</a>{% endif %}</div>
-<section class="panel"><div class="tabs" data-tabs><button class="tab-button active" type="button" data-tab-target="plain">Plain text</button><button class="tab-button" type="button" data-tab-target="html">Safe HTML</button></div><div id="tab-plain" class="tab-panel active"><pre class="email-text">{{ email_message.text_body|default:"No plain-text body is available." }}</pre></div><div id="tab-html" class="tab-panel"><iframe class="email-frame" title="Sanitized HTML email" sandbox="" referrerpolicy="no-referrer" loading="lazy" src="{% url 'messages:safe_html' email_message.uuid %}"></iframe></div></section>
-<section class="panel"><div class="panel-header"><h2>Attachments</h2><span class="muted">Not antivirus scanned</span></div>{% if email_message.attachments.all %}<div class="attachment-list">{% for attachment in email_message.attachments.all %}<div class="attachment-row"><div class="truncate"><strong>{{ attachment.safe_filename }}</strong><small>{{ attachment.detected_mime_type }} · {{ attachment.size_bytes|filesizeformat }}</small></div><a class="btn btn-small" href="{% url 'messages:attachment_download' mailbox.uuid email_message.uuid attachment.uuid %}">Download</a></div>{% endfor %}</div>{% else %}<div class="empty-state">No attachments.</div>{% endif %}</section>
+<article class="message-reader" aria-labelledby="message-subject">
+  <header class="message-reader-header">
+    <div class="message-reader-toolbar">
+      <a class="message-back-link" href="{% url 'messages:inbox' mailbox.uuid %}">← Inbox</a>
+      <div class="message-actions">
+        <form method="post" action="{% url 'messages:mark_state' mailbox.uuid email_message.uuid %}">
+          {% csrf_token %}
+          <input type="hidden" name="state" value="unread">
+          <button class="btn btn-small" type="submit">Mark unread</button>
+        </form>
+        {% if can_delete_message %}<a class="btn btn-small btn-danger" href="{% url 'messages:delete' mailbox.uuid email_message.uuid %}">Delete</a>{% endif %}
+      </div>
+    </div>
+
+    <h1 id="message-subject" class="message-reader-subject wrap-anywhere">{{ email_message.subject|default:"(No subject)" }}</h1>
+
+    <div class="message-sender-card">
+      <div class="message-avatar" aria-hidden="true">{{ email_message.sender_name|default:email_message.sender_address|default:"?"|slice:":1"|upper }}</div>
+      <div class="message-sender-identity">
+        <div class="message-sender-primary wrap-anywhere">
+          <strong>{{ email_message.sender_name|default:email_message.sender_address|default:"Unknown sender" }}</strong>
+          {% if email_message.sender_address and email_message.sender_name %}<span>&lt;{{ email_message.sender_address }}&gt;</span>{% endif %}
+          {% if email_message.sender_address %}<button type="button" class="copy-mini" data-copy-email="{{ email_message.sender_address }}">Copy</button>{% endif %}
+        </div>
+        <details class="message-routing-details">
+          <summary>to {{ email_message.recipient_addresses|join:", "|default:mailbox.email_address }}</summary>
+          <dl>
+            <div><dt>From</dt><dd class="wrap-anywhere">{{ email_message.sender_name }}{% if email_message.sender_address %} &lt;{{ email_message.sender_address }}&gt;{% endif %}</dd></div>
+            <div><dt>To</dt><dd class="wrap-anywhere">{{ email_message.recipient_addresses|join:", "|default:"Not available" }}</dd></div>
+            {% if email_message.cc_addresses %}<div><dt>CC</dt><dd class="wrap-anywhere">{{ email_message.cc_addresses|join:", " }}</dd></div>{% endif %}
+            <div><dt>Mailbox</dt><dd><button type="button" class="copy-address" data-copy-email="{{ mailbox.email_address }}">{{ mailbox.email_address }}</button></dd></div>
+            <div><dt>Received</dt><dd>{{ email_message.received_at|date:"Y-m-d H:i:s T"|default:"Unknown" }}</dd></div>
+            <div><dt>Size</dt><dd>{{ email_message.size_bytes|filesizeformat }}</dd></div>
+            <div><dt>Status</dt><dd>{{ email_message.get_parse_status_display }}</dd></div>
+          </dl>
+        </details>
+      </div>
+      <time class="message-reader-time" datetime="{{ email_message.received_at|date:'c' }}">{{ email_message.received_at|date:"M d, Y H:i"|default:"Unknown date" }}</time>
+    </div>
+
+    {% if email_message.parse_warning %}<div class="message-inline-warning" role="note"><strong>Parsing warning:</strong> {{ email_message.parse_warning }}</div>{% endif %}
+  </header>
+
+  <section class="message-body" aria-label="Email body">
+    {% if email_message.sanitized_html_body %}
+      <div class="message-security-note" role="note">Protected rendering · remote and active content are blocked.</div>
+      <iframe class="email-frame unified-email-frame" title="Email message content" sandbox="" referrerpolicy="no-referrer" loading="eager" src="{% url 'messages:safe_html' email_message.uuid %}"></iframe>
+    {% elif email_message.text_body %}
+      <div class="email-plain-body">{{ email_message.text_body }}</div>
+    {% else %}
+      <div class="empty-state message-empty-body">No readable message body is available.</div>
+    {% endif %}
+  </section>
+
+  <section class="message-attachments" aria-labelledby="attachments-heading">
+    <div class="message-attachments-header">
+      <h2 id="attachments-heading">Attachments</h2>
+      <span class="muted">Not antivirus scanned</span>
+    </div>
+    {% if email_message.attachments.all %}
+      <div class="attachment-list">
+        {% for attachment in email_message.attachments.all %}
+        <div class="attachment-row">
+          <div class="truncate"><strong>{{ attachment.safe_filename }}</strong><small>{{ attachment.detected_mime_type }} · {{ attachment.size_bytes|filesizeformat }}</small></div>
+          <a class="btn btn-small" href="{% url 'messages:attachment_download' mailbox.uuid email_message.uuid attachment.uuid %}">Download</a>
+        </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="message-no-attachments">No attachments.</div>
+    {% endif %}
+  </section>
+</article>
 {% endblock %}

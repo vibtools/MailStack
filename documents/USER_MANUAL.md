@@ -4,8 +4,8 @@ title: MailStack User Manual
 document_type: user-manual
 audience: mailbox-users
 status: active
-version: 1.3.1
-last_reviewed: 2026-08-17
+version: 1.3.2
+last_reviewed: 2026-08-18
 ---
 
 # MailStack user manual
@@ -52,15 +52,22 @@ reserved and cannot be recreated accidentally.
 
 ## Messages
 
-Inside a mailbox, search by sender or subject and filter by read state or attachment presence.
-Opening a message marks it read. Use **Mark unread** to return it to the unread state. The message
-screen shows sender, recipients, received time, size, parse status, plain text, sanitized HTML, and
-available attachments.
+Inside a mailbox, search by sender or subject and filter by read state or attachment presence from
+the compact toolbar. Inbox rows emphasize unread mail and show sender, subject, a short body preview,
+attachment/size metadata, and received time in one dense webmail-style list. Opening a message marks
+it read; use **Mark unread** in the message header to return it to the unread queue.
 
-Sanitized HTML is displayed in a sandboxed frame with remote and active content blocked. A delete
-button appears only when the current account has permission. Message deletion removes the indexed
-application record from normal use while preserving the source email according to the current
-retention design.
+The message screen uses one unified reader. If sanitized HTML is available it is selected
+automatically inside the existing sandboxed, no-referrer protected frame. If no sanitized HTML body
+is available, MailStack shows the indexed plain-text body as the readable fallback. There are no
+separate plain-text/HTML tabs. Remote and active HTML content remain blocked by the existing
+sanitizer and content-security policy.
+
+Sender identity is shown first, while full To/CC/mailbox/time/size/parse-status metadata is available
+from the expandable recipient summary. A delete action appears only when the current account has
+permission. Message deletion removes the indexed application record from normal use while preserving
+the source email according to the current retention design. Attachments remain explicit downloads and
+are labeled as not antivirus scanned.
 
 ## Notifications
 
