@@ -1,10 +1,10 @@
 # Forensic audit report — MailStack 1.3.0 RC5 development baseline
 
-**PHASE-004B audit date:** 2026-08-17
+**PHASE-004C audit date:** 2026-08-17
 **Repository development version:** `1.3.0-rc.5`
 **Latest published release candidate:** `v1.3.0-rc.4`
 **Target runtime:** Ubuntu Server 24.04 LTS and CPython 3.12
-**Current classification:** RC4 release qualification finalized; PHASE-004A branch CI passed; RC5 PHASE-004B requalification pending
+**Current classification:** RC4 official baseline preserved; PHASE-004A/004B branch qualification passed; PHASE-004C locally source-qualified and pending GitHub requalification
 
 ## Executive disposition
 
@@ -33,14 +33,20 @@
 | PHASE-004A branch GitHub CI run `32087558399` | PASS |
 | PHASE-004B release automation contracts | PASS locally — 7 focused contracts |
 | PHASE-004B structural forensic audit | PASS locally — 407 files, 146 Python, 13 shell, zero blocking findings |
-| PHASE-004B GitHub branch CI | PENDING after delta apply/push |
+| PHASE-004B GitHub branch CI run `32093468669` | PASS — exact commit `ee90764335f8724727cea86e0af035c049c79e62` |
+| PHASE-004C upgrade/archive/rollback contracts | PASS locally |
+| PHASE-004C structural forensic audit | PASS locally — 411 files, 148 Python, 15 shell, zero blocking findings |
+| PHASE-004C live existing-server upgrade | NOT EXECUTED — reserved for PHASE-004D |
+| PHASE-004C GitHub branch CI | PENDING after delta apply/push |
 
 **OFFICIAL_RC4_SOURCE_BASELINE:** PASS
 **RC4_OPEN_SOURCE_RELEASE_CANDIDATE:** PASS
 **PHASE_004A_REMOTE_QUALIFICATION:** PASS — branch CI `32087558399`
 **PHASE_004B_LOCAL_QUALIFICATION:** PASS
-**PHASE_004B_REMOTE_QUALIFICATION:** PENDING GITHUB CI
-**RC5_DEVELOPMENT_REQUALIFICATION:** PENDING PHASE-004B GITHUB CI
+**PHASE_004B_REMOTE_QUALIFICATION:** PASS — branch CI `32093468669`
+**PHASE_004C_LOCAL_QUALIFICATION:** PASS
+**PHASE_004C_REMOTE_QUALIFICATION:** PENDING GITHUB CI
+**RC5_DEVELOPMENT_REQUALIFICATION:** PENDING PHASE-004C GITHUB CI
 **STABLE_PRODUCTION_ACCEPTANCE:** PENDING
 
 ## Official RC4 baseline identity
@@ -143,7 +149,32 @@ verified-build job plus a tag-only publication job with `actions: read` and `con
 Publication requires matching VERSION/package/tag identity, the exact current `main` head, successful
 `main` push CI for the tagged SHA, and proof that no release already exists. Deterministic ZIP/SHA
 assets are published without `--clobber` or release editing. Manual dispatch remains build-only.
-No application/runtime/deployment/VPS behavior is changed.
+GitHub branch CI run `32093468669` passed this boundary on exact commit
+`ee90764335f8724727cea86e0af035c049c79e62`, including 198 application tests at 95.00 percent coverage,
+seven release-workflow contracts, zero-blocking full forensic audit, and deterministic source
+build/verification with SHA-256 `fdfff6c1e4ec409d950e3d612be1feab1ac7987f8d436c3ef3c0fc6ee1865bb5`.
+
+## PHASE-004C existing-server upgrade/rollback boundary
+
+PHASE-004C adds operational source/runtime tooling without changing Django application behavior,
+schema, Postfix/Dovecot routing, deployment templates, DNS, TLS, or the existing VPS. The generic
+upgrader requires both deterministic release assets, validates canonical ZIP/source-manifest and
+version identity, rejects same/downgrade and migration-history rewrites, acquires a runtime lock,
+creates a source snapshot plus the maintained consistent data backup before mutation, stages source
+outside the live tree, converges application/public-site dependencies, and runs post-upgrade
+verification. New migration files require explicit acknowledgement.
+
+After the pre-upgrade consistent backup returns, the source mutation window stops Gunicorn, ingestion,
+and the contact worker while leaving Postfix and Dovecot active so accepted messages can accumulate
+in Maildir. For a no-new-migration target, source/runtime failure recovery can restore the prior app
+and public-site pointer. Once a migration-capable upgrade begins schema mutation, automatic source or
+database rollback is refused; the coordinated backup/snapshot are reported for reviewed reconciliation.
+The standalone rollback command never restores MariaDB or Maildir implicitly.
+
+The PHASE-004C local structural audit passed 411 files, 148 Python files, 15 shell files, zero blocking
+findings, and the focused upgrade/archive/rollback contract suite. No live VPS upgrade is claimed;
+PHASE-004D is the real existing-server acceptance boundary. GitHub CI requalification remains pending
+after the PHASE-004C delta is applied and pushed.
 
 ## Security review
 
@@ -170,5 +201,6 @@ privilege, systemd confinement, archive safety, checksum verification, and fail-
 
 The published `v1.3.0-rc.4` source is a qualified release candidate and is the official frozen source
 baseline for PHASE-004. PHASE-004A corrects the documentation evidence around that baseline but does
-not retroactively modify or retag RC4. The working repository version `1.3.0-rc.5` remains a
-development candidate until its branch GitHub CI passes.
+not retroactively modify or retag RC4. The working repository version `1.3.0-rc.5` remains a development candidate. PHASE-004B branch CI
+has passed, while PHASE-004C still requires dependency-backed GitHub CI and no live upgrade is claimed
+until the separately approved PHASE-004D acceptance campaign.

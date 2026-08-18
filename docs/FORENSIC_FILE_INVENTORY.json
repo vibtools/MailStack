@@ -72,10 +72,10 @@
     },
     {
       "kind": "text",
-      "lines": 132,
+      "lines": 135,
       "path": ".github/workflows/ci.yml",
-      "sha256": "96046dd5a995af85fdda2987727eb18687affd1d16e652eddf43bd4f32d77177",
-      "size_bytes": 4206
+      "sha256": "29e68ada609952c8d3d2c958b6298f1fb5ed5149bf5a2c8d72498b429d6aa11a",
+      "size_bytes": 4301
     },
     {
       "kind": "text",
@@ -93,10 +93,10 @@
     },
     {
       "kind": "text",
-      "lines": 117,
+      "lines": 125,
       "path": "CHANGELOG.md",
-      "sha256": "089e1b03250a3cfd78f0f304daf646fbb3a4336b9d112b997c79b46c8b883a2a",
-      "size_bytes": 10254
+      "sha256": "77076ab4fa3602cd3770c6208a82386e1594616a13d9f8b5bf690c10f4878f49",
+      "size_bytes": 11553
     },
     {
       "kind": "text",
@@ -453,10 +453,10 @@
     },
     {
       "kind": "text",
-      "lines": 43,
+      "lines": 57,
       "path": "docs/BACKUP_RESTORE.md",
-      "sha256": "48f16eca276d263122acaabfb6f4b1ee26519b968670643effaaa17aa61f75fc",
-      "size_bytes": 2097
+      "sha256": "bee325fd49907c223f1c7031c570319fafd2c5728f70ff131d8f6ad3a03a9ff5",
+      "size_bytes": 2990
     },
     {
       "kind": "text",
@@ -537,10 +537,10 @@
     },
     {
       "kind": "text",
-      "lines": 174,
+      "lines": 206,
       "path": "docs/FORENSIC_AUDIT_REPORT.md",
-      "sha256": "0b890c9ad3ee692d1883621e57f5dadb09e7d0184c4d7a66007ff58faaf86039",
-      "size_bytes": 9483
+      "sha256": "02abfd11d1ed31948bc8249d496ba042ff9f2268de7109c99a987656dd53e10f",
+      "size_bytes": 12139
     },
     {
       "kind": "text",
@@ -593,10 +593,10 @@
     },
     {
       "kind": "text",
-      "lines": 51,
+      "lines": 77,
       "path": "docs/OPERATIONS.md",
-      "sha256": "25d347928a3b5ad7884632b19f3221160d4b1dffe867361831e126cd88eae660",
-      "size_bytes": 1772
+      "sha256": "1264661dafb912103cdb1921c518bdb152b60dbda115037d8ebccd27a87726d4",
+      "size_bytes": 2719
     },
     {
       "kind": "text",
@@ -642,10 +642,10 @@
     },
     {
       "kind": "text",
-      "lines": 109,
+      "lines": 117,
       "path": "docs/RELEASE_NOTES_1.3.0.md",
-      "sha256": "ff942f681e2b4f87c0d90c0c7ca8f40cfc3d0ef6c3151298a72308b117b402f4",
-      "size_bytes": 7312
+      "sha256": "341b3656b21ccbcf7fb11b1f537d418df995d950e09c400d228abdafd2acde2e",
+      "size_bytes": 8304
     },
     {
       "kind": "text",
@@ -670,10 +670,10 @@
     },
     {
       "kind": "text",
-      "lines": 144,
+      "lines": 176,
       "path": "docs/TEST_REPORT.md",
-      "sha256": "589c7fbc9d8149a00abfeccabefd6c55966c2ecd802d32bfb4492437fa6b9358",
-      "size_bytes": 7306
+      "sha256": "89bb9ba2d85ba7fcd0f19926527ece7da5aeda3e2bd68f29b2b9e47c1edbf140",
+      "size_bytes": 9468
     },
     {
       "kind": "text",
@@ -691,10 +691,10 @@
     },
     {
       "kind": "text",
-      "lines": 12,
+      "lines": 155,
       "path": "docs/UPGRADE.md",
-      "sha256": "b5dcb27cdd26d5730f65f09df15b4544865ed504ce68d80346e0c931031c4949",
-      "size_bytes": 848
+      "sha256": "5b70ed1fc640b7e723f2fc551285971791d6d6b80a2e56e401e0d12d19fdd3dc",
+      "size_bytes": 7025
     },
     {
       "kind": "text",
@@ -714,7 +714,7 @@
       "kind": "text",
       "lines": 221,
       "path": "documents/DOCUMENTATION_MANIFEST.json",
-      "sha256": "89d85be3dbbbedfe41cc1c6a9f67ae73da0ce4699b95cbc3287148b7010a31ed",
+      "sha256": "cc14ac4f645f9fcadefc0e5847856919abbc92d91e60774a7622794da0e2a980",
       "size_bytes": 8429
     },
     {
@@ -824,10 +824,10 @@
     },
     {
       "kind": "text",
-      "lines": 91,
+      "lines": 126,
       "path": "documents/phases/PHASE-004-RELEASE-UPGRADE-AND-OPERATIONAL-RELIABILITY.md",
-      "sha256": "a5205df42de3faca80f7107405704dd2f79200b9340d66d493f814eb70d5d6b3",
-      "size_bytes": 5265
+      "sha256": "b3cef810cf4dfa826f079546b795c27dcb9ab89068f40bada5b048726e7eefb4",
+      "size_bytes": 8284
     },
     {
       "kind": "text",
@@ -874,10 +874,10 @@
     },
     {
       "kind": "text",
-      "lines": 81,
+      "lines": 87,
       "path": "mailbox-app/CHANGELOG.md",
-      "sha256": "7268a8a324e36a8c3e6792db622891950e3a5fc225a0f0f3c0269f9cecf98e06",
-      "size_bytes": 5156
+      "sha256": "73caea1e6b61cc5224811f79cac5f705115bbb49c360b9ec4084c42022e9a3d0",
+      "size_bytes": 5757
     },
     {
       "kind": "text",
@@ -3301,6 +3301,34 @@
     },
     {
       "kind": "text",
+      "lines": 159,
+      "path": "mailbox-app/scripts/rollback_upgrade.sh",
+      "sha256": "ce43c49d90cbd70765075b8a0ccde9d1676cefeb134ba63df3f9e1eb817ea40d",
+      "shell_functions": [
+        "die",
+        "run_app",
+        "usage",
+        "validate_tar_archive"
+      ],
+      "size_bytes": 6050
+    },
+    {
+      "kind": "text",
+      "lines": 348,
+      "path": "mailbox-app/scripts/upgrade.sh",
+      "sha256": "8df2094eaf3fba06baa1197b82e33350c27ab92edbc6bdee0aada6a888782915",
+      "shell_functions": [
+        "cleanup_stage",
+        "die",
+        "restore_pre_upgrade_source",
+        "rollback_on_failure",
+        "run_app",
+        "usage"
+      ],
+      "size_bytes": 15624
+    },
+    {
+      "kind": "text",
       "lines": 82,
       "path": "mailbox-app/scripts/upgrade_v1_2_1.sh",
       "sha256": "399978dbe9866d1f0e48c2b7465628423c65c78adbae28eca6808c9e988e6bbc",
@@ -3341,6 +3369,43 @@
       },
       "sha256": "787c840030e1f44d77f4cfff7d9d62efd0733fe92a63b1213719c02c94d49e23",
       "size_bytes": 2682
+    },
+    {
+      "kind": "text",
+      "lines": 313,
+      "path": "mailbox-app/scripts/verify_upgrade_archive.py",
+      "python": {
+        "classes": [
+          "UpgradeArchiveError"
+        ],
+        "functions": [
+          "compare_migrations",
+          "main",
+          "migration_map_from_archive",
+          "migration_map_from_current",
+          "normalized_version",
+          "package_from_release",
+          "read_checksum",
+          "read_current_version",
+          "safe_extract",
+          "sha256",
+          "sha256_bytes",
+          "verify_archive"
+        ],
+        "imports": [
+          "__future__",
+          "argparse",
+          "hashlib",
+          "pathlib",
+          "re",
+          "shutil",
+          "tomllib",
+          "zipfile"
+        ],
+        "methods": []
+      },
+      "sha256": "395fbbe44bbe3dc7cd1412be5f11504f99e9f0552a2a8d6fc5d6b822ca46d70d",
+      "size_bytes": 13714
     },
     {
       "kind": "text",
@@ -4691,7 +4756,7 @@
     },
     {
       "kind": "text",
-      "lines": 400,
+      "lines": 405,
       "path": "scripts/forensic_audit.py",
       "python": {
         "classes": [],
@@ -4717,8 +4782,8 @@
         ],
         "methods": []
       },
-      "sha256": "5d50f62a3d041a98d9420a739c4d05dafe61739e0228c340a7920ecfa34f45c3",
-      "size_bytes": 14567
+      "sha256": "907b47435ba9e9284e98fe24feecf36d0b4153a7fc8b9dee8b3be9232a51bee5",
+      "size_bytes": 14832
     },
     {
       "kind": "text",
@@ -5124,6 +5189,36 @@
     },
     {
       "kind": "text",
+      "lines": 229,
+      "path": "scripts/test_upgrade.py",
+      "python": {
+        "classes": [],
+        "functions": [
+          "add_member",
+          "build_fixture_archive",
+          "load_verifier",
+          "main",
+          "read_shell",
+          "require"
+        ],
+        "imports": [
+          "__future__",
+          "hashlib",
+          "importlib.util",
+          "pathlib",
+          "shell_runtime",
+          "subprocess",
+          "sys",
+          "tempfile",
+          "zipfile"
+        ],
+        "methods": []
+      },
+      "sha256": "c65f0768ccdb219621bde802db63e16faef8716f4f41e63f3a212d1dfab4ef30",
+      "size_bytes": 9665
+    },
+    {
+      "kind": "text",
       "lines": 167,
       "path": "scripts/validate_templates.py",
       "python": {
@@ -5181,15 +5276,15 @@
   },
   "summary": {
     "binary_files": 25,
-    "files": 406,
-    "python_classes": 75,
-    "python_files": 146,
-    "python_functions": 428,
+    "files": 410,
+    "python_classes": 76,
+    "python_files": 148,
+    "python_functions": 446,
     "python_methods": 61,
-    "shell_files": 13,
-    "shell_functions": 31,
-    "text_files": 381,
-    "total_bytes": 31683432,
-    "total_text_lines": 27377
+    "shell_files": 15,
+    "shell_functions": 41,
+    "text_files": 385,
+    "total_bytes": 31747591,
+    "total_text_lines": 28738
   }
 }

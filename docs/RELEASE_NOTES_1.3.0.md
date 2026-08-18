@@ -107,3 +107,11 @@ RC1 established the configurable Ubuntu 24.04 installer, MariaDB/Postfix/Dovecot
 templates, reproducible source packaging, public governance/security documentation, Django 5.2.16
 security pin, protected user/documentation baseline, UI design intake, and shared application shell.
 RC4 does not replace or redesign those foundations; it preserves the RC2 operational hardening and RC3 dependency-security fix while hardening only cross-platform repository audit execution.
+
+## Controlled upgrade tooling
+
+- PHASE-004C adds a fail-closed existing-server source/runtime upgrade driver requiring the deterministic source ZIP and matching SHA-256.
+- The upgrader verifies canonical ZIP metadata and source manifest integrity, rejects same/downgrade and migration-history rewrites, creates a consistent data backup plus rollback snapshot before mutation, and stages application/public-site source outside the live tree.
+- New migration files require explicit acknowledgement. A failure after schema mutation begins refuses automatic source rollback and reports the coordinated backup/snapshot for reviewed reconciliation.
+- Postfix and Dovecot remain active during the source mutation window after the pre-upgrade consistent backup returns; Gunicorn, ingestion, and the contact worker are the application services stopped for replacement.
+- This release contains the mechanism and automated contracts only. The first real existing-VPS upgrade is deferred to PHASE-004D.

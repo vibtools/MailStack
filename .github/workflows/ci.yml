@@ -82,6 +82,9 @@ jobs:
       - name: Release workflow contract tests
         run: python scripts/test_release_workflow.py
 
+      - name: Upgrade and rollback contract tests
+        run: python scripts/test_upgrade.py
+
       - name: Dependency vulnerability audit
         run: python -m pip_audit --no-deps -r mailbox-app/requirements/locked.txt --progress-spinner off
 

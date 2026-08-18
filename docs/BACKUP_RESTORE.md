@@ -41,3 +41,17 @@ The built-in application backup intentionally does not duplicate the release arc
 - an encrypted off-host copy of the built-in backup.
 
 Backups contain credentials, user email, attachments, and message content. Restrict access, encrypt at rest and in transit, verify checksums after transfer, and test restoration on an isolated host.
+
+## Upgrade rollback snapshots
+
+PHASE-004C upgrades create a source/runtime rollback snapshot under
+`/var/backups/vibmail/upgrades/` and nest a normal consistent data backup beneath that snapshot before
+any source mutation. The snapshot contains the pre-upgrade application tree, previous public-site
+pointer, installation marker when present, metadata, and SHA-256 checksums. The nested data backup
+retains its own `SHA256SUMS` contract.
+
+The upgrade rollback command intentionally does **not** restore MariaDB or Maildir automatically.
+When an upgrade introduces new migrations, schema/data rollback requires a reviewed reconciliation
+plan because restoring a pre-upgrade database/Maildir snapshot can discard or desynchronize mail
+accepted after the backup. Use `restore.sh` only when that coordinated recovery decision has been
+made and the post-backup mail window has been accounted for.

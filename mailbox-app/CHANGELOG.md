@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.3.0-rc.5 — Unreleased
+
+- PHASE-004C controlled existing-server upgrade tooling now verifies deterministic release ZIP/SHA assets, creates a coordinated data backup and source rollback snapshot before mutation, stages application/public-site source, converges Python dependencies, gates migrations explicitly, preserves mail-facing services during the source mutation window, and performs post-upgrade verification.
+- Added a reviewed source/runtime rollback command that verifies snapshot checksums and refuses implicit database/Maildir restoration or unacknowledged forward-schema rollback.
+
+
 ## 1.3.0-rc.5 — Forensic/docs baseline finalization (unreleased)
 
 - Finalized RC4 qualification evidence and the official source-baseline record for PHASE-004A.

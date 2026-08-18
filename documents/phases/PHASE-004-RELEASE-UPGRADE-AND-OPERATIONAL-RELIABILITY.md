@@ -16,7 +16,8 @@ phase_id: PHASE-004
 Make post-RC4 release handling, upgrades, rollback, and operational acceptance reproducible without
 weakening the receive-only architecture or disturbing an already working MailStack deployment.
 PHASE-004A finalized the forensic/documentation baseline. PHASE-004B adds fail-closed automatic
-tag-to-GitHub-Release publication while keeping upgrade/runtime changes for later approved subphases.
+tag-to-GitHub-Release publication. PHASE-004C adds the separately approved generic existing-server
+source/runtime upgrade and rollback mechanism while leaving real VPS execution for PHASE-004D.
 
 ## Scope
 
@@ -33,16 +34,34 @@ job has read-only repository access. A separate tag-only publication job receive
 `contents: write`, downloads the verified workflow artifact, and creates the GitHub Release with the
 deterministic ZIP and checksum. Manual workflow dispatch remains build/validation only.
 
-Later approved PHASE-004 subphases may address a controlled existing-server upgrade/rollback
-mechanism and operational backup/restore and reboot acceptance. Those runtime changes are not
-implemented by PHASE-004A or PHASE-004B.
+PHASE-004C is restricted to the controlled existing-server upgrade/rollback mechanism, its
+non-destructive contracts, and required documentation/forensic integration. The upgrader requires a
+deterministic target source ZIP and matching SHA-256, verifies canonical archive/source-manifest and
+version/package identity, rejects same-version/downgrade and migration-history rewrites, acquires a
+non-blocking runtime lock, and creates both a source/runtime rollback snapshot and the maintained
+consistent data backup before mutation. New migration files require explicit `--allow-migrations`
+acknowledgement. After that backup completes, the application mutation window leaves Postfix and
+Dovecot active while Gunicorn, ingestion, and the contact worker are stopped, allowing accepted mail
+to accumulate in Maildir. Application/public-site source and Python dependencies are staged and
+verified without rewriting host mail/web/TLS/systemd configuration.
+
+For a no-new-migration target, a failure after mutation can automatically restore the prior
+application/runtime source and public-site pointer. If a migration-capable upgrade fails after schema
+mutation begins, automatic source/database rollback is refused and the tool reports the coordinated
+data backup and source snapshot for reviewed reconciliation. The standalone rollback command never
+restores MariaDB or Maildir implicitly and requires explicit forward-schema acknowledgement when its
+snapshot records new migrations.
+
+PHASE-004C does not execute this mechanism on the existing production/staging VPS. The first real
+controlled existing-server upgrade is reserved for PHASE-004D. Backup/restore and reboot acceptance
+remain later PHASE-004 operational gates.
 
 ## User-facing changes
 
-There is no application UI or mailbox behavior change in PHASE-004A or PHASE-004B. Maintainers and
-operators gain a single explicit official source baseline for RC4, corrected RC4 qualification
-evidence, and a tag-driven release workflow that removes the need to upload deterministic release
-assets manually from a workstation.
+There is no application UI or mailbox behavior change in PHASE-004A, PHASE-004B, or PHASE-004C.
+Maintainers and operators gain a single explicit official source baseline for RC4, corrected RC4
+qualification evidence, tag-driven release publication, and a reviewed source/runtime upgrade and
+rollback tool that fails closed around archive integrity, migration risk, and recovery provenance.
 
 ## How to use
 
@@ -55,13 +74,21 @@ current `main` head, and push the tag. The release workflow then builds/verifies
 source archive and publishes the GitHub Release automatically. `workflow_dispatch` validates and
 builds artifacts but never publishes a release.
 
+For an existing-server source/runtime upgrade, provide both published deterministic assets to
+`/opt/vibmail/app/scripts/upgrade.sh`: `mailstack-X.Y.Z-source.zip` and its matching `.sha256`. The
+target must be newer than the installed version. New migration files require explicit review and
+`--allow-migrations`; modified or removed historical migration files are rejected. Successful runs
+print the exact rollback snapshot and nested consistent-data-backup paths. See `docs/UPGRADE.md` for
+the migration-aware rollback rules. PHASE-004D, not PHASE-004C, owns the first real VPS execution.
+
 ## Compatibility
 
-PHASE-004A and PHASE-004B introduce no model, migration, URL, application permission, template, CSS,
-JavaScript, mail-flow, ingestion, installer, deployment-template, service, database, DNS, TLS, or
-existing-VPS change. PHASE-004B changes only repository release automation, audit tooling, focused
-contract tests, and required documentation/manifests. The `v1.3.0-rc.4` tag and deterministic RC4
-source archive remain unchanged. No data/configuration migration or VPS rollback is required.
+PHASE-004A and PHASE-004B introduce no application/runtime change. PHASE-004C changes operational
+source/runtime upgrade tooling only: it adds no application model or migration, URL, permission, UI,
+mail-flow behavior, installer behavior, deployment-template rewrite, database schema change, DNS, TLS,
+or live existing-VPS mutation. Postfix, Dovecot, Nginx, systemd, `/etc/vibmail`, certificates, Maildir,
+and MariaDB data remain outside generic source replacement except for explicitly acknowledged future
+Django migrations. The `v1.3.0-rc.4` tag and deterministic RC4 source archive remain unchanged.
 
 ## Verification
 
@@ -75,11 +102,16 @@ PHASE-004A branch CI run `32087558399` passed all blocking gates, including 198 
 95.00 percent coverage, dependency audit, full forensic audit, deterministic RC5 source build, and
 release verification.
 
-PHASE-004B must pass its release-workflow contract tests, documentation/design/inventory gates,
-installer/operations regression contracts, dependency/security/application CI, full forensic audit,
-and deterministic release build/verification before merge. Actual publication is intentionally not
-tested by creating a fake public tag/release; the first legitimate post-merge release tag is the
-end-to-end publication acceptance event.
+PHASE-004B branch CI run `32093468669` passed on exact commit
+`ee90764335f8724727cea86e0af035c049c79e62`, including seven release-workflow contracts, 198 Django
+tests at 95.00 percent coverage, dependency/security gates, full forensic audit with zero blocking
+findings, and deterministic source build/verification. Actual publication remains intentionally
+reserved for a legitimate post-merge release tag rather than a fake public release.
+
+PHASE-004C must pass its upgrade/archive/rollback contracts, existing installer/operations/release
+contracts, documentation/design/inventory gates, dependency/security/application CI, full forensic
+audit, and deterministic release build/verification. Its automated tests are non-destructive and do
+not claim a real host upgrade; PHASE-004D is the live acceptance boundary.
 
 ## Documentation impact
 
@@ -88,4 +120,7 @@ dependency/performance evidence, forensic/test reports, canonical baseline, UI i
 status, active managed-document version metadata, generated manifests, and this phase record.
 PHASE-004B updates the release workflow, release gate/contract tests, root changelog, release/build/
 publishing documentation, release notes, forensic/test evidence, generated forensic/documentation
-manifests, and this phase record. No application user workflow guide requires a behavioral change.
+manifests, and this phase record. PHASE-004C updates operational upgrade/rollback scripts, a target
+archive verifier, focused upgrade contracts, CI/full-forensic enforcement, upgrade/backup/operations
+documentation, changelogs/release notes, forensic/test evidence, generated manifests/inventory, and
+this phase record. No application UI/user workflow guide requires a behavioral change.

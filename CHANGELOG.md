@@ -18,9 +18,17 @@ All notable repository-level changes are recorded here. Application history befo
 - Automated GitHub Release creation with deterministic source ZIP and SHA-256 assets, RC pre-release classification, stable latest classification, and overwrite/clobber prevention.
 - Added focused release-workflow contract tests and made them blocking in CI and the forensic audit.
 
+### Existing-server upgrade and rollback
+
+- Added a generic fail-closed existing-server upgrade driver that requires a deterministic source ZIP plus matching SHA-256, validates canonical archive/manifest/version integrity, stages outside the live tree, and rejects downgrade, same-version, removed-migration, or modified-migration targets.
+- Added explicit migration acknowledgement, a non-blocking runtime lock, a verified pre-mutation consistent data backup, source/runtime rollback snapshots, application/public-site staged replacement, dependency convergence, post-upgrade contract checks, and installation-marker provenance.
+- Preserved Postfix and Dovecot during the source mutation window after the consistent backup has completed, allowing accepted inbound mail to accumulate safely in Maildir while ingestion is paused.
+- Added migration-aware fail-closed recovery: automatic source/runtime rollback is allowed only when no new schema migration has begun; migration-capable failures require reviewed schema/data reconciliation instead of an automatic database restore that could discard newly accepted mail.
+- Added focused non-destructive upgrade/archive/rollback contract tests and made them blocking in CI and the full forensic audit.
+
 ### Compatibility
 
-- No application runtime, database schema, migration, route, authorization, UI, mail-flow, installer behavior, deployment template, or service configuration changes are introduced by PHASE-004A or PHASE-004B.
+- PHASE-004C changes maintained operational tooling only; it does not add a database migration, application route, authorization/UI/mail-flow behavior, installer behavior, deployment-template rewrite, DNS/TLS change, or automatic host-configuration migration.
 - `v1.3.0-rc.4` and its published source identity remain immutable; `1.3.0-rc.5` is the next development-candidate version and is not yet a published release.
 
 ## Unreleased — MailStack repository bootstrap

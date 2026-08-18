@@ -201,7 +201,7 @@
       "last_reviewed": "2026-08-17",
       "path": "documents/phases/PHASE-004-RELEASE-UPGRADE-AND-OPERATIONAL-RELIABILITY.md",
       "phase_id": "PHASE-004",
-      "sha256": "a5205df42de3faca80f7107405704dd2f79200b9340d66d493f814eb70d5d6b3",
+      "sha256": "b3cef810cf4dfa826f079546b795c27dcb9ab89068f40bada5b048726e7eefb4",
       "status": "active",
       "title": "Release, Upgrade and Operational Reliability",
       "version": "1.3.0-rc.5"

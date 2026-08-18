@@ -1,6 +1,6 @@
 # Test report — MailStack 1.3.0 RC5 development baseline
 
-**PHASE-004B verification date:** 2026-08-17
+**PHASE-004C verification date:** 2026-08-17
 **Latest published release candidate:** `v1.3.0-rc.4`
 **Repository development version:** `1.3.0-rc.5`
 
@@ -74,11 +74,13 @@ gates.
 PHASE-004B adds seven focused release-workflow contracts covering version normalization, RC/stable
 classification, tag identity, manual-dispatch non-publication, package-version mismatch rejection,
 successful-main-CI evidence matching, existing-release fail-close behavior, exact-main-head guarding,
-and required workflow protections. The assembled candidate passes all seven contracts locally. They
-are blocking in the main CI workflow and are also invoked by the forensic audit. The structural
-forensic audit passes with 407 files scanned, 146 Python files, 13 shell files, and zero blocking
-findings. GitHub branch CI remains the final authority. No fake public tag/release is created for
-testing.
+and required workflow protections. GitHub branch CI run `32093468669` passed on exact commit
+`ee90764335f8724727cea86e0af035c049c79e62` using Ubuntu 24.04 and Python 3.12.13. The run passed all
+seven release-workflow contracts, the dependency vulnerability audit, Ruff/Bandit, all 198 Django
+tests at 95.00 percent coverage, full forensic audit with 407 files/146 Python/13 shell files and zero
+blocking findings, and deterministic RC5 source build/verification. The deterministic archive SHA-256
+was `fdfff6c1e4ec409d950e3d612be1feab1ac7987f8d436c3ef3c0fc6ee1865bb5`. No fake public tag/release
+was created for testing; legitimate post-merge tag publication remains the end-to-end release event.
 
 ## Dependency advisory qualification
 
@@ -132,10 +134,40 @@ assembled local candidate passed the following dependency-free/structural gates:
 | Forensic inventory check | PASS — 404 maintained entries |
 | Structural forensic audit | PASS — 405 files scanned, 144 Python, 13 shell, zero blocking findings |
 
-The final assembled delta is additionally checked with `git diff --check` before handoff.
-Dependency-backed GitHub CI remains the final authority for the RC5 development candidate. Until
-that branch workflow passes, PHASE-004A is locally qualified only and `1.3.0-rc.5` must not be
-published as a release candidate.
+The final assembled PHASE-004A delta was additionally checked with `git diff --check`; its branch CI
+closure is recorded above. `1.3.0-rc.5` remains a development candidate until the complete intended
+RC5 line is merged, requalified on `main`, tagged, and published through the release workflow.
+
+## PHASE-004C upgrade/rollback tooling qualification
+
+PHASE-004C adds three maintained operational components: the generic `upgrade.sh` driver,
+`rollback_upgrade.sh`, and `verify_upgrade_archive.py`, plus a focused non-destructive contract suite.
+The local structural candidate passed deterministic archive/checksum fixture verification, canonical
+source-manifest checks, version ordering, migration-delta detection, bad-checksum fail-close behavior,
+Bash syntax checks, runtime-lock contracts, pre-mutation backup/rollback requirements, inbound-service
+continuity assertions, and migration-aware rollback refusal.
+
+| PHASE-004C local gate | Result |
+|---|---|
+| Upgrade/archive/rollback contracts | PASS |
+| Documentation validation | PASS — 46 required files, 59 local links checked |
+| Managed-document synchronization/check | PASS — 17 documents, 5 phases |
+| Documentation tests | PASS — 4 contracts |
+| Design manifest integrity | PASS — 25 source images |
+| Design tests | PASS — 4 contracts |
+| Shared UI foundation contracts | PASS — 8 contracts |
+| Deployment template validation | PASS — 13 templates |
+| Installer contracts | PASS — 2 valid, 9 invalid plans |
+| Existing operations contracts | PASS — 4 scripts |
+| Release-workflow contracts | PASS — 7 contracts |
+| Forensic inventory | PASS — 410 maintained entries plus the inventory file |
+| Structural forensic audit | PASS — 411 files, 148 Python, 15 shell, zero blocking findings |
+
+PHASE-004C intentionally does not claim a live server upgrade. It changes operational tooling and
+documentation, not Django application business logic or schema. Dependency/security/application
+regression and the deterministic release build must still pass in the user's isolated Python 3.12
+validation and GitHub CI after the delta is applied. PHASE-004D owns the first real existing-VPS
+upgrade acceptance.
 
 ## Manual acceptance still outstanding before stable `1.3.0`
 
