@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.3.0-rc.5 — Forensic/docs baseline finalization (unreleased)
+
+- Finalized RC4 qualification evidence and the official source-baseline record for PHASE-004A.
+- No application model, migration, route, UI, mailbox, ingestion, LMTP, authorization, dependency, or runtime behavior changed.
+
 ## 1.3.0-rc.4 — Cross-platform audit tooling maintenance
 
 - Added portable Bash runtime discovery for repository-level installer, operations, and forensic audit tooling on Windows while preserving Linux CI behavior.

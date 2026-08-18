@@ -4,7 +4,7 @@ title: Documentation and Feature Baseline
 document_type: phase
 audience: users-operators-and-maintainers
 status: active
-version: 1.3.0-rc.4
+version: 1.3.0-rc.5
 last_reviewed: 2026-08-17
 phase_id: PHASE-000
 ---

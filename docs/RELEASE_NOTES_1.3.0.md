@@ -79,10 +79,17 @@ Postfix queue, ingested, and displayed by the application.
 
 ## Release qualification
 
-RC4 must pass the full documentation, installer, operations, template, Ruff, Bandit, Django,
-coverage, forensic, deterministic-release, and CI gates. Clean Ubuntu 24.04 installation and real
-external SMTP/LMTP acceptance are required. Stable promotion remains blocked until backup/restore,
-restart-recovery, final security/legal, and release-owner acceptance are complete.
+RC4 passed the full documentation, installer, operations, template, dependency-audit, Ruff, Bandit,
+Django, coverage, forensic, deterministic-release, and release-verification gates. Post-merge
+`main` CI run `32071701530`, tag CI run `32072699991`, and release-artifact workflow `32072699830`
+all completed successfully. The application suite passed 198 tests with 95.00 percent coverage, and
+the deterministic source archive SHA-256 is
+`58f06adea7c813e9861799d20e392441367bf64f6513d6e0634455d2011d4eac`.
+
+The PHASE-003 staging campaign validated real external SMTP-to-LMTP delivery after the accepted
+fixes. An exact RC4 clean-host reinstall was not repeated before publication and remains deferred
+until a fresh VPS is available. Stable promotion remains blocked on backup/restore acceptance,
+restart/reboot recovery, final ownership/license review, and release-owner acceptance.
 
 ## RC1 foundation preserved
 

@@ -8,7 +8,7 @@ relevant user manual, how-to guide, or administrator guide.
 
 ```bash
 python scripts/manage_documents.py new-phase \
-  --phase-id PHASE-004 \
+  --phase-id PHASE-005 \
   --title "Feature title" \
   --summary "What the phase changes for users"
 
@@ -27,22 +27,23 @@ required documentation update.
 <!-- AUTO-DOCUMENT-INDEX:START -->
 | Document | Type | Audience | Status | Version |
 |---|---|---|---|---|
-| [MailStack Administrator Guide](ADMIN_GUIDE.md) | Admin Guide | mailstack-administrators | active | 1.3.0-rc.4 |
-| [MailStack Baseline](BASELINE.md) | Baseline | maintainers-and-operators | active | 1.3.0-rc.4 |
-| [MailStack Accessibility Specification](design/ACCESSIBILITY_SPECIFICATION.md) | Design Reference | designers-developers-and-maintainers | active | 1.3.0-rc.4 |
-| [MailStack Future UI Roadmap](design/FUTURE_UI_ROADMAP.md) | Design Reference | designers-developers-and-maintainers | active | 1.3.0-rc.4 |
-| [MailStack Responsive Specification](design/RESPONSIVE_SPECIFICATION.md) | Design Reference | designers-developers-and-maintainers | active | 1.3.0-rc.4 |
-| [MailStack UI Component Matrix](design/COMPONENT_MATRIX.md) | Design Reference | designers-developers-and-maintainers | active | 1.3.0-rc.4 |
-| [MailStack UI Foundation](design/UI_FOUNDATION.md) | Design Reference | designers-developers-and-maintainers | active | 1.3.0-rc.4 |
-| [MailStack UI Implementation Status](design/IMPLEMENTATION_STATUS.md) | Design Reference | designers-developers-and-maintainers | active | 1.3.0-rc.4 |
-| [MailStack UI Screen Catalog](design/SCREEN_CATALOG.md) | Design Reference | designers-developers-and-maintainers | active | 1.3.0-rc.4 |
-| [Documentation Policy](DOCUMENTATION_POLICY.md) | Documentation Policy | contributors-and-maintainers | active | 1.3.0-rc.4 |
-| [How to Use MailStack](HOW_TO_USE.md) | How To | mailbox-users-and-administrators | active | 1.3.0-rc.4 |
-| [Documentation and Feature Baseline](phases/PHASE-000-BASELINE.md) | Phase | users-operators-and-maintainers | active | 1.3.0-rc.4 |
-| [Installation, Recovery and Inbound Delivery Reliability](phases/PHASE-003-INSTALLATION-RECOVERY-AND-INBOUND-DELIVERY-RELIABILITY.md) | Phase | users-operators-and-maintainers | active | 1.3.0-rc.4 |
-| [Shared UI Foundation and Application Shell](phases/PHASE-002-SHARED-UI-FOUNDATION-AND-APPLICATION-SHELL.md) | Phase | users-operators-designers-and-maintainers | active | 1.3.0-rc.4 |
-| [UI Design Intake Baseline](phases/PHASE-001-UI-DESIGN-INTAKE-BASELINE.md) | Phase | users-operators-designers-and-maintainers | active | 1.3.0-rc.4 |
-| [MailStack User Manual](USER_MANUAL.md) | User Manual | mailbox-users | active | 1.3.0-rc.4 |
+| [MailStack Administrator Guide](ADMIN_GUIDE.md) | Admin Guide | mailstack-administrators | active | 1.3.0-rc.5 |
+| [MailStack Baseline](BASELINE.md) | Baseline | maintainers-and-operators | active | 1.3.0-rc.5 |
+| [MailStack Accessibility Specification](design/ACCESSIBILITY_SPECIFICATION.md) | Design Reference | designers-developers-and-maintainers | active | 1.3.0-rc.5 |
+| [MailStack Future UI Roadmap](design/FUTURE_UI_ROADMAP.md) | Design Reference | designers-developers-and-maintainers | active | 1.3.0-rc.5 |
+| [MailStack Responsive Specification](design/RESPONSIVE_SPECIFICATION.md) | Design Reference | designers-developers-and-maintainers | active | 1.3.0-rc.5 |
+| [MailStack UI Component Matrix](design/COMPONENT_MATRIX.md) | Design Reference | designers-developers-and-maintainers | active | 1.3.0-rc.5 |
+| [MailStack UI Foundation](design/UI_FOUNDATION.md) | Design Reference | designers-developers-and-maintainers | active | 1.3.0-rc.5 |
+| [MailStack UI Implementation Status](design/IMPLEMENTATION_STATUS.md) | Design Reference | designers-developers-and-maintainers | active | 1.3.0-rc.5 |
+| [MailStack UI Screen Catalog](design/SCREEN_CATALOG.md) | Design Reference | designers-developers-and-maintainers | active | 1.3.0-rc.5 |
+| [Documentation Policy](DOCUMENTATION_POLICY.md) | Documentation Policy | contributors-and-maintainers | active | 1.3.0-rc.5 |
+| [How to Use MailStack](HOW_TO_USE.md) | How To | mailbox-users-and-administrators | active | 1.3.0-rc.5 |
+| [Documentation and Feature Baseline](phases/PHASE-000-BASELINE.md) | Phase | users-operators-and-maintainers | active | 1.3.0-rc.5 |
+| [Installation, Recovery and Inbound Delivery Reliability](phases/PHASE-003-INSTALLATION-RECOVERY-AND-INBOUND-DELIVERY-RELIABILITY.md) | Phase | users-operators-and-maintainers | active | 1.3.0-rc.5 |
+| [Release, Upgrade and Operational Reliability](phases/PHASE-004-RELEASE-UPGRADE-AND-OPERATIONAL-RELIABILITY.md) | Phase | users-operators-and-maintainers | active | 1.3.0-rc.5 |
+| [Shared UI Foundation and Application Shell](phases/PHASE-002-SHARED-UI-FOUNDATION-AND-APPLICATION-SHELL.md) | Phase | users-operators-designers-and-maintainers | active | 1.3.0-rc.5 |
+| [UI Design Intake Baseline](phases/PHASE-001-UI-DESIGN-INTAKE-BASELINE.md) | Phase | users-operators-designers-and-maintainers | active | 1.3.0-rc.5 |
+| [MailStack User Manual](USER_MANUAL.md) | User Manual | mailbox-users | active | 1.3.0-rc.5 |
 <!-- AUTO-DOCUMENT-INDEX:END -->
 
 ## Scope boundary

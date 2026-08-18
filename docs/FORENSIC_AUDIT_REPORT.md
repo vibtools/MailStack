@@ -1,184 +1,159 @@
-# Forensic audit report — MailStack 1.3.0 RC3
+# Forensic audit report — MailStack 1.3.0 RC5 development baseline
 
-**PHASE-003 audit date:** 2026-08-17
-**Release version:** `1.3.0-rc.4`
+**PHASE-004A audit date:** 2026-08-17
+**Repository development version:** `1.3.0-rc.5`
+**Latest published release candidate:** `v1.3.0-rc.4`
 **Target runtime:** Ubuntu Server 24.04 LTS and CPython 3.12
-**Release classification:** locally structurally qualified release candidate; dependency-backed RC3 CI requalification pending
+**Current classification:** RC4 release qualification finalized; RC5 PHASE-004A CI requalification pending
 
 ## Executive disposition
 
 | Gate | Status |
 |---|---|
-| Baseline feature preservation | PASS |
-| Repository structure and public documentation | PASS |
-| User manual, how-to, admin guide and phase-document baseline | PASS |
-| UI design intake, immutable-source manifest and design contract tests | PASS in GitHub Actions run `30165905840` |
-| PHASE-002 shared UI foundation structural contracts | PASS locally — 8 tests |
-| PHASE-002 local Django, coverage and mailbox lint qualification | PASS — 195 passed, 1 skipped, 94.99% coverage |
-| Deterministic documentation index, manifest and change policy | PASS |
-| Complete AGPL-3.0 license text | PASS |
-| Source secret/private-data safety gate | PASS |
-| Python, JSON, YAML and shell syntax | PASS |
-| Django application tests and coverage | PASS |
-| Ruff and Bandit | PASS for mailbox application; standalone contact-service gates added to final verifier and CI |
-| Django checks and migration drift | PASS |
-| Public contact-service tests | PASS |
-| Installer and operations contract tests | PASS |
-| Template rendering and placeholder validation | PASS |
-| Forensic file/symbol inventory | PASS |
-| Deterministic release ZIP, manifest and checksum | PENDING RC4 CI; deterministic local build/verification required before patch handoff |
-| Online dependency advisory query | PENDING RC4 rerun — RC2 run `32053931714` failed on sqlparse 0.5.5; RC3/RC4 pin 0.6.0 |
-| Clean Ubuntu 24.04 RC3 full-stack acceptance | PENDING exact-RC3 clean VPS requalification |
-| Real inbound SMTP/LMTP acceptance | PASS in staging after equivalent PHASE-003 LMTP hotfix; exact-RC3 clean requalification pending |
-| Copyright ownership/license confirmation | PENDING release owner |
+| Official RC4 source baseline identity | PASS |
+| RC4 `main` CI run `32071701530` | PASS |
+| RC4 tag CI run `32072699991` | PASS |
+| RC4 release-artifact workflow `32072699830` | PASS |
+| RC4 dependency vulnerability audit | PASS — no known vulnerabilities reported |
+| RC4 Django application suite | PASS — 198 passed, 0 failed |
+| RC4 application coverage | PASS — 95.00%, minimum 85% |
+| RC4 Ruff and Bandit | PASS |
+| RC4 Django checks and migration drift | PASS |
+| RC4 contact-service tests, Ruff, and Bandit | PASS |
+| RC4 installer and operations contracts | PASS |
+| RC4 full forensic audit | PASS — zero blocking findings |
+| RC4 deterministic release build and verification | PASS |
+| RC4 deterministic source SHA-256 | `58f06adea7c813e9861799d20e392441367bf64f6513d6e0634455d2011d4eac` |
+| PHASE-003 staging external SMTP/LMTP path | PASS after accepted fixes |
+| Exact RC4 clean-host reinstall | DEFERRED until a fresh VPS is available |
+| Real backup/restore acceptance | PENDING |
+| Restart/reboot recovery acceptance | PENDING |
+| Final ownership/license review | PENDING release owner |
+| PHASE-004A structural/local repository gates | PASS |
+| PHASE-004A GitHub CI | PENDING after branch push |
 
-**OPEN_SOURCE_RELEASE_CANDIDATE:** PENDING RC4 CI
-**PRODUCTION_ACCEPTANCE:** PENDING
+**OFFICIAL_RC4_SOURCE_BASELINE:** PASS
+**RC4_OPEN_SOURCE_RELEASE_CANDIDATE:** PASS
+**PHASE_004A_LOCAL_QUALIFICATION:** PASS
+**RC5_DEVELOPMENT_REQUALIFICATION:** PENDING GITHUB CI
+**STABLE_PRODUCTION_ACCEPTANCE:** PENDING
 
-## Audited scope
+## Official RC4 baseline identity
 
-The audit covers the complete maintained repository: Django application code, migrations, templates, static assets, tests, Postfix/Dovecot/MariaDB/Nginx/systemd templates, public website, contact service, installer, backup/restore/health scripts, CI workflows, release tooling, governance documents and repository metadata.
+The official frozen source baseline is `MAILSTACK-1.3.0-RC4-OFFICIAL-SOURCE-BASELINE-001`:
 
-The deterministic machine-readable inventory at `docs/FORENSIC_FILE_INVENTORY.json` records every maintained file except itself and generated build/cache artifacts. It includes SHA-256, byte size, text-line count and Python/shell symbol information.
+- release: `1.3.0-rc.4`
+- tag: `v1.3.0-rc.4`
+- commit: `896dbcc2ed1f38d9c618bf0b712efe5923f92e56`
+- Git tree: `0d845b3d975949894c24581e6834aff7b33c30b4`
+- deterministic archive: `mailstack-1.3.0-rc.4-source.zip`
+- archive SHA-256: `58f06adea7c813e9861799d20e392441367bf64f6513d6e0634455d2011d4eac`
+- verified archive members: 405
+- verified manifest members: 404
 
-## Architecture
+The prior `MAILSTACK-1.3.0-RC1-DOCS-BASELINE-001` remains historical documentation provenance; it is
+not the current canonical source anchor.
 
-- Django 5.2.16 team mailbox application
-- Gunicorn application service over a Unix socket
-- MariaDB application schema and virtual-mail schema
-- receive-only Postfix virtual mailbox delivery
-- Dovecot LMTP delivery to Maildir
-- durable Maildir ingestion worker
-- safe MIME/HTML processing and protected attachment storage
-- Nginx TLS reverse proxy and static/protected-file serving
-- static public website and isolated rate-limited contact service
-- systemd confinement
-- backup, restore, rollback, health, verification, CI and deterministic release tooling
+## RC4 authoritative automated evidence
 
-## Feature preservation
+The post-merge `main` workflow run `32071701530` completed successfully at commit
+`896dbcc2ed1f38d9c618bf0b712efe5923f92e56`. Its blocking quality-and-security job passed source
+safety, documentation and design integrity, shared UI contracts, forensic inventory, deployment
+templates, installer contracts, operations contracts, dependency vulnerability audit, Ruff,
+Bandit, Django tests and coverage, contact-service tests/lint/security checks, Django checks, shell
+syntax, full forensic audit, deterministic release build, and release verification.
 
-No functional application, migration, template, test, public-site or contact-service baseline file was deleted. The prior root `SOURCE_MANIFEST.sha256` was a generated snapshot and is deliberately regenerated inside every release archive rather than maintained as stale source metadata.
+The release tag triggered two further authoritative workflows on the same source commit:
 
-Preserved behavior includes:
+- tag CI run `32072699991`: **PASS**
+- release-artifact workflow `32072699830`: **PASS**
 
-- administrator and ordinary-user authentication
-- administrator-managed user lifecycle
-- object-scoped mailbox memberships
-- mailbox create, enable, disable and soft-delete
-- reserved postmaster/abuse handling
-- receive-only Postfix/Dovecot delivery
-- Maildir ingestion, duplicate protection and restart safety
-- MIME parsing, HTML sanitization and attachment authorization
-- search, pagination, counters and read/unread state
-- live inbox updates
-- security audit logging and health/readiness routes
-- public website and protected contact workflow
-- backup/restore/rollback and legacy `vibmail.my` compatibility
+The release-artifact workflow used Ubuntu 24.04 and Python 3.12, reran the full forensic gate, built
+the deterministic source archive, verified the checksum/manifest, and uploaded the verified GitHub
+Actions artifact.
 
-See `FEATURE_MATRIX.md` for the feature-by-feature verification record.
+## RC4 test and coverage result
 
-## Defects and release gaps remediated
+The authoritative released-RC4 application suite collected and passed 198 tests with zero failures.
+Total application coverage was 95.00 percent against the repository's 85 percent minimum. The
+network-enabled dependency advisory audit reported no known vulnerabilities for the locked RC4
+runtime, including `sqlparse==0.6.0`.
 
-1. Fixed-domain assumptions were generalized while retaining the legacy defaults.
-2. Production settings now fail closed for invalid hostnames, paths, origins, secrets and SQL identifiers.
-3. Source and release scanners block credentials, private keys, databases, Maildir, attachments, logs and archives.
-4. MariaDB privileges and `SQL SECURITY INVOKER` views use least-privilege access.
-5. Postfix has no mailbox-secret, write or DDL access.
-6. Dovecot remains LMTP-only under the fixed virtual-mail identity.
-7. Installer validation rejects hostname collisions and malformed arguments.
-8. Backup/restore checksums, archive safety and exact prior service-state restoration were strengthened.
-9. Repository documentation, governance, SEO metadata, community templates and release automation were completed.
-10. The complete AGPL-3.0 license text and licensing rationale were added.
-11. A deterministic file/symbol inventory and documentation consistency gate were added.
-12. Local audit virtual environments are ignored without weakening generated-artifact release blocking.
-13. A root `documents/` baseline now provides maintained user, administrator and phase documentation.
-14. Deterministic synchronization, draft blocking and diff-based CI policy prevent maintained feature changes from merging without substantive documentation.
-15. The complete 25-image UI and logo archive is preserved with stable IDs, SHA-256 hashes, PNG structural validation, scope classification, and CI enforcement.
-16. PHASE-002 adds the frozen runtime design tokens, responsive authenticated and sign-in shells, local SVG assets, accessible navigation behavior, and focused UI contract gates without changing page business logic.
-17. Cross-platform verification now closes contact-service SQLite handles deterministically, preserves POSIX-only permission assertions, and subjects the standalone contact service to Ruff and Bandit in both the full forensic gate and CI.
-18. RC3 updates the vulnerable transitive sqlparse 0.5.5 lock to upstream 0.6.0 after the blocking PHASE-003 CI advisory scan identified four 2026 CVEs; no advisory suppression or application behavior change is introduced.
+Historical PHASE-002 local Windows evidence of 195 passed tests, one capability-based symbolic-link
+skip, and 94.99 percent coverage remains valid as historical evidence only; it is no longer the
+current release-qualification result.
 
-## Automated evidence
+## Architecture and feature preservation
 
-- Last completed pre-RC3 Django suite: **195 passed, 1 capability-based skip, 0 failed**; RC3 full rerun pending
-- Application coverage: **94.99%**; minimum: **85%**
-- Ruff: **PASS**
-- Bandit: **PASS**
-- Django system check: **PASS**
-- Migration drift: **none**
-- Contact-service test program: **PASS**, including deterministic connection-close regression coverage
-- Deployment templates rendered: **13**, unresolved tokens: **0**
-- Installer plans: **2 valid and 9 invalid cases**, all passed
-- Backup/restore/health contracts: **PASS**
-- Shell syntax: **13 files PASS**
-- Source forensic gate: **PASS with zero blocking findings**
-- Engineering documentation gate: **PASS**
-- User-document synchronization, manifest and policy tests: **PASS**
-- Python environment consistency (`pip check`): **PASS**
+The audited baseline preserves:
 
-The authoritative repository qualification is GitHub Actions run `30133728843` on Ubuntu 24.04 with Python 3.12 at commit `1e1737edea2e6c922265a15d8584b56671820c65`. Local isolated audit environments remain useful for non-networked structural checks but do not replace CI.
+- administrator and ordinary-user authentication;
+- administrator-managed user lifecycle;
+- object-scoped mailbox memberships;
+- mailbox create, enable, disable, and soft-delete behavior;
+- reserved postmaster/abuse handling;
+- receive-only Postfix virtual-recipient validation;
+- Dovecot LMTP delivery to Maildir;
+- durable Maildir ingestion, duplicate protection, and restart safety;
+- MIME parsing, sanitized HTML, and protected attachment authorization;
+- search, pagination, counters, read/unread state, and live inbox updates;
+- security audit logging and readiness/health routes;
+- public website and isolated contact workflow;
+- backup/restore/rollback tooling and legacy `vibmail.my` compatibility.
+
+No SMTP submission, IMAP, POP3, public registration, outbound reply/forward/send, campaigns, or
+multi-node operation is introduced.
+
+## PHASE-003 reliability evidence
+
+PHASE-003 corrected the reproduced installer and inbound-delivery defects without adding a database
+migration or changing application product scope. The accepted source includes protection of the
+host-wide `/var/log` mode, sanitized least-privilege installer execution, provisioning lock-path
+preparation, explicit repair preservation, early root-only initial-admin credential persistence,
+Dovecot static-userdb `allow_all_users=yes` for Postfix-validated recipients, live-safe one-shot
+Maildir verification, narrow production MariaDB warning qualification, and SSH session-resilience
+guidance.
+
+The staging campaign demonstrated real Gmail delivery through Postfix and Dovecot LMTP into Maildir,
+queue drain, ingestion, and web-inbox visibility after the accepted fixes. The exact final RC4
+archive was not reinstalled on a new clean host before publication; that clean-host acceptance is
+explicitly deferred rather than being claimed.
+
+## PHASE-004A audit boundary
+
+PHASE-004A starts the repository development identity `1.3.0-rc.5` and is documentation/metadata
+only. It finalizes RC4 evidence, establishes the official RC4 source baseline, adds the PHASE-004
+record, synchronizes active managed-document version metadata, updates current build/release examples,
+and regenerates deterministic documentation/design/forensic manifests.
+
+PHASE-004A does not change application runtime logic, models, migrations, URLs, authorization,
+templates, CSS, JavaScript, mail flow, ingestion behavior, installer behavior, deployment templates,
+service definitions, database schema, DNS/TLS configuration, or the existing VPS.
 
 ## Security review
 
-Verified controls include root-only generated secrets, strict configuration validation, Argon2 password hashing, CSRF and secure-cookie controls, login throttling, object-level mailbox authorization, safe HTML sanitization, protected attachments, receive-only SMTP, no public registration, no IMAP/POP3/submission in the reference deployment, MariaDB least privilege, systemd sandboxing, safe archive extraction, checksum verification and fail-closed CI/release gates.
+The RC4 source remains pinned to Django 5.2.16, Python 3.12, and `sqlparse==0.6.0`. The blocking
+online `pip-audit` gate passed after RC3 replaced the vulnerable `sqlparse==0.5.5` pin. No advisory
+suppression was added for those findings. Existing security boundaries remain: Argon2 password
+hashing, CSRF and secure-cookie controls, login throttling, object-level mailbox authorization,
+sanitized HTML, protected attachments, receive-only SMTP, no public registration, MariaDB least
+privilege, systemd confinement, archive safety, checksum verification, and fail-closed release gates.
 
-The historical pre-PHASE-003 `pip-audit` gate passed in GitHub Actions run `30133728843`.
-For the current PHASE-003 branch, run `32053931714` failed at the blocking advisory step because
-`sqlparse==0.5.5` was newly reported for CVE-2026-71491, CVE-2026-59894, CVE-2026-59893, and
-CVE-2026-54284. RC3 pins upstream sqlparse 0.6.0, which contains those security fixes. The RC3
-dependency audit, `pip check`, and all downstream CI gates remain mandatory; no vulnerability is
-ignored or waived.
+## External acceptance gates before stable promotion
 
-## Performance review
+1. Preserve a passing GitHub CI baseline for every subsequent release commit.
+2. Perform an exact-source clean installation on an isolated Ubuntu Server 24.04 VPS when a fresh
+   test host is available.
+3. Validate DNS/MX/PTR/rDNS/TLS/firewall and unknown-recipient rejection on that clean host.
+4. Perform a real backup/restore acceptance exercise with data-integrity verification.
+5. Verify restart/reboot recovery of MariaDB, Postfix, Dovecot, Gunicorn, ingestion, Nginx, and the
+   contact service.
+6. Confirm copyright ownership and third-party license compatibility.
+7. Obtain final release-owner acceptance before promoting `1.3.0` stable.
 
-Web requests and Maildir ingestion remain separate services. Gunicorn worker/thread counts are bounded, database connections are reused, mailbox/message fields are indexed, list views are paginated, live-update scopes are bounded, attachments remain file-backed and Nginx serves static/protected files. Backup/restore performs controlled service quiescing and restores the exact prior active state.
+## Final disposition
 
-## GitHub/open-source readiness
-
-The repository includes an SEO-oriented README, logo asset, release/download/license/platform/language/community badges, GitHub topics and description guidance, full license, notice, security policy, contribution guide, code of conduct, support policy, roadmap, issue/PR templates, CODEOWNERS, Dependabot, CI, release workflow, installation/build/development/operations/security documentation and Vib Tools ecosystem links.
-
-
-## PHASE-002 audit boundary
-
-The phase changes only the shared base template, shared static foundation assets and JavaScript,
-focused tests, the contact-service connection-lifecycle helper, CI/audit tooling, generated
-inventories, and required documentation. It contains no model, migration, URL, form, permission,
-mail-flow, ingestion schema, deployment-template, or package change. Local dependency-backed tests
-and coverage passed; the final overwrite verifier must pass before commit, and GitHub Actions must
-pass before remote qualification.
-
-## PHASE-003 audit boundary
-
-PHASE-003 changes only installer/recovery behavior, the Dovecot LMTP static-userdb template,
-one-shot ingestion verification semantics, narrowly qualified production MariaDB warnings, focused
-management-command/test contracts, release metadata, and required documentation. It adds no database
-migration, dependency, UI page, URL, permission model, outbound mail path, or data transformation.
-
-The structural forensic gate passes with zero blocking findings after regenerating the deterministic
-file inventory. RC4 additionally centralizes verified Bash runtime discovery for repository-level
-installer, operations, and forensic tooling: Windows prefers Git for Windows Bash over the WSL
-launcher, while Linux keeps the system Bash contract. This prevents an unavailable WSL/Docker
-Desktop backing disk from being reported as multiple MailStack shell syntax defects. A subsequent
-Windows run proved Git Bash selection was correct but exposed a second host-compatibility edge: the
-Windows Python installation provided `python` but no Git-Bash-visible `python3` command. The RC4
-audit harness now uses a process-local `BASH_ENV` bridge to map `python3` to the exact interpreter
-running the test harness on Windows only; `install.sh` and Ubuntu's production `python3` behavior
-remain unchanged. Dependency-free documentation, design, UI-foundation, template, installer,
-operations, Python compile, and shell-syntax gates pass locally. Dependency-backed
-Django/Ruff/Bandit/coverage and full-forensic qualification remain blocking in GitHub Actions because
-the local artifact builder does not contain or have network access to the pinned development
-environment.
-
-## External acceptance gates
-
-Before stable promotion:
-
-1. Confirm source ownership and third-party license compatibility.
-2. Preserve the successful GitHub CI baseline and require every subsequent release commit to pass all blocking gates.
-3. Install on a clean isolated Ubuntu Server 24.04 VPS.
-4. Verify DNS, MX, PTR/rDNS, TLS, firewall, unknown-recipient rejection, LMTP delivery, ingestion, authorization, contact delivery, backup, restore and restart recovery.
-5. Publish `v1.3.0-rc.4` only after its blocking CI gates pass; promote to stable only after the remaining acceptance gates pass.
-
-## Final classification
-
-The repository remains a **MailStack 1.3.0 RC4 release candidate**, not yet a proven stable production release. PHASE-003 source qualification is complete only when its blocking GitHub Actions run passes.
+The published `v1.3.0-rc.4` source is a qualified release candidate and is the official frozen source
+baseline for PHASE-004. PHASE-004A corrects the documentation evidence around that baseline but does
+not retroactively modify or retag RC4. The working repository version `1.3.0-rc.5` remains a
+development candidate until its branch GitHub CI passes.

@@ -2,6 +2,20 @@
 
 All notable repository-level changes are recorded here. Application history before the open-source conversion remains in `mailbox-app/CHANGELOG.md`.
 
+## 1.3.0-rc.5 — Unreleased
+
+### Documentation and forensic baseline
+
+- Finalized the published RC4 evidence in the forensic and test reports using the successful `main`, tag-CI, and release-artifact workflow results instead of the pre-release RC3/RC4-pending wording.
+- Established `MAILSTACK-1.3.0-RC4-OFFICIAL-SOURCE-BASELINE-001` as the current official source baseline, anchored to tag `v1.3.0-rc.4`, commit `896dbcc2ed1f38d9c618bf0b712efe5923f92e56`, tree `0d845b3d975949894c24581e6834aff7b33c30b4`, and deterministic source SHA-256 `58f06adea7c813e9861799d20e392441367bf64f6513d6e0634455d2011d4eac`.
+- Preserved the earlier RC1 documentation baseline as historical provenance instead of treating its source commit as the current release anchor.
+- Added the PHASE-004 release, upgrade, and operational-reliability record; PHASE-004A changes documentation, release metadata, and generated manifests only.
+
+### Compatibility
+
+- No application runtime, database schema, migration, route, authorization, UI, mail-flow, installer behavior, deployment template, or service configuration changes are introduced by PHASE-004A.
+- `v1.3.0-rc.4` and its published source identity remain immutable; `1.3.0-rc.5` is the next development-candidate version and is not yet a published release.
+
 ## Unreleased — MailStack repository bootstrap
 
 ### Changed

@@ -4,7 +4,7 @@ title: MailStack Accessibility Specification
 document_type: design-reference
 audience: designers-developers-and-maintainers
 status: active
-version: 1.3.0-rc.4
+version: 1.3.0-rc.5
 last_reviewed: 2026-08-17
 ---
 

@@ -30,5 +30,7 @@ GitHub Actions run `32053931714` on PHASE-003 RC2 passed the structural and repo
 blocking `pip-audit` step found CVE-2026-71491, CVE-2026-59894, CVE-2026-59893, and CVE-2026-54284
 in `sqlparse==0.5.5`. RC3 introduced and RC4 preserves `sqlparse==0.6.0`, the upstream security release fixing those findings.
 Django 5.2.16 permits `sqlparse>=0.3.1`, and sqlparse 0.6.0 supports Python 3.10+, including
-MailStack's required Python 3.12 runtime. `pip check` and the network-enabled blocking `pip-audit`
-gate remain mandatory for RC4 qualification; no advisory is ignored or suppressed.
+MailStack's required Python 3.12 runtime. RC4 subsequently passed `pip check` and the blocking
+network-enabled `pip-audit` gate in the qualified branch/main/tag workflows with no known
+vulnerabilities reported. The same gates remain mandatory for RC5 and later changes; no advisory is
+ignored or suppressed.

@@ -20,8 +20,8 @@ python scripts/forensic_audit.py --root . --full
 ```bash
 python scripts/build_release.py --root .
 python scripts/verify_release.py \
-  dist/mailstack-1.3.0-rc.4-source.zip \
-  --checksum dist/mailstack-1.3.0-rc.4-source.zip.sha256
+  dist/mailstack-1.3.0-rc.5-source.zip \
+  --checksum dist/mailstack-1.3.0-rc.5-source.zip.sha256
 ```
 
 The builder normalizes archive timestamps, preserves executable permissions, writes a source manifest, excludes generated/runtime artifacts and emits a SHA-256 checksum.

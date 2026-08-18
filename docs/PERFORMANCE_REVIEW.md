@@ -34,7 +34,7 @@
 
 ## Performance gate result
 
-No regression was observed in the local Windows suite; 195 tests passed, one capability-based symbolic-link case was skipped, and the suite completed in approximately 7.4 seconds with 94.99 percent coverage. No production load benchmark was executed. Before high-volume use, benchmark realistic message size, attachment mix, mailbox count, concurrency, disk latency, and MariaDB buffer settings on target hardware.
+The historical PHASE-002 local Windows suite completed 195 tests with one capability-based symbolic-link skip and 94.99 percent coverage. The authoritative released RC4 Ubuntu CI suite later passed all 198 tests with 95.00 percent coverage. Neither result is a production load benchmark. Before high-volume use, benchmark realistic message size, attachment mix, mailbox count, concurrency, disk latency, and MariaDB buffer settings on target hardware.
 
 ## Release packaging
 
