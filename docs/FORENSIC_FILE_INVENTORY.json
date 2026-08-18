@@ -93,10 +93,10 @@
     },
     {
       "kind": "text",
-      "lines": 165,
+      "lines": 166,
       "path": "CHANGELOG.md",
-      "sha256": "7d2cc53dce6f3a6c0182cee72724d7187f8b212f970880d7f798324264585daf",
-      "size_bytes": 15795
+      "sha256": "f06f5cb6d72d28b9d58daff8dcb68e07c0a29723f86a01e9db27cdad0a0da8f2",
+      "size_bytes": 16029
     },
     {
       "kind": "text",
@@ -5338,7 +5338,7 @@
     "shell_files": 15,
     "shell_functions": 41,
     "text_files": 390,
-    "total_bytes": 31793864,
-    "total_text_lines": 29454
+    "total_bytes": 31794098,
+    "total_text_lines": 29455
   }
 }

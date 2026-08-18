@@ -6,6 +6,7 @@ All notable repository-level changes are recorded here. Application history befo
 
 ### Corrected
 
+- Synchronized the 1.3.3 release identity across VERSION, CI/release workflows, deterministic artifact paths, managed documentation, and release-workflow contract tests after the failed qualification run exposed stale 1.3.2 metadata.
 - Removed the accidental empty repository-root `85%` file created when non-comment CMD guidance containing `>=85%` was interpreted as output redirection.
 - Corrected PHASE-005A import-order lint findings and regenerated forensic/document metadata so source-safety and Ruff gates evaluate the intended source tree.
 - Preserved live updates for browsers that still hold the previously immutable-cached `app.js`: the live endpoint accepts either the new explicit `X-MailStack-Live-Request: 1` header or the legacy `Accept: application/json` poll signature, while ordinary document navigation continues to redirect to the dashboard instead of exposing raw JSON.
