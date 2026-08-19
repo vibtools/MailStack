@@ -6,6 +6,10 @@ All notable repository-level changes are recorded here. Application history befo
 
 ### Corrected
 
+- Advanced the pinned Django 5.2 LTS runtime from 5.2.16 to 5.2.17 after RC2 `pip-audit` identified the upstream security advisory, and synchronized active dependency, deployment verification, and security-test contracts without changing application behavior.
+- Renamed CSS parser token-kind locals to avoid Bandit B105 credential-name false positives; no Bandit rule, exclusion, sanitizer policy, or runtime behavior is weakened.
+- Added the RC2 high-fidelity reader candidate: safe inline CSS and bounded sanitized `<style>`/responsive `@media` rules are preserved through an explicit allowlist while CSS URLs, imports, fonts, dynamic/custom-property functions, active positioning/effects and remote resources remain denied.
+- Added deterministic CSS parsing with pinned `tinycss2==1.5.1` plus focused parser, repair, security and safe-reader regression fixtures/tests; no database, route, authorization, iframe/CSP, mail-flow or repair-architecture change is included.
 - Prevented stripped HTML `<style>`/head/active blocks from leaking CSS text into the visible message body while preserving the deny-by-default sanitizer posture.
 - Removed blocked remote image nodes so tracking/remote images do not leave broken-image residue in the protected reader.
 - Removed the permanent protected-rendering banner from the normal reader while retaining sandbox, no-referrer, sanitizer, URL and active-content restrictions.
@@ -16,11 +20,13 @@ All notable repository-level changes are recorded here. Application history befo
 
 - Local PHASE-006 focused qualification: 60 tests passed; targeted Ruff, Bandit, Django system check and migration-drift gates passed.
 - PHASE-006 implementation commit `90175b7a4549cb67d874692081bd5b0484eddccc` passed GitHub Actions CI run `32183300485`.
-- Owner approved `1.3.4-rc.1` as the PHASE-006 live-acceptance pre-release identity; PR/main/tag publication and controlled live acceptance remain pending.
+- RC1 was squash-merged through PR #12 to `main` at `212ccaf7fab94e1b42ef2a57afb7bdfee673667e` and tagged `v1.3.4-rc.1`; controlled reader acceptance retained the security fix but found original HTML/CSS fidelity insufficient, opening the RC2 continuation.
+- The combined RC2 implementation/dependency candidate passed local qualification with 223 tests passed and one Windows symbolic-link capability skip, 93.03% coverage, Ruff/Bandit/Django/migration/dependency/documentation/design/installer/operations/release/upgrade gates PASS, `pip-audit` reporting no known vulnerabilities, and standard/full forensic audits with zero blocking findings.
+- Release identity is promoted to `1.3.4-rc.2` for repeat local qualification, branch/main CI, exact-main tag publication and controlled live acceptance; none of those post-promotion gates are claimed complete here.
 
 ### Compatibility
 
-- No database migration, Postfix/Dovecot/LMTP/Maildir routing change, authorization redesign, outbound feature, broad UI redesign, installer change, or version bump is included.
+- No database migration, Postfix/Dovecot/LMTP/Maildir routing change, authorization redesign, outbound feature, broad UI redesign, installer-flow change, reader-policy change, or application behavior change is introduced by the RC2 release-identity promotion.
 
 ## 1.3.3 — PHASE-005A qualification correction
 

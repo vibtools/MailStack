@@ -14,6 +14,7 @@ from typing import Any
 from urllib.parse import urlparse
 
 import bleach
+import tinycss2
 from django.utils import timezone
 
 SAFE_TAGS = {
@@ -49,6 +50,7 @@ SAFE_TAGS = {
     "h6",
     "a",
     "img",
+    "style",
 }
 SAFE_ATTRIBUTES = {
     "a": ["href", "title", "rel"],
@@ -57,7 +59,7 @@ SAFE_ATTRIBUTES = {
 }
 CONTROL_RE = re.compile(r"[\x00-\x1f\x7f]+")
 
-DROP_CONTENT_TAGS = frozenset({"head", "script", "style", "noscript", "template", "title"})
+DROP_CONTENT_TAGS = frozenset({"script", "noscript", "template", "title"})
 SAFE_DATA_IMAGE_PREFIXES = (
     "data:image/png;base64,",
     "data:image/jpeg;base64,",
@@ -65,14 +67,317 @@ SAFE_DATA_IMAGE_PREFIXES = (
     "data:image/webp;base64,",
 )
 
+CSS_BLOCK_MAX_INPUT_BYTES = 128 * 1024
+CSS_TOTAL_MAX_RETAINED_BYTES = 256 * 1024
+CSS_MAX_RETAINED_RULES = 512
+CSS_MAX_NESTING_DEPTH = 8
+CSS_ALLOWED_PROPERTIES = frozenset(
+    {
+        "background-color",
+        "border",
+        "border-bottom",
+        "border-bottom-color",
+        "border-bottom-style",
+        "border-bottom-width",
+        "border-collapse",
+        "border-color",
+        "border-left",
+        "border-left-color",
+        "border-left-style",
+        "border-left-width",
+        "border-radius",
+        "border-right",
+        "border-right-color",
+        "border-right-style",
+        "border-right-width",
+        "border-spacing",
+        "border-style",
+        "border-top",
+        "border-top-color",
+        "border-top-style",
+        "border-top-width",
+        "border-width",
+        "box-sizing",
+        "clear",
+        "color",
+        "display",
+        "empty-cells",
+        "float",
+        "font-family",
+        "font-size",
+        "font-style",
+        "font-variant",
+        "font-weight",
+        "height",
+        "letter-spacing",
+        "line-height",
+        "list-style-position",
+        "list-style-type",
+        "margin",
+        "margin-bottom",
+        "margin-left",
+        "margin-right",
+        "margin-top",
+        "max-height",
+        "max-width",
+        "min-height",
+        "min-width",
+        "overflow",
+        "overflow-wrap",
+        "padding",
+        "padding-bottom",
+        "padding-left",
+        "padding-right",
+        "padding-top",
+        "table-layout",
+        "text-align",
+        "text-decoration",
+        "text-indent",
+        "text-transform",
+        "vertical-align",
+        "white-space",
+        "width",
+        "word-break",
+    }
+)
+CSS_ALLOWED_FUNCTIONS = frozenset({"calc", "clamp", "hsl", "hsla", "max", "min", "rgb", "rgba"})
+CSS_ALLOWED_MEDIA_TYPES = frozenset({"all", "screen"})
+CSS_ALLOWED_MEDIA_FEATURES = frozenset({"max-width", "min-width", "orientation", "width"})
+CSS_ALLOWED_ORIENTATIONS = frozenset({"landscape", "portrait"})
+CSS_ALLOWED_LENGTH_UNITS = frozenset(
+    {
+        "ch",
+        "cm",
+        "em",
+        "ex",
+        "in",
+        "mm",
+        "pc",
+        "pt",
+        "px",
+        "q",
+        "rem",
+        "vh",
+        "vmax",
+        "vmin",
+        "vw",
+    }
+)
+CSS_FORBIDDEN_TEXT = (
+    "javascript:",
+    "vbscript:",
+    "expression(",
+    "url(",
+    "var(",
+    "env(",
+    "attr(",
+    "</style",
+)
+
+
+@dataclass(slots=True)
+class _CSSBudget:
+    retained_bytes: int = 0
+    retained_rules: int = 0
+
+    def reserve(self, fragment: str, *, rules: int = 0) -> bool:
+        fragment_bytes = len(fragment.encode("utf-8", errors="ignore"))
+        if self.retained_bytes + fragment_bytes > CSS_TOTAL_MAX_RETAINED_BYTES:
+            return False
+        if self.retained_rules + rules > CSS_MAX_RETAINED_RULES:
+            return False
+        self.retained_bytes += fragment_bytes
+        self.retained_rules += rules
+        return True
+
+
+def _css_input_within_limit(value: str) -> bool:
+    return len((value or "").encode("utf-8", errors="ignore")) <= CSS_BLOCK_MAX_INPUT_BYTES
+
+
+def _css_component_values_safe(tokens, *, depth: int = 0) -> bool:
+    if depth > CSS_MAX_NESTING_DEPTH:
+        return False
+    for token in tokens:
+        node_kind = getattr(token, "type", "")
+        if node_kind in {"error", "url"}:
+            return False
+        if node_kind == "at-keyword":
+            return False
+        if node_kind == "function":
+            if getattr(token, "lower_name", "") not in CSS_ALLOWED_FUNCTIONS:
+                return False
+            if not _css_component_values_safe(getattr(token, "arguments", ()), depth=depth + 1):
+                return False
+            continue
+        nested = getattr(token, "content", None)
+        if nested is not None and not _css_component_values_safe(nested, depth=depth + 1):
+            return False
+    serialized = tinycss2.serialize(tokens).casefold().replace("\\", "")
+    return not any(forbidden in serialized for forbidden in CSS_FORBIDDEN_TEXT)
+
+
+def _sanitize_declaration_tokens(tokens) -> str:
+    safe_declarations: list[str] = []
+    for token in tokens:
+        if getattr(token, "type", "") != "declaration":
+            continue
+        property_name = getattr(token, "lower_name", "")
+        if not property_name or property_name.startswith("--"):
+            continue
+        if property_name not in CSS_ALLOWED_PROPERTIES:
+            continue
+        value_tokens = getattr(token, "value", ())
+        if not _css_component_values_safe(value_tokens):
+            continue
+        value = tinycss2.serialize(value_tokens).strip()
+        if not value:
+            continue
+        declaration = f"{property_name}:{value}"
+        if getattr(token, "important", False):
+            declaration += " !important"
+        safe_declarations.append(declaration + ";")
+    return "".join(safe_declarations)
+
+
+def _sanitize_declarations(value: str) -> str:
+    if not _css_input_within_limit(value):
+        return ""
+    tokens = tinycss2.parse_blocks_contents(value or "", skip_comments=True, skip_whitespace=True)
+    return _sanitize_declaration_tokens(tokens)
+
+
+def _media_feature_safe(block) -> bool:
+    content = [token for token in getattr(block, "content", ()) if getattr(token, "type", "") != "whitespace"]
+    if len(content) < 3:
+        return False
+    name_token, colon_token, *value_tokens = content
+    if getattr(name_token, "type", "") != "ident":
+        return False
+    feature = getattr(name_token, "lower_value", "")
+    if feature not in CSS_ALLOWED_MEDIA_FEATURES:
+        return False
+    if getattr(colon_token, "type", "") != "literal" or getattr(colon_token, "value", "") != ":":
+        return False
+    if not value_tokens:
+        return False
+    if feature == "orientation":
+        return len(value_tokens) == 1 and getattr(value_tokens[0], "type", "") == "ident" and getattr(
+            value_tokens[0], "lower_value", ""
+        ) in CSS_ALLOWED_ORIENTATIONS
+    if len(value_tokens) != 1:
+        return False
+    value_token = value_tokens[0]
+    node_kind = getattr(value_token, "type", "")
+    if node_kind == "number":
+        return float(getattr(value_token, "value", -1)) == 0
+    if node_kind != "dimension":
+        return False
+    if float(getattr(value_token, "value", -1)) < 0:
+        return False
+    return getattr(value_token, "lower_unit", "") in CSS_ALLOWED_LENGTH_UNITS
+
+
+def _media_prelude_safe(tokens) -> bool:
+    meaningful = [token for token in tokens if getattr(token, "type", "") != "whitespace"]
+    if not meaningful:
+        return False
+    expect_term = True
+    saw_term = False
+    for token in meaningful:
+        node_kind = getattr(token, "type", "")
+        if expect_term:
+            if node_kind == "ident" and getattr(token, "lower_value", "") in CSS_ALLOWED_MEDIA_TYPES:
+                saw_term = True
+                expect_term = False
+                continue
+            if node_kind == "() block" and _media_feature_safe(token):
+                saw_term = True
+                expect_term = False
+                continue
+            return False
+        if node_kind == "ident" and getattr(token, "lower_value", "") == "and":
+            expect_term = True
+            continue
+        return False
+    return saw_term and not expect_term
+
+
+def _sanitize_rule(rule, *, depth: int = 0) -> tuple[str, int] | None:
+    rule_type = getattr(rule, "type", "")
+    if rule_type == "qualified-rule":
+        selector = tinycss2.serialize(getattr(rule, "prelude", ())).strip()
+        if not selector or "</style" in selector.casefold():
+            return None
+        declarations = tinycss2.parse_blocks_contents(
+            getattr(rule, "content", ()), skip_comments=True, skip_whitespace=True
+        )
+        sanitized = _sanitize_declaration_tokens(declarations)
+        if not sanitized:
+            return None
+        return f"{selector}{{{sanitized}}}", 1
+    if rule_type != "at-rule" or getattr(rule, "lower_at_keyword", "") != "media":
+        return None
+    if depth >= CSS_MAX_NESTING_DEPTH:
+        return None
+    content = getattr(rule, "content", None)
+    if content is None or not _media_prelude_safe(getattr(rule, "prelude", ())):
+        return None
+    nested_rules = tinycss2.parse_rule_list(content, skip_comments=True, skip_whitespace=True)
+    nested_fragments: list[str] = []
+    nested_count = 0
+    for nested_rule in nested_rules:
+        sanitized_nested = _sanitize_rule(nested_rule, depth=depth + 1)
+        if sanitized_nested is None:
+            continue
+        fragment, count = sanitized_nested
+        nested_fragments.append(fragment)
+        nested_count += count
+    if not nested_fragments:
+        return None
+    media = tinycss2.serialize(getattr(rule, "prelude", ())).strip()
+    return f"@media {media}{{{''.join(nested_fragments)}}}", nested_count + 1
+
+
+class _MailStackCSSSanitizer:
+    """Sanitize email presentation CSS without permitting resource loading or active behavior."""
+
+    def __init__(self, budget: _CSSBudget) -> None:
+        self.budget = budget
+
+    def sanitize_css(self, style: str) -> str:
+        sanitized = _sanitize_declarations(style)
+        if not sanitized or not self.budget.reserve(sanitized):
+            return ""
+        return sanitized
+
+    def sanitize_stylesheet(self, stylesheet: str) -> str:
+        if not _css_input_within_limit(stylesheet):
+            return ""
+        rules = tinycss2.parse_stylesheet(stylesheet or "", skip_comments=True, skip_whitespace=True)
+        fragments: list[str] = []
+        for rule in rules:
+            sanitized_rule = _sanitize_rule(rule)
+            if sanitized_rule is None:
+                continue
+            fragment, count = sanitized_rule
+            if not self.budget.reserve(fragment, rules=count):
+                break
+            fragments.append(fragment)
+        return "".join(fragments)
+
 
 class _SanitizerPreprocessor(HTMLParser):
     """Remove non-display/active blocks and unusable remote images before Bleach."""
 
-    def __init__(self) -> None:
+    def __init__(self, css_sanitizer: _MailStackCSSSanitizer) -> None:
         super().__init__(convert_charrefs=False)
         self.output: list[str] = []
         self._suppressed_depth = 0
+        self._head_depth = 0
+        self._style_depth = 0
+        self._style_buffer: list[str] = []
+        self._css_sanitizer = css_sanitizer
 
     @staticmethod
     def _safe_image(attrs: list[tuple[str, str | None]]) -> bool:
@@ -85,8 +390,25 @@ class _SanitizerPreprocessor(HTMLParser):
             if lowered in DROP_CONTENT_TAGS:
                 self._suppressed_depth += 1
             return
+        if self._style_depth:
+            return
+        if lowered == "head":
+            self._head_depth += 1
+            return
+        if self._head_depth:
+            if lowered in DROP_CONTENT_TAGS:
+                self._suppressed_depth = 1
+                return
+            if lowered == "style":
+                self._style_depth = 1
+                self._style_buffer = []
+            return
         if lowered in DROP_CONTENT_TAGS:
             self._suppressed_depth = 1
+            return
+        if lowered == "style":
+            self._style_depth = 1
+            self._style_buffer = []
             return
         if lowered == "img" and not self._safe_image(attrs):
             return
@@ -94,7 +416,14 @@ class _SanitizerPreprocessor(HTMLParser):
 
     def handle_startendtag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
         lowered = tag.lower()
-        if self._suppressed_depth or lowered in DROP_CONTENT_TAGS:
+        if (
+            self._suppressed_depth
+            or self._style_depth
+            or self._head_depth
+            or lowered == "head"
+            or lowered in DROP_CONTENT_TAGS
+            or lowered == "style"
+        ):
             return
         if lowered == "img" and not self._safe_image(attrs):
             return
@@ -106,23 +435,43 @@ class _SanitizerPreprocessor(HTMLParser):
             if lowered in DROP_CONTENT_TAGS:
                 self._suppressed_depth -= 1
             return
+        if self._style_depth:
+            if lowered == "style":
+                self._style_depth = 0
+                sanitized = self._css_sanitizer.sanitize_stylesheet("".join(self._style_buffer))
+                self._style_buffer = []
+                if sanitized:
+                    self.output.append(f"<style>{sanitized}</style>")
+            return
+        if self._head_depth:
+            if lowered == "head":
+                self._head_depth -= 1
+            return
+        if lowered == "head":
+            return
         self.output.append(f"</{lowered}>")
 
     def handle_data(self, data: str) -> None:
-        if not self._suppressed_depth:
+        if self._style_depth:
+            self._style_buffer.append(data)
+        elif not self._suppressed_depth and not self._head_depth:
             self.output.append(data)
 
     def handle_entityref(self, name: str) -> None:
-        if not self._suppressed_depth:
+        if self._style_depth:
+            self._style_buffer.append(f"&{name};")
+        elif not self._suppressed_depth and not self._head_depth:
             self.output.append(f"&{name};")
 
     def handle_charref(self, name: str) -> None:
-        if not self._suppressed_depth:
+        if self._style_depth:
+            self._style_buffer.append(f"&#{name};")
+        elif not self._suppressed_depth and not self._head_depth:
             self.output.append(f"&#{name};")
 
 
-def _prepare_html_for_sanitizer(value: str) -> str:
-    parser = _SanitizerPreprocessor()
+def _prepare_html_for_sanitizer(value: str, css_sanitizer: _MailStackCSSSanitizer) -> str:
+    parser = _SanitizerPreprocessor(css_sanitizer)
     parser.feed(value or "")
     parser.close()
     return "".join(parser.output)
@@ -185,7 +534,7 @@ def safe_filename(value: str | None) -> str:
 
 def _safe_attribute(tag: str, name: str, value: str) -> bool:
     lowered = name.lower()
-    if lowered.startswith("on") or lowered == "style":
+    if lowered.startswith("on"):
         return False
     if tag == "img" and lowered == "src":
         return value.lower().startswith(SAFE_DATA_IMAGE_PREFIXES)
@@ -196,17 +545,20 @@ def _safe_attribute(tag: str, name: str, value: str) -> bool:
 
 
 def sanitize_html(value: str) -> str:
+    css_sanitizer = _MailStackCSSSanitizer(_CSSBudget())
     cleaner = bleach.Cleaner(
         tags=SAFE_TAGS,
         attributes=_safe_attribute,
         protocols={"http", "https", "mailto", "data"},
         strip=True,
         strip_comments=True,
+        css_sanitizer=css_sanitizer,
     )
-    prepared = _prepare_html_for_sanitizer(value)
+    prepared = _prepare_html_for_sanitizer(value, css_sanitizer)
     cleaned = cleaner.clean(prepared)
     return bleach.linkifier.Linker(
         callbacks=[bleach.callbacks.nofollow, bleach.callbacks.target_blank],
+        skip_tags={"style"},
         parse_email=False,
     ).linkify(cleaned).strip()
 

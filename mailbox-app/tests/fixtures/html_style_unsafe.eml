@@ -1,0 +1,14 @@
+From: Sender <sender@example.test>
+To: mailbox1@example.com
+Date: Tue, 18 Aug 2026 11:01:00 +0000
+Subject: Unsafe style block
+Message-ID: <style-unsafe@example.test>
+MIME-Version: 1.0
+Content-Type: text/html; charset=utf-8
+
+<!doctype html>
+<html><head><style>
+@import url(https://tracker.example.test/evil.css);
+@font-face { font-family: Evil; src: url(https://tracker.example.test/evil.woff2); }
+.safe { color: blue; background-image: url(https://tracker.example.test/bg.png); position: fixed; z-index: 9999; }
+</style></head><body><p class="safe">Unsafe CSS filtered, content retained.</p></body></html>

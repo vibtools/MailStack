@@ -1,0 +1,18 @@
+From: Sender <sender@example.test>
+To: mailbox1@example.com
+Date: Tue, 18 Aug 2026 11:00:00 +0000
+Subject: Safe style block
+Message-ID: <style-safe@example.test>
+MIME-Version: 1.0
+Content-Type: text/html; charset=utf-8
+
+<!doctype html>
+<html>
+<head>
+<style>
+.brand { color: #123456; font-size: 18px; padding: 12px; }
+.brand strong { font-weight: 700 !important; }
+</style>
+</head>
+<body><p class="brand">Safe styled <strong>content</strong></p></body>
+</html>

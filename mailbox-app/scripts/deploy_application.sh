@@ -67,7 +67,7 @@ runuser -u vmail -- "$VENV/bin/python" - <<'PY'
 from importlib.metadata import version
 
 required = {
-    "Django": "5.2.16",
+    "Django": "5.2.17",
     "bleach": "6.4.0",
     "python-dotenv": "1.2.2",
 }

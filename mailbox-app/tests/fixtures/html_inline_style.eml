@@ -1,0 +1,9 @@
+From: Sender <sender@example.test>
+To: mailbox1@example.com
+Date: Tue, 18 Aug 2026 11:02:00 +0000
+Subject: Inline style
+Message-ID: <inline-style@example.test>
+MIME-Version: 1.0
+Content-Type: text/html; charset=utf-8
+
+<p style="color: rgb(10, 20, 30); padding: 16px; width: calc(100% - 20px); background-image: url(https://tracker.example.test/bg.png); position: fixed;">Inline styled content.</p>

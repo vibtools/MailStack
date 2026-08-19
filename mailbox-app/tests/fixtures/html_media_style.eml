@@ -1,0 +1,14 @@
+From: Sender <sender@example.test>
+To: mailbox1@example.com
+Date: Tue, 18 Aug 2026 11:03:00 +0000
+Subject: Media style
+Message-ID: <media-style@example.test>
+MIME-Version: 1.0
+Content-Type: text/html; charset=utf-8
+
+<style>
+@media screen and (max-width: 600px) { .responsive { width: 100%; display: block; } }
+@media screen and (prefers-color-scheme: dark) { .responsive { color: white; } }
+@media only screen and (max-width: 600px) { .blocked-only { color: red; } }
+</style>
+<div class="responsive">Responsive content.</div>

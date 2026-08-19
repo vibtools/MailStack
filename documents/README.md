@@ -27,25 +27,25 @@ required documentation update.
 <!-- AUTO-DOCUMENT-INDEX:START -->
 | Document | Type | Audience | Status | Version |
 |---|---|---|---|---|
-| [MailStack Administrator Guide](ADMIN_GUIDE.md) | Admin Guide | mailstack-administrators | active | 1.3.4-rc.1 |
-| [MailStack Baseline](BASELINE.md) | Baseline | maintainers-and-operators | active | 1.3.4-rc.1 |
-| [MailStack Accessibility Specification](design/ACCESSIBILITY_SPECIFICATION.md) | Design Reference | designers-developers-and-maintainers | active | 1.3.4-rc.1 |
-| [MailStack Future UI Roadmap](design/FUTURE_UI_ROADMAP.md) | Design Reference | designers-developers-and-maintainers | active | 1.3.4-rc.1 |
-| [MailStack Responsive Specification](design/RESPONSIVE_SPECIFICATION.md) | Design Reference | designers-developers-and-maintainers | active | 1.3.4-rc.1 |
-| [MailStack UI Component Matrix](design/COMPONENT_MATRIX.md) | Design Reference | designers-developers-and-maintainers | active | 1.3.4-rc.1 |
-| [MailStack UI Foundation](design/UI_FOUNDATION.md) | Design Reference | designers-developers-and-maintainers | active | 1.3.4-rc.1 |
-| [MailStack UI Implementation Status](design/IMPLEMENTATION_STATUS.md) | Design Reference | designers-developers-and-maintainers | active | 1.3.4-rc.1 |
-| [MailStack UI Screen Catalog](design/SCREEN_CATALOG.md) | Design Reference | designers-developers-and-maintainers | active | 1.3.4-rc.1 |
-| [Documentation Policy](DOCUMENTATION_POLICY.md) | Documentation Policy | contributors-and-maintainers | active | 1.3.4-rc.1 |
-| [How to Use MailStack](HOW_TO_USE.md) | How To | mailbox-users-and-administrators | active | 1.3.4-rc.1 |
-| [Documentation and Feature Baseline](phases/PHASE-000-BASELINE.md) | Phase | users-operators-and-maintainers | active | 1.3.4-rc.1 |
-| [Installation, Recovery and Inbound Delivery Reliability](phases/PHASE-003-INSTALLATION-RECOVERY-AND-INBOUND-DELIVERY-RELIABILITY.md) | Phase | users-operators-and-maintainers | active | 1.3.4-rc.1 |
-| [Reader Integrity, Data Repair and Runtime Error Closure](phases/PHASE-006-READER-INTEGRITY-DATA-REPAIR-AND-RUNTIME-ERROR-CLOSURE.md) | Phase | users-operators-and-maintainers | active | 1.3.4-rc.1 |
-| [Release, Upgrade and Operational Reliability](phases/PHASE-004-RELEASE-UPGRADE-AND-OPERATIONAL-RELIABILITY.md) | Phase | users-operators-and-maintainers | active | 1.3.4-rc.1 |
-| [Shared UI Foundation and Application Shell](phases/PHASE-002-SHARED-UI-FOUNDATION-AND-APPLICATION-SHELL.md) | Phase | users-operators-designers-and-maintainers | active | 1.3.4-rc.1 |
-| [UI Design Intake Baseline](phases/PHASE-001-UI-DESIGN-INTAKE-BASELINE.md) | Phase | users-operators-designers-and-maintainers | active | 1.3.4-rc.1 |
-| [UI Navigation Reliability and Compact Mailbox Reader](phases/PHASE-005-UI-NAVIGATION-RELIABILITY-AND-COMPACT-MAILBOX-READER.md) | Phase | users-operators-designers-and-maintainers | active | 1.3.4-rc.1 |
-| [MailStack User Manual](USER_MANUAL.md) | User Manual | mailbox-users | active | 1.3.4-rc.1 |
+| [MailStack Administrator Guide](ADMIN_GUIDE.md) | Admin Guide | mailstack-administrators | active | 1.3.4-rc.2 |
+| [MailStack Baseline](BASELINE.md) | Baseline | maintainers-and-operators | active | 1.3.4-rc.2 |
+| [MailStack Accessibility Specification](design/ACCESSIBILITY_SPECIFICATION.md) | Design Reference | designers-developers-and-maintainers | active | 1.3.4-rc.2 |
+| [MailStack Future UI Roadmap](design/FUTURE_UI_ROADMAP.md) | Design Reference | designers-developers-and-maintainers | active | 1.3.4-rc.2 |
+| [MailStack Responsive Specification](design/RESPONSIVE_SPECIFICATION.md) | Design Reference | designers-developers-and-maintainers | active | 1.3.4-rc.2 |
+| [MailStack UI Component Matrix](design/COMPONENT_MATRIX.md) | Design Reference | designers-developers-and-maintainers | active | 1.3.4-rc.2 |
+| [MailStack UI Foundation](design/UI_FOUNDATION.md) | Design Reference | designers-developers-and-maintainers | active | 1.3.4-rc.2 |
+| [MailStack UI Implementation Status](design/IMPLEMENTATION_STATUS.md) | Design Reference | designers-developers-and-maintainers | active | 1.3.4-rc.2 |
+| [MailStack UI Screen Catalog](design/SCREEN_CATALOG.md) | Design Reference | designers-developers-and-maintainers | active | 1.3.4-rc.2 |
+| [Documentation Policy](DOCUMENTATION_POLICY.md) | Documentation Policy | contributors-and-maintainers | active | 1.3.4-rc.2 |
+| [How to Use MailStack](HOW_TO_USE.md) | How To | mailbox-users-and-administrators | active | 1.3.4-rc.2 |
+| [Documentation and Feature Baseline](phases/PHASE-000-BASELINE.md) | Phase | users-operators-and-maintainers | active | 1.3.4-rc.2 |
+| [Installation, Recovery and Inbound Delivery Reliability](phases/PHASE-003-INSTALLATION-RECOVERY-AND-INBOUND-DELIVERY-RELIABILITY.md) | Phase | users-operators-and-maintainers | active | 1.3.4-rc.2 |
+| [Reader Integrity, Data Repair and Runtime Error Closure](phases/PHASE-006-READER-INTEGRITY-DATA-REPAIR-AND-RUNTIME-ERROR-CLOSURE.md) | Phase | users-operators-and-maintainers | active | 1.3.4-rc.2 |
+| [Release, Upgrade and Operational Reliability](phases/PHASE-004-RELEASE-UPGRADE-AND-OPERATIONAL-RELIABILITY.md) | Phase | users-operators-and-maintainers | active | 1.3.4-rc.2 |
+| [Shared UI Foundation and Application Shell](phases/PHASE-002-SHARED-UI-FOUNDATION-AND-APPLICATION-SHELL.md) | Phase | users-operators-designers-and-maintainers | active | 1.3.4-rc.2 |
+| [UI Design Intake Baseline](phases/PHASE-001-UI-DESIGN-INTAKE-BASELINE.md) | Phase | users-operators-designers-and-maintainers | active | 1.3.4-rc.2 |
+| [UI Navigation Reliability and Compact Mailbox Reader](phases/PHASE-005-UI-NAVIGATION-RELIABILITY-AND-COMPACT-MAILBOX-READER.md) | Phase | users-operators-designers-and-maintainers | active | 1.3.4-rc.2 |
+| [MailStack User Manual](USER_MANUAL.md) | User Manual | mailbox-users | active | 1.3.4-rc.2 |
 <!-- AUTO-DOCUMENT-INDEX:END -->
 
 ## Scope boundary

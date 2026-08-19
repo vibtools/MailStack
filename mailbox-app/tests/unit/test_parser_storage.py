@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import hashlib
+import re
 from pathlib import Path
 
 import pytest
@@ -68,19 +69,100 @@ def test_sanitize_html_removes_active_and_remote_content():
     assert "Text" in cleaned
 
 
-def test_sanitize_html_drops_style_block_text_and_remote_image_nodes():
+def test_sanitize_html_preserves_safe_style_block_without_visible_css_leak():
     cleaned = sanitize_html(
         "<html><head><style>#outlook a{padding:0}.ReadMsgBody{width:100%}</style></head>"
         "<body><p>Readable email content</p>"
         "<img src='https://tracker.test/pixel.png' alt='intercom'></body></html>"
     )
     lowered = cleaned.lower()
-    assert "#outlook" not in lowered
-    assert ".readmsgbody" not in lowered
+    assert "<style>" in lowered
+    assert "#outlook a{padding:0;}" in lowered
+    assert ".readmsgbody{width:100%;}" in lowered
     assert "tracker.test" not in lowered
     assert "intercom" not in lowered
     assert "<img" not in lowered
     assert "Readable email content" in cleaned
+    visible_markup = re.sub(r"<style>.*?</style>", "", lowered, flags=re.DOTALL)
+    assert "#outlook" not in visible_markup
+    assert ".readmsgbody" not in visible_markup
+
+
+def test_sanitize_html_keeps_only_sanitized_style_from_head():
+    cleaned = sanitize_html(
+        "<html><head>HEAD SECRET"
+        "<title>Hidden title</title>"
+        "<meta name='description' content='hidden'>"
+        "<script>alert('head')</script>"
+        "<style>.brand{color:#123456;background-image:url(https://tracker.test/bg.png)}</style>"
+        "</head><body><p class='brand'>Visible body</p></body></html>"
+    )
+    lowered = cleaned.lower()
+    assert "head secret" not in lowered
+    assert "hidden title" not in lowered
+    assert "description" not in lowered
+    assert "alert(" not in lowered
+    assert "tracker.test" not in lowered
+    assert ".brand{color:#123456;}" in lowered
+    assert "Visible body" in cleaned
+
+
+def test_sanitize_html_preserves_safe_inline_css_and_drops_unsafe_declarations():
+    cleaned = sanitize_html(
+        '<p style="color:red;padding:12px;width:calc(100% - 20px);'
+        'background-image:url(https://tracker.test/bg.png);position:fixed">Styled</p>'
+    )
+    lowered = cleaned.lower()
+    assert "color:red;" in lowered
+    assert "padding:12px;" in lowered
+    assert "width:calc(100% - 20px);" in lowered
+    assert "background-image" not in lowered
+    assert "tracker.test" not in lowered
+    assert "position:fixed" not in lowered
+
+
+def test_sanitize_html_allows_bounded_media_rules_and_drops_other_at_rules():
+    cleaned = sanitize_html(
+        "<style>"
+        "@import url(https://tracker.test/x.css);"
+        "@font-face{font-family:Evil;src:url(https://tracker.test/e.woff2)}"
+        "@media screen and (max-width:600px){.responsive{width:100%;display:block}}"
+        "@media screen and (prefers-color-scheme:dark){.dark{color:white}}"
+        "</style><div class='responsive'>Responsive</div>"
+    )
+    lowered = cleaned.lower()
+    assert "@media screen and (max-width:600px)" in lowered
+    assert ".responsive{width:100%;display:block;}" in lowered
+    assert "@import" not in lowered
+    assert "@font-face" not in lowered
+    assert "prefers-color-scheme" not in lowered
+    assert "tracker.test" not in lowered
+
+
+def test_sanitize_html_css_fail_closed_limits_do_not_drop_message_content():
+    oversized = "color:red;" * 20_000
+    cleaned = sanitize_html(f'<p style="{oversized}">Still readable</p>')
+    assert "Still readable" in cleaned
+    assert 'style=""' in cleaned or "style" not in cleaned
+
+    oversized_stylesheet = ".safe{color:red;}" * 10_000
+    cleaned = sanitize_html(f"<style>{oversized_stylesheet}</style><p>Body survives</p>")
+    assert "Body survives" in cleaned
+    assert "<style>" not in cleaned.lower()
+
+
+def test_sanitize_html_css_blocks_data_urls_custom_properties_and_dynamic_functions():
+    cleaned = sanitize_html(
+        '<p style="color:var(--brand);--brand:red;background-image:url(data:image/png;base64,AAAA);'
+        'width:env(safe-area-inset-left);font-size:attr(data-size px);padding:8px">Safe</p>'
+    ).lower()
+    assert "padding:8px;" in cleaned
+    assert "--brand" not in cleaned
+    assert "var(" not in cleaned
+    assert "env(" not in cleaned
+    assert "attr(" not in cleaned
+    assert "url(" not in cleaned
+    assert "data:image" not in cleaned
 
 
 @pytest.mark.parametrize(
@@ -89,6 +171,12 @@ def test_sanitize_html_drops_style_block_text_and_remote_image_nodes():
         "plain_text.eml",
         "html.eml",
         "html_style_heavy.eml",
+        "html_style_safe.eml",
+        "html_style_unsafe.eml",
+        "html_inline_style.eml",
+        "html_media_style.eml",
+        "html_table_layout.eml",
+        "html_malformed_css.eml",
         "multipart_alternative.eml",
         "nested_multipart.eml",
         "utf8_subject.eml",
@@ -109,16 +197,61 @@ def test_parse_message_fixture_matrix(fixtures_dir: Path, fixture_name: str):
     assert isinstance(parsed.warnings, list)
 
 
-def test_parse_message_style_heavy_html_is_readable_without_css_leak(fixtures_dir: Path):
+def test_parse_message_style_heavy_html_is_readable_with_sanitized_css(fixtures_dir: Path):
     parsed = parse_message((fixtures_dir / "html_style_heavy.eml").read_bytes())
     lowered = parsed.sanitized_html_body.lower()
     assert "Welcome to Harpoon!" in parsed.sanitized_html_body
     assert "This content must stay readable." in parsed.sanitized_html_body
-    assert "#outlook" not in lowered
-    assert ".readmsgbody" not in lowered
+    assert "#outlook a{padding:0;}" in lowered
+    assert ".readmsgbody{width:100%;}" in lowered
+    assert "body{width:100% !important;}" in lowered
     assert "alert(1)" not in lowered
     assert "tracker.example.test" not in lowered
     assert "intercom" not in lowered
+    visible_markup = re.sub(r"<style>.*?</style>", "", lowered, flags=re.DOTALL)
+    assert "#outlook" not in visible_markup
+    assert ".readmsgbody" not in visible_markup
+
+
+def test_parse_message_css_fixture_contract(fixtures_dir: Path):
+    safe = parse_message((fixtures_dir / "html_style_safe.eml").read_bytes()).sanitized_html_body.lower()
+    unsafe = parse_message((fixtures_dir / "html_style_unsafe.eml").read_bytes()).sanitized_html_body.lower()
+    inline = parse_message((fixtures_dir / "html_inline_style.eml").read_bytes()).sanitized_html_body.lower()
+    media = parse_message((fixtures_dir / "html_media_style.eml").read_bytes()).sanitized_html_body.lower()
+    table = parse_message((fixtures_dir / "html_table_layout.eml").read_bytes()).sanitized_html_body.lower()
+    malformed = parse_message(
+        (fixtures_dir / "html_malformed_css.eml").read_bytes()
+    ).sanitized_html_body.lower()
+
+    assert ".brand{color:#123456;font-size:18px;padding:12px;}" in safe
+    assert "font-weight:700 !important;" in safe
+
+    assert ".safe{color:blue;}" in unsafe
+    assert "@import" not in unsafe
+    assert "@font-face" not in unsafe
+    assert "tracker.example.test" not in unsafe
+    assert "position:fixed" not in unsafe
+    assert "z-index" not in unsafe
+
+    assert "color:rgb(10, 20, 30);" in inline
+    assert "padding:16px;" in inline
+    assert "width:calc(100% - 20px);" in inline
+    assert "background-image" not in inline
+    assert "position:fixed" not in inline
+
+    assert "@media screen and (max-width: 600px)" in media
+    assert "prefers-color-scheme" not in media
+    assert "@media only" not in media
+
+    assert "width:600px;" in table
+    assert "border-collapse:collapse;" in table
+    assert "table-layout:fixed;" in table
+    assert "background-color:#f4f4f4;" in table
+    assert "vertical-align:top;" in table
+
+    assert "malformed css must not break the message." in malformed
+    assert "padding:10px;" in malformed
+    assert "expression(" not in malformed
 
 
 def test_parse_message_extracts_headers_bodies_and_attachments(fixtures_dir: Path):

@@ -7,6 +7,7 @@ from django.test import Client, override_settings
 from django.urls import reverse
 
 from apps.audit.services import record_audit
+from apps.ingestion.parser import sanitize_html
 from apps.ingestion.storage import store_attachment
 from apps.mailboxes.validators import confined_path
 from apps.messages.models import Attachment
@@ -46,9 +47,37 @@ def test_security_headers_on_normal_and_html_routes(client, admin_user, message)
     response = client.get(reverse("messages:safe_html", args=[message.uuid]))
     csp = response["Content-Security-Policy"]
     assert "default-src 'none'" in csp
+    assert "img-src data:" in csp
+    assert "style-src 'unsafe-inline'" in csp
+    assert "base-uri 'none'" in csp
     assert "script-src" not in csp
     assert "form-action 'none'" in csp
     assert "navigate-to 'none'" in csp
+
+
+def test_css_sanitizer_preserves_presentation_without_remote_or_active_css():
+    cleaned = sanitize_html(
+        "<style>"
+        ".safe{color:red;padding:8px;background-image:url(https://tracker.test/a.png);position:fixed}"
+        "@import url(https://tracker.test/x.css);"
+        "@media screen and (max-width:600px){.safe{width:100%;display:block}}"
+        "</style>"
+        '<p style="font-weight:700;transform:scale(2);color:expression(alert(1));'
+        'width:var(--mail-width);--mail-width:100%;background-image:url(data:image/png;base64,AAAA)">'
+        "Safe</p>"
+    ).lower()
+    assert ".safe{color:red;padding:8px;}" in cleaned
+    assert "@media screen and (max-width:600px)" in cleaned
+    assert "font-weight:700;" in cleaned
+    assert "tracker.test" not in cleaned
+    assert "@import" not in cleaned
+    assert "background-image" not in cleaned
+    assert "position:fixed" not in cleaned
+    assert "transform" not in cleaned
+    assert "expression(" not in cleaned
+    assert "var(" not in cleaned
+    assert "--mail-width" not in cleaned
+    assert "data:image" not in cleaned
 
 
 @pytest.mark.django_db

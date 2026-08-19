@@ -10,11 +10,11 @@ when a phase changes state so implementation cannot become unordered or ambiguou
 | Metric | Current value |
 |---|---|
 | Frozen baseline | MailStack `v1.3.3` |
-| PHASE-006 live-acceptance target | MailStack `v1.3.4-rc.1` pre-release |
+| PHASE-006 live-acceptance target | MailStack `v1.3.4-rc.2` pre-release |
 | Planned implementation phases | **2** |
 | Completed phases in this production-readiness cycle | **0 / 2** |
 | Remaining phases | **2 / 2** |
-| Current implementation state | PHASE-006 implementation locally qualified; GitHub/live acceptance pending |
+| Current implementation state | PHASE-006 RC2 implementation/dependency candidate locally qualified; release-identity requalification, GitHub CI and live acceptance pending |
 | Runtime implementation started | Yes — PHASE-006 |
 | Production-ready acceptance | Not yet |
 
@@ -22,7 +22,7 @@ when a phase changes state so implementation cannot become unordered or ambiguou
 
 | Phase | State | What must be completed | Completion evidence |
 |---|---|---|---|
-| PHASE-006 | **IMPLEMENTATION QUALIFIED / LIVE PENDING** | Reader integrity, safe existing-message repair, runtime error closure, reader regressions | Local focused qualification: 60 passed; Ruff/Bandit/Django/migration gates PASS |
+| PHASE-006 | **RC2 LOCALLY QUALIFIED / LIVE PENDING** | Reader integrity, safe existing-message repair, runtime error closure, high-fidelity safe CSS reader regressions | Pre-promotion RC2: 223 passed, 1 capability skip, 93.03% coverage; Ruff/Bandit/pip-audit/full-forensic PASS |
 | PHASE-007 | **PENDING / BLOCKED BY PHASE-006** | Compact UI system, responsive refinement, final CI/live/E2E acceptance | Not yet recorded |
 
 ---
@@ -31,7 +31,7 @@ when a phase changes state so implementation cannot become unordered or ambiguou
 
 ## Status
 
-**IMPLEMENTATION QUALIFIED LOCALLY / LIVE ACCEPTANCE PENDING**
+**RC2 IMPLEMENTATION QUALIFIED LOCALLY / RELEASE-IDENTITY REQUALIFICATION AND LIVE ACCEPTANCE PENDING**
 
 ## Baseline at phase start
 
@@ -50,27 +50,32 @@ Must equal the official v1.3.3 frozen identity documented in `00_OFFICIAL_BASELI
 
 ## Features/fixes actually completed
 
-- sanitizer removes non-body style/active blocks with their contents before allowlist cleaning;
+- RC1 sanitizer prevents raw non-display/active content from leaking into visible message body output;
+- RC2 preserves a bounded sanitized presentation-only CSS subset, including safe inline/style-block and responsive `@media` rules, while denying CSS resource loading and active behavior;
 - blocked remote image nodes are omitted rather than rendered as broken residue;
 - permanent protected-rendering banner removed while sandbox/no-referrer remain;
 - controlled existing-message body repair command added with dry-run, targeting, limits and explicit confirmation;
 - repair preserves message identity/state/source/attachments and updates only parser-derived body fields;
 - unused Gunicorn control interface disabled without weakening systemd filesystem confinement;
-- focused PHASE-006 regression coverage added.
+- focused PHASE-006 regression coverage added;
+- Django 5.2 LTS security pin advanced from 5.2.16 to 5.2.17 with exact-version deployment/test contracts synchronized;
+- Bandit B105 CSS-parser naming false positives removed without disabling or suppressing the security rule.
 
 ## Files changed
 
-Ten implementation/test paths are currently changed in the local PHASE-006 candidate; managed
-documentation/generated metadata are synchronized before branch qualification.
+The RC2 candidate spans the approved reader/dependency/deployment-contract tests plus current release
+documentation and generated metadata. The exact candidate path set is enforced by the forensic inventory
+and Git diff; PHASE-007 implementation remains untouched.
 
 ## Tests/evidence
 
-Local focused qualification: `60 passed`; targeted Ruff PASS; Bandit PASS; Django system check PASS;
-migration drift NONE. Implementation commit `90175b7a4549cb67d874692081bd5b0484eddccc` passed GitHub Actions CI run `32183300485`; owner-approved `1.3.4-rc.1` publication and controlled live acceptance remain pending.
+RC1 implementation commit `90175b7a4549cb67d874692081bd5b0484eddccc` passed GitHub Actions CI run `32183300485`; the qualified RC1 work was later squash-merged as `212ccaf7fab94e1b42ef2a57afb7bdfee673667e` and tagged `v1.3.4-rc.1`. Controlled RC1 reader acceptance exposed the remaining presentation-fidelity defect.
+
+The combined RC2 implementation/dependency candidate before release-identity promotion passed locally on Python 3.12.8: focused reader/repair/security/auth/deployment suites PASS; full suite `223 passed, 1 skipped`; coverage `93.03%`; Ruff PASS; Bandit PASS; Django system check PASS; migration drift NONE; dependency consistency PASS; `pip-audit` reported no known vulnerabilities; documentation/design/installer/operations/release/upgrade gates PASS; standard and full forensic audits PASS with zero blocking findings. RC2 release-identity requalification, GitHub CI and controlled live acceptance remain pending.
 
 ## Known residual findings after phase
 
-Not yet assessed.
+GitHub branch/main CI, exact-main tag publication and controlled production reader acceptance remain outstanding; no local application/security blocker is currently recorded.
 
 ## Phase completion decision
 
@@ -108,13 +113,11 @@ None yet.
 
 ## Files changed
 
-Ten implementation/test paths are currently changed in the local PHASE-006 candidate; managed
-documentation/generated metadata are synchronized before branch qualification.
+None. PHASE-007 implementation has not started.
 
 ## Tests/evidence
 
-Local focused qualification: `60 passed`; targeted Ruff PASS; Bandit PASS; Django system check PASS;
-migration drift NONE. Implementation commit `90175b7a4549cb67d874692081bd5b0484eddccc` passed GitHub Actions CI run `32183300485`; owner-approved `1.3.4-rc.1` publication and controlled live acceptance remain pending.
+Not applicable. PHASE-007 remains blocked until PHASE-006 controlled live acceptance is complete.
 
 ## Known residual findings after phase
 
