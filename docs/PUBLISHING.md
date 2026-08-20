@@ -12,10 +12,10 @@ This repository is prepared for public hosting on GitHub, GitLab, Codeberg, or a
 4. Build and verify the deterministic release archive:
 
    ```bash
-   python scripts/build_release.py --root . --version 1.3.4-rc.1
+   python scripts/build_release.py --root . --version 1.3.4-rc.2
    python scripts/verify_release.py \
-     dist/mailstack-1.3.4-rc.1-source.zip \
-     --checksum dist/mailstack-1.3.4-rc.1-source.zip.sha256
+     dist/mailstack-1.3.4-rc.2-source.zip \
+     --checksum dist/mailstack-1.3.4-rc.2-source.zip.sha256
    ```
 
 5. Complete the clean Ubuntu 24.04 acceptance checklist before promoting a release candidate to production-ready.
@@ -27,18 +27,18 @@ From the audited repository root:
 ```bash
 git init
 git add .
-git commit -m "Prepare MailStack 1.3.4-rc.1 candidate"
+git commit -m "Prepare MailStack 1.3.4-rc.2 candidate"
 git branch -M main
 git remote add origin <YOUR-REPOSITORY-SSH-OR-HTTPS-URL>
 git push -u origin main
 ```
 
-Create the annotated stable-looking tag only after the intended release commit is the current
+Create the annotated pre-release tag only after the intended release commit is the current
 `main` head and the exact `main` SHA has a successful push CI run:
 
 ```bash
-git tag -a v1.3.4-rc.1 -m "MailStack 1.3.4-rc.1"
-git push origin v1.3.4-rc.1
+git tag -a v1.3.4-rc.2 -m "MailStack 1.3.4-rc.2"
+git push origin v1.3.4-rc.2
 ```
 
 The tag push triggers `.github/workflows/release.yml`. It fails closed unless the tag matches
@@ -46,12 +46,14 @@ The tag push triggers `.github/workflows/release.yml`. It fails closed unless th
 has no existing GitHub Release. The workflow rebuilds and verifies the deterministic source archive,
 keeps a GitHub Actions artifact, and automatically creates the GitHub Release with:
 
-- `mailstack-1.3.4-rc.1-source.zip`
-- `mailstack-1.3.3-source.zip.sha256`
+- `mailstack-1.3.4-rc.2-source.zip`
+- `mailstack-1.3.4-rc.2-source.zip.sha256`
 
 RC tags are published as pre-releases and are explicitly not marked latest; stable tags are normal
-latest releases. published `v1.3.3` remains the frozen production baseline; `1.3.4-rc.1` is the PHASE-006 live-acceptance pre-release candidate. Manual `workflow_dispatch` is validation/build-only and cannot publish. Existing
-releases are never automatically edited, clobbered, or overwritten.
+latest releases. Published `v1.3.3` remains the frozen production baseline. Published
+`v1.3.4-rc.1` remains immutable historical PHASE-006 pre-release evidence; `1.3.4-rc.2` is the current
+PHASE-006 reader-fidelity continuation candidate. Manual `workflow_dispatch` is validation/build-only
+and cannot publish. Existing releases are never automatically edited, clobbered, or overwritten.
 
 ## Repository settings
 

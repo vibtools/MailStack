@@ -120,14 +120,15 @@ def test_release_pins_and_verifies_django_security_patch():
     verify = read("scripts/verify_v1_2_1.sh")
 
     for source in (pyproject, locked, constraints):
-        assert "Django==5.2.16" in source
+        assert "Django==5.2.17" in source
         assert "Django==5.2.15" not in source
 
-    assert "Required Django 5.2.16 security pin is missing" in preflight
-    assert '"Django": "5.2.16"' in deploy
+    assert "grep -q '^Django==5\\.2\\.17$'" in preflight
+    assert "Required Django 5.2.17 security pin is missing" in preflight
+    assert '"Django": "5.2.17"' in deploy
     assert '"bleach": "6.4.0"' in deploy
     assert '"python-dotenv": "1.2.2"' in deploy
-    assert '"Django": "5.2.16"' in verify
+    assert '"Django": "5.2.17"' in verify
 
 
 def test_sqlparse_security_release_is_pinned_consistently():

@@ -1,0 +1,14 @@
+From: Sender <sender@example.test>
+To: mailbox1@example.com
+Date: Tue, 18 Aug 2026 11:05:00 +0000
+Subject: Malformed CSS
+Message-ID: <malformed-css@example.test>
+MIME-Version: 1.0
+Content-Type: text/html; charset=utf-8
+
+<style>
+.good { color: green; broken-property: ; width: 480px; }
+.bad { color: expression(alert(1)); padding: 10px; }
+.unclosed { color: red;
+</style>
+<p class="good">Malformed CSS must not break the message.</p>

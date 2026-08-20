@@ -4,7 +4,7 @@ title: MailStack UI Component Matrix
 document_type: design-reference
 audience: designers-developers-and-maintainers
 status: active
-version: 1.3.4-rc.1
+version: 1.3.4-rc.2
 last_reviewed: 2026-08-18
 ---
 

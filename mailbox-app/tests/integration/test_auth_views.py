@@ -158,11 +158,20 @@ def test_inbox_search_filters_detail_state_and_safe_html(client, admin_user, mai
     assert b'sandbox=""' in response.content
     assert AuditLog.objects.filter(action="message_view").exists()
 
+    message.sanitized_html_body = (
+        '<style>.brand{color:red;padding:8px;}</style><p class="brand">Safe body</p>'
+    )
+    message.save(update_fields=["sanitized_html_body", "updated_at"])
     html_response = client.get(reverse("messages:safe_html", args=[message.uuid]))
     assert html_response.status_code == 200
     assert b"Safe body" in html_response.content
+    assert b".brand{color:red;padding:8px;}" in html_response.content
     assert b"Remote content" not in html_response.content
     assert "default-src 'none'" in html_response["Content-Security-Policy"]
+    assert "img-src data:" in html_response["Content-Security-Policy"]
+    assert "style-src 'unsafe-inline'" in html_response["Content-Security-Policy"]
+    assert "form-action 'none'" in html_response["Content-Security-Policy"]
+    assert "navigate-to 'none'" in html_response["Content-Security-Policy"]
     assert html_response["X-Frame-Options"] == "SAMEORIGIN"
 
     message.refresh_from_db()

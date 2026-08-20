@@ -67,7 +67,12 @@ def test_repair_message_bodies_dry_run_then_mutation_preserves_state(mailbox, fi
 
     message.refresh_from_db()
     assert "Welcome to Harpoon!" in message.sanitized_html_body
-    assert "#outlook" not in message.sanitized_html_body
+    lowered = message.sanitized_html_body.lower()
+    assert "<style>" in lowered
+    assert "#outlook a{padding:0;}" in lowered
+    assert ".readmsgbody{width:100%;}" in lowered
+    assert "alert(1)" not in lowered
+    assert "tracker.example.test" not in lowered
     assert message.pk == original["pk"]
     assert message.uuid == original["uuid"]
     assert message.source_file_key == original["source_file_key"]
