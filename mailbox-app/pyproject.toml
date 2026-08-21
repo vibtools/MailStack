@@ -27,7 +27,7 @@ requires-python = ">=3.12,<3.13"
 license = "AGPL-3.0-or-later"
 readme = "README.md"
 dependencies = [
-  "Django==5.2.17",
+  "Django==6.1",
   "argon2-cffi==25.1.0",
   "bleach==6.4.0",
   "tinycss2==1.5.1",
