@@ -18,7 +18,7 @@ pytest-django==4.12.0
 python-dotenv==1.2.2
 ruff==0.15.17
 sqlparse==0.6.0
-webencodings==0.5.1
+webencodings==0.6.1
 whitenoise==6.11.0
 
 mysqlclient==2.2.7
