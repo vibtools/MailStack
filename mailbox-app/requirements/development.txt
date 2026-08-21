@@ -1,6 +1,6 @@
 -r locked.txt
 bandit==1.9.4
-coverage==7.13.3
+coverage==7.15.4
 pip-audit==2.10.0
 pytest==9.1.1
 pytest-cov==7.0.0
