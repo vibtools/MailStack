@@ -2,6 +2,13 @@
   "files": [
     {
       "kind": "text",
+      "lines": 1,
+      "path": ".cursorrules",
+      "sha256": "6a7b57d85edaef4ea3492aa2356e66ba501877985ef21d78da47e93ac9123f78",
+      "size_bytes": 255
+    },
+    {
+      "kind": "text",
       "lines": 15,
       "path": ".editorconfig",
       "sha256": "4a016bcdcab17de141e39911b6da85f1f47784aace941f617a5a3154891f728d",
@@ -93,6 +100,20 @@
     },
     {
       "kind": "text",
+      "lines": 9,
+      "path": "AGENTS.md",
+      "sha256": "bad44fedcf84d6041166c3ca79e5385da74901248c76f2ff440e03f537fc9851",
+      "size_bytes": 736
+    },
+    {
+      "kind": "text",
+      "lines": 669,
+      "path": "AI_INSTRUCTIONS.md",
+      "sha256": "227b17e3912e3b05e64e6e6233c3b1acfe15329a79b77f8a041085c6efc9fe51",
+      "size_bytes": 24188
+    },
+    {
+      "kind": "text",
       "lines": 192,
       "path": "CHANGELOG.md",
       "sha256": "a7bf77b5a7b8585f236ba85b377efbb9cb8fc8cbbc2c2ee7ffde63c1d5bb3510",
@@ -125,6 +146,13 @@
       "path": "LICENSE",
       "sha256": "5132c7f0475b02c8107a2e0f0363e70423c62d2664ab927e76193226e5e05905",
       "size_bytes": 34273
+    },
+    {
+      "kind": "text",
+      "lines": 35,
+      "path": "MEMORY.md",
+      "sha256": "adc5e3da60004dab78ae36339c68eba44c15188de3a8728f31a484e3426d0a5a",
+      "size_bytes": 3094
     },
     {
       "kind": "text",
@@ -186,8 +214,8 @@
       "kind": "text",
       "lines": 29,
       "path": "deployment/templates/dovecot/99-vibmail.conf.tpl",
-      "sha256": "9a3386e2fd3a7b066596760005d55dfa4d0f0ab25aaee1548584191d6b91dc28",
-      "size_bytes": 601
+      "sha256": "0fb6de6c2e265cc562a4dc52980982d3c4001c5e6f2b653fab005b8140d191e0",
+      "size_bytes": 603
     },
     {
       "kind": "text",
@@ -212,10 +240,10 @@
     },
     {
       "kind": "text",
-      "lines": 78,
+      "lines": 92,
       "path": "deployment/templates/nginx/app.conf.tpl",
-      "sha256": "834a68efed07bb5c89f0cb16442769ec75358c902edbb1c12bd46384a2a49e57",
-      "size_bytes": 2286
+      "sha256": "29c35986a391a4812cc1e609b68f0f3c0cf26bf25451c1f9f644f2a24f4078bd",
+      "size_bytes": 2533
     },
     {
       "kind": "text",
@@ -256,7 +284,7 @@
       "kind": "text",
       "lines": 33,
       "path": "deployment/templates/systemd/vibmail-gunicorn.service.tpl",
-      "sha256": "765c9757dac206cf0523c36cc8dccdd745298fa08a5d76689e0b218c430c23dc",
+      "sha256": "7afd846a48d2697a1477cadab9ee199baf9d9283b8b2ddb2a3fded1c187c93a3",
       "size_bytes": 1006
     },
     {
@@ -964,9 +992,9 @@
     },
     {
       "kind": "text",
-      "lines": 684,
+      "lines": 735,
       "path": "install.sh",
-      "sha256": "f7db90e856ba9ef5598cdc248e24011a57f02c94d4bdb78ef2a42eadb6e71c31",
+      "sha256": "ff841ca11d898c024c1bc45db1047f09d7b761e3436a6679aacf6735ed980b30",
       "shell_functions": [
         "backup_file",
         "die",
@@ -982,7 +1010,7 @@
         "valid_hostname",
         "write_initial_credentials"
       ],
-      "size_bytes": 27041
+      "size_bytes": 28558
     },
     {
       "kind": "text",
@@ -3028,7 +3056,7 @@
     },
     {
       "kind": "text",
-      "lines": 127,
+      "lines": 148,
       "path": "mailbox-app/config/settings/production.py",
       "python": {
         "classes": [],
@@ -3048,8 +3076,8 @@
         ],
         "methods": []
       },
-      "sha256": "320db55b2db817c770cea4fcce2710b4f7820af89266bea3bdcb37d9d46f06f6",
-      "size_bytes": 5220
+      "sha256": "112d9420229b8636b9548f45ebab99bf2bb886f315d1fa1ee53ab731a402d8f3",
+      "size_bytes": 5846
     },
     {
       "kind": "text",
@@ -5625,15 +5653,15 @@
   },
   "summary": {
     "binary_files": 25,
-    "files": 441,
+    "files": 445,
     "python_classes": 86,
     "python_files": 153,
     "python_functions": 478,
     "python_methods": 75,
     "shell_files": 15,
     "shell_functions": 41,
-    "text_files": 416,
-    "total_bytes": 31928273,
-    "total_text_lines": 32681
+    "text_files": 420,
+    "total_bytes": 31958938,
+    "total_text_lines": 33481
   }
 }
