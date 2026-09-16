@@ -71,7 +71,7 @@ DATABASES = {
         "PASSWORD": required("DB_PASSWORD"),
         "HOST": required("DB_HOST"),
         "PORT": required("DB_PORT"),
-        "CONN_MAX_AGE": env_int("DB_CONN_MAX_AGE", 60),  # noqa: F405
+        "CONN_MAX_AGE": env_int("DB_CONN_MAX_AGE", 60),
         "OPTIONS": {
             "charset": "utf8mb4",
             "init_command": (
@@ -80,8 +80,29 @@ DATABASES = {
             ),
             "isolation_level": "read committed",
         },
-    }
+    },
+
+    "mailserver": {
+        "ENGINE": "django.db.backends.mysql",
+        "NAME": required("MAILSERVER_DB_NAME"),
+        "USER": required("DB_USER"),
+        "PASSWORD": required("DB_PASSWORD"),
+        "HOST": required("DB_HOST"),
+        "PORT": required("DB_PORT"),
+        "CONN_MAX_AGE": env_int("DB_CONN_MAX_AGE", 60),
+        "OPTIONS": {
+            "charset": "utf8mb4",
+            "init_command": (
+                "SET sql_mode='STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,"
+                "NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION'"
+            ),
+            "isolation_level": "read committed",
+        },
+    },
 }
+
+
+
 ssl_ca = os.getenv("DB_SSL_CA", "").strip()
 if ssl_ca:
     DATABASES["default"]["OPTIONS"]["ssl"] = {"ca": ssl_ca}

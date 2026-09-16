@@ -1,3 +1,17 @@
+server {
+    listen 80 default_server;
+    listen [::]:80 default_server;
+    server_name _;
+    return 444;
+}
+
+server {
+    listen 443 ssl default_server;
+    listen [::]:443 ssl default_server;
+    server_name _;
+    ssl_reject_handshake on;
+}
+
 upstream vibmail_gunicorn {
     server unix:/run/vibmail/gunicorn.sock fail_timeout=0;
 }

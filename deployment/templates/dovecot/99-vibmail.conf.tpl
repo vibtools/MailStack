@@ -2,8 +2,8 @@ protocols = lmtp
 mail_location = maildir:/var/vmail/%d/%n/Maildir
 mail_uid = vmail
 mail_gid = vmail
-first_valid_uid = 5000
-last_valid_uid = 5000
+mail_privileged_group =
+first_valid_uid = 10
 
 ssl = required
 ssl_cert = </etc/letsencrypt/live/{{CERT_NAME}}/fullchain.pem
@@ -11,7 +11,7 @@ ssl_key = </etc/letsencrypt/live/{{CERT_NAME}}/privkey.pem
 
 userdb {
   driver = static
-  args = uid=5000 gid=5000 home=/var/vmail/%d/%n allow_all_users=yes
+  args = uid=vmail gid=vmail home=/var/vmail/%d/%n allow_all_users=yes
 }
 
 service lmtp {

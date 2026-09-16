@@ -326,7 +326,8 @@ apt-get install -y --no-install-recommends \
   mariadb-server mariadb-client \
   nginx certbot python3-certbot-nginx \
   postfix postfix-mysql \
-  dovecot-core dovecot-lmtpd
+  dovecot-core dovecot-lmtpd \
+  opendkim opendkim-tools dns-root-data
 
 systemctl stop postfix dovecot 2>/dev/null || true
 
@@ -379,16 +380,14 @@ fi
 
 CURRENT_PHASE="service-identities"
 log "Creating least-privilege service identities"
-if getent group vmail >/dev/null; then
-  [[ $(getent group vmail | cut -d: -f3) == 5000 ]] || die "Existing vmail group does not use GID 5000"
-else
-  groupadd --system --gid 5000 vmail
+if ! getent group vmail >/dev/null; then
+  groupadd --system vmail
 fi
-if id vmail >/dev/null 2>&1; then
-  [[ $(id -u vmail) == 5000 ]] || die "Existing vmail user does not use UID 5000"
-else
-  useradd --system --uid 5000 --gid vmail --home-dir /var/vmail --no-create-home --shell /usr/sbin/nologin vmail
+if ! id vmail >/dev/null 2>&1; then
+  useradd --system --gid vmail --home-dir /var/vmail --no-create-home --shell /usr/sbin/nologin vmail
 fi
+VMAIL_UID=$(id -u vmail)
+VMAIL_GID=$(id -g vmail)
 if ! id vibmail-contact >/dev/null 2>&1; then
   useradd --system --gid www-data --home-dir /nonexistent --no-create-home --shell /usr/sbin/nologin vibmail-contact
 fi
@@ -593,9 +592,9 @@ postconf -e 'virtual_mailbox_domains = mysql:/etc/postfix/mysql-virtual-domains.
 postconf -e 'virtual_mailbox_maps = mysql:/etc/postfix/mysql-virtual-mailboxes.cf'
 postconf -e 'virtual_alias_maps = mysql:/etc/postfix/mysql-virtual-aliases.cf'
 postconf -e 'virtual_mailbox_base = /var/vmail'
-postconf -e 'virtual_uid_maps = static:5000'
-postconf -e 'virtual_gid_maps = static:5000'
-postconf -e 'virtual_minimum_uid = 5000'
+postconf -e "virtual_uid_maps = static:$VMAIL_UID"
+postconf -e "virtual_gid_maps = static:$VMAIL_GID"
+postconf -e "virtual_minimum_uid = $VMAIL_UID"
 postconf -e 'virtual_transport = lmtp:unix:private/dovecot-lmtp'
 postconf -e 'message_size_limit = 26214400'
 postconf -e 'mailbox_size_limit = 0'
@@ -608,6 +607,58 @@ for service in submission submissions smtps; do
     postconf -M "${service}/inet="
   fi
 done
+
+CURRENT_PHASE="dkim-configuration"
+log "Configuring OpenDKIM for outgoing mail"
+install -d -o opendkim -g opendkim -m 0750 "/etc/opendkim/keys/$MAIL_DOMAIN"
+if [[ ! -f "/etc/opendkim/keys/$MAIL_DOMAIN/mail.private" ]]; then
+  opendkim-genkey -b 2048 -d "$MAIL_DOMAIN" -D "/etc/opendkim/keys/$MAIL_DOMAIN" -s mail -v
+  chown -R opendkim:opendkim "/etc/opendkim/keys/$MAIL_DOMAIN"
+fi
+
+cat > /etc/opendkim.conf <<EOF
+Syslog yes
+SyslogSuccess yes
+LogWhy yes
+UMask 002
+SoftwareHeader yes
+AutoRestart yes
+AutoRestartRate 10/1h
+Canonicalization relaxed/simple
+Mode sv
+SignatureAlgorithm rsa-sha256
+SubDomains no
+OversignHeaders From
+TrustAnchorFile /usr/share/dns/root.key
+
+UserID opendkim:opendkim
+Socket local:/var/spool/postfix/opendkim/opendkim.sock
+PidFile /run/opendkim/opendkim.pid
+
+KeyTable /etc/opendkim/KeyTable
+SigningTable refile:/etc/opendkim/SigningTable
+ExternalIgnoreList /etc/opendkim/TrustedHosts
+InternalHosts /etc/opendkim/TrustedHosts
+EOF
+
+echo "mail._domainkey.$MAIL_DOMAIN $MAIL_DOMAIN:mail:/etc/opendkim/keys/$MAIL_DOMAIN/mail.private" > /etc/opendkim/KeyTable
+echo "*@$MAIL_DOMAIN mail._domainkey.$MAIL_DOMAIN" > /etc/opendkim/SigningTable
+cat > /etc/opendkim/TrustedHosts <<EOF
+127.0.0.1
+localhost
+$MAIL_HOSTNAME
+$MAIL_DOMAIN
+EOF
+
+install -d -o opendkim -g opendkim -m 0750 /var/spool/postfix/opendkim
+usermod -a -G opendkim postfix
+systemctl enable --now opendkim
+systemctl restart opendkim
+
+postconf -e 'milter_default_action = accept'
+postconf -e 'milter_protocol = 6'
+postconf -e 'smtpd_milters = unix:opendkim/opendkim.sock'
+postconf -e 'non_smtpd_milters = unix:opendkim/opendkim.sock'
 render dovecot/99-vibmail.conf.tpl /etc/dovecot/conf.d/99-vibmail.conf 0644
 postfix check
 doveconf -n >/dev/null
@@ -634,7 +685,7 @@ chmod 0755 /etc/letsencrypt/renewal-hooks/deploy/vibmail-reload.sh
 
 CURRENT_PHASE="service-start"
 log "Starting and enabling services"
-systemctl enable --now postfix dovecot vibmail-gunicorn vibmail-ingestion vibmail-public-contact
+systemctl enable --now postfix dovecot vibmail-gunicorn vibmail-ingestion vibmail-public-contact opendkim
 systemctl reload nginx
 
 CURRENT_PHASE="acceptance-checks"

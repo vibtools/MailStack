@@ -1,0 +1,1 @@
+CRITICAL RULE: Whenever any code change, bug fix, or new feature is implemented during our session, you must automatically update the `MEMORY.md` file in real-time or provide the exact markdown snippet to keep the project context completely synchronized.
