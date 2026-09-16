@@ -79,6 +79,13 @@
     },
     {
       "kind": "text",
+      "lines": 34,
+      "path": ".github/workflows/auto_release.yml",
+      "sha256": "93f94f063b31c023409e89eaf28d2658156bcb66067fb6bcb342bd5cbd8d4086",
+      "size_bytes": 727
+    },
+    {
+      "kind": "text",
       "lines": 135,
       "path": ".github/workflows/ci.yml",
       "sha256": "dda9d759ce630141f50386bc81c32984db8d83cbaad4cf3ab87e6e968861f87f",
@@ -151,8 +158,8 @@
       "kind": "text",
       "lines": 35,
       "path": "MEMORY.md",
-      "sha256": "adc5e3da60004dab78ae36339c68eba44c15188de3a8728f31a484e3426d0a5a",
-      "size_bytes": 3094
+      "sha256": "13f5098968225dced98cf42a354ec33f30a34a4a6396ed1b8c1b1a460ef4a933",
+      "size_bytes": 3605
     },
     {
       "kind": "text",
@@ -992,9 +999,9 @@
     },
     {
       "kind": "text",
-      "lines": 735,
+      "lines": 740,
       "path": "install.sh",
-      "sha256": "ff841ca11d898c024c1bc45db1047f09d7b761e3436a6679aacf6735ed980b30",
+      "sha256": "89d0811825c7ea9e3b7afde9454901408480ac850d333ec93ac06d42a7450513",
       "shell_functions": [
         "backup_file",
         "die",
@@ -1010,7 +1017,7 @@
         "valid_hostname",
         "write_initial_credentials"
       ],
-      "size_bytes": 28558
+      "size_bytes": 28713
     },
     {
       "kind": "text",
@@ -1848,7 +1855,7 @@
     },
     {
       "kind": "text",
-      "lines": 6,
+      "lines": 12,
       "path": "mailbox-app/apps/dashboard/urls.py",
       "python": {
         "classes": [],
@@ -1858,19 +1865,24 @@
         ],
         "methods": []
       },
-      "sha256": "6094d7702403f688dbfb197fb3fc70604fe5170fc59822894c389225a8e9e69e",
-      "size_bytes": 126
+      "sha256": "ecd1adc77035312b13995b10960afebe86b5db729d38ca86b7cc4e1cd673258e",
+      "size_bytes": 433
     },
     {
       "kind": "text",
-      "lines": 56,
+      "lines": 187,
       "path": "mailbox-app/apps/dashboard/views.py",
       "python": {
         "classes": [],
         "functions": [
           "_database_ok",
+          "_run_update",
           "_storage_ok",
-          "index"
+          "check_update",
+          "index",
+          "start_update",
+          "system_update_page",
+          "update_status"
         ],
         "imports": [
           "__future__",
@@ -1880,13 +1892,21 @@
           "django.conf",
           "django.contrib.auth.decorators",
           "django.db",
+          "django.http",
           "django.shortcuts",
-          "os"
+          "django.views.decorators.http",
+          "json",
+          "logging",
+          "os",
+          "pathlib",
+          "subprocess",
+          "threading",
+          "urllib.request"
         ],
         "methods": []
       },
-      "sha256": "d163e0017aa573213aef9b8e3857caa50638477d9be5ccd2572b118608942077",
-      "size_bytes": 1919
+      "sha256": "f33430e2e31f9b30dadf9c54c276aa6c686ace61d0b7e5da700daccf430390cd",
+      "size_bytes": 6958
     },
     {
       "kind": "text",
@@ -3577,18 +3597,19 @@
     },
     {
       "kind": "text",
-      "lines": 348,
+      "lines": 372,
       "path": "mailbox-app/scripts/upgrade.sh",
-      "sha256": "8df2094eaf3fba06baa1197b82e33350c27ab92edbc6bdee0aada6a888782915",
+      "sha256": "15f140bf3a2cd7b719fc9cb14e7423841b73887cb906911282dba445ad1f5f0d",
       "shell_functions": [
         "cleanup_stage",
         "die",
+        "report_progress",
         "restore_pre_upgrade_source",
         "rollback_on_failure",
         "run_app",
         "usage"
       ],
-      "size_bytes": 15624
+      "size_bytes": 16763
     },
     {
       "kind": "text",
@@ -3745,10 +3766,10 @@
     },
     {
       "kind": "text",
-      "lines": 161,
+      "lines": 165,
       "path": "mailbox-app/templates/base.html",
-      "sha256": "260c07f2c859e546f04ca521c6c86452943801156135bd17bdd1f9e770d5f0ba",
-      "size_bytes": 8672
+      "sha256": "78aa1619439e372fc34415676809f00d1139e07e5cf3d568a248dbb9de1c20c4",
+      "size_bytes": 9129
     },
     {
       "kind": "text",
@@ -3756,6 +3777,13 @@
       "path": "mailbox-app/templates/dashboard/index.html",
       "sha256": "d5dac5188d65f996a0cbb5f02d21649b6c10642a3158f9d326d2b9436f1315c0",
       "size_bytes": 3470
+    },
+    {
+      "kind": "text",
+      "lines": 182,
+      "path": "mailbox-app/templates/dashboard/system_update.html",
+      "sha256": "e805ced1224359c482522bbb4f448830a1027c1273fda42655ad65160d3b04dd",
+      "size_bytes": 7092
     },
     {
       "kind": "text",
@@ -5653,15 +5681,15 @@
   },
   "summary": {
     "binary_files": 25,
-    "files": 445,
+    "files": 447,
     "python_classes": 86,
     "python_files": 153,
-    "python_functions": 478,
+    "python_functions": 483,
     "python_methods": 75,
     "shell_files": 15,
-    "shell_functions": 41,
-    "text_files": 420,
-    "total_bytes": 31958938,
-    "total_text_lines": 33481
+    "shell_functions": 42,
+    "text_files": 422,
+    "total_bytes": 31974365,
+    "total_text_lines": 33867
   }
 }

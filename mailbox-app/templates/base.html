@@ -59,6 +59,10 @@
           <svg class="ui-icon" aria-hidden="true"><use href="{% static 'icons/mailstack-icons.svg' %}#icon-users"></use></svg>
           <span class="nav-label">User management</span>
         </a>
+        <a class="nav-item{% if request.resolver_match.url_name == 'system_update_page' %} is-active{% endif %}" href="{% url 'dashboard:system_update_page' %}"{% if request.resolver_match.url_name == 'system_update_page' %} aria-current="page"{% endif %}>
+          <svg class="ui-icon" aria-hidden="true"><use href="{% static 'icons/mailstack-icons.svg' %}#icon-refresh-cw"></use></svg>
+          <span class="nav-label">System Update</span>
+        </a>
       </div>
       {% endif %}
     </nav>

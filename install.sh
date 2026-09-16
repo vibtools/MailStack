@@ -412,6 +412,11 @@ install -d -o root -g root -m 0755 /opt/vibmail-public-site/releases
 install -d -o root -g www-data -m 0755 "/var/www/$PUBLIC_HOSTNAME"
 install -d -o root -g root -m 0750 /etc/vibmail-public-contact
 
+cat > /etc/sudoers.d/vibmail-upgrade <<'EOF'
+vmail ALL=(root) NOPASSWD: /opt/vibmail/app/scripts/upgrade.sh
+EOF
+chmod 0440 /etc/sudoers.d/vibmail-upgrade
+
 CURRENT_PHASE="secret-provisioning"
 if [[ $REPAIR -eq 1 ]]; then
   # shellcheck disable=SC1090

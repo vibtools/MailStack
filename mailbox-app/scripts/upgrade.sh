@@ -18,8 +18,22 @@ EOF
   exit 2
 }
 
-die() { printf 'UPGRADE_FINDING=%s\n' "$*" >&2; exit 1; }
+STATUS_FILE="/tmp/vibmail_update_status.json"
+report_progress() {
+  local step="$1"
+  local message="$2"
+  local progress="$3"
+  # Optional: escape quotes if message contains them, but typically it shouldn't here.
+  printf '{"step": "%s", "message": "%s", "progress": %d}\n' "$step" "$message" "$progress" > "$STATUS_FILE" 2>/dev/null || true
+  chmod 0644 "$STATUS_FILE" 2>/dev/null || true
+}
 
+die() { 
+  printf 'UPGRADE_FINDING=%s\n' "$*" >&2; 
+  printf '{"step": "error", "message": "%s", "progress": -1}\n' "$*" > "$STATUS_FILE" 2>/dev/null || true
+  chmod 0644 "$STATUS_FILE" 2>/dev/null || true
+  exit 1; 
+}
 [[ ${EUID:-$(id -u)} -eq 0 ]] || die "run as root"
 
 ARCHIVE=""
@@ -100,6 +114,7 @@ DOVECOT_CONFIG=$(doveconf -n)
 nginx -t
 "$APP_ROOT/scripts/verify_application.sh"
 
+report_progress "verify" "Verifying application state" 10
 install -d -o root -g root -m 0700 "$UPGRADE_ROOT" "$STAGING_ROOT"
 STAGE_PARENT=$(mktemp -d "$STAGING_ROOT/stage.XXXXXX")
 cleanup_stage() { rm -rf -- "$STAGE_PARENT"; }
@@ -136,6 +151,7 @@ MIGRATION_RISK=0
 MUTATION_STARTED=0
 UPGRADE_COMPLETE=0
 
+report_progress "backup" "Backing up application" 20
 install -d -o root -g root -m 0700 "$ROLLBACK_ROOT" "$DATA_ROOT"
 tar --one-file-system -C "$APP_ROOT" -czf "$APP_ARCHIVE" .
 if [[ -f "$MARKER_FILE" ]]; then
@@ -145,6 +161,7 @@ CURRENT_PUBLIC=$(readlink -f -- "$PUBLIC_ROOT/current" 2>/dev/null || true)
 [[ -n "$CURRENT_PUBLIC" && -d "$CURRENT_PUBLIC" ]] || die "current public-site release symlink is missing or invalid"
 printf '%s\n' "$CURRENT_PUBLIC" > "$PUBLIC_POINTER"
 
+report_progress "backup" "Backing up consistent data" 30
 BACKUP_OUTPUT=$(BACKUP_ROOT="$DATA_ROOT" "$APP_ROOT/scripts/backup.sh") || {
   printf '%s\n' "$BACKUP_OUTPUT" >&2
   die "pre-upgrade consistent data backup failed"
@@ -249,6 +266,7 @@ systemctl stop vibmail-public-contact.service vibmail-ingestion.service vibmail-
 systemctl is-active --quiet postfix.service || { printf 'UPGRADE_FINDING=Postfix stopped unexpectedly before application mutation\n' >&2; rollback_on_failure 1; }
 systemctl is-active --quiet dovecot.service || { printf 'UPGRADE_FINDING=Dovecot stopped unexpectedly before application mutation\n' >&2; rollback_on_failure 1; }
 
+report_progress "mutate" "Replacing application source code" 50
 rsync -a --delete-delay \
   --exclude='.env' --exclude='.venv' --exclude='__pycache__' --exclude='*.pyc' \
   --exclude='.pytest_cache' --exclude='.ruff_cache' --exclude='.coverage' --exclude='htmlcov' \
@@ -259,6 +277,7 @@ find "$APP_ROOT" -type d -exec chmod 0750 {} +
 find "$APP_ROOT" -type f -exec chmod 0640 {} +
 find "$APP_ROOT/scripts" -type f -name '*.sh' -exec chmod 0750 {} +
 
+report_progress "mutate" "Installing Python dependencies" 60
 PIP_DISABLE_PIP_VERSION_CHECK=1 PIP_NO_INPUT=1 \
   "$VENV/bin/pip" install --requirement "$APP_ROOT/requirements/production.txt"
 "$VENV/bin/python" -m pip check
@@ -270,18 +289,21 @@ cd "$APP_ROOT"
 if (( NEW_MIGRATIONS > 0 )); then
   MIGRATION_RISK=1
 fi
+report_progress "migrate" "Running database migrations" 70
 run_app "$VENV/bin/python" manage.py migrate --noinput
 run_app "$VENV/bin/python" manage.py verify_mailserver_schema
 run_app "$VENV/bin/python" manage.py sync_mailserver_mailboxes --strict
 run_app "$VENV/bin/python" manage.py update_mailbox_counters
 run_app "$VENV/bin/python" manage.py verify_mail_storage
 run_app "$VENV/bin/python" manage.py verify_postfix_contract
+report_progress "static" "Collecting static files" 80
 run_app "$VENV/bin/python" manage.py collectstatic --noinput
 chown -R vmail:www-data "$STATIC_ROOT"
 find "$STATIC_ROOT" -type d -exec chmod 0755 {} +
 find "$STATIC_ROOT" -type f -exec chmod 0644 {} +
 run_app "$VENV/bin/python" manage.py check --deploy
 
+report_progress "public" "Deploying public site" 85
 PUBLIC_RELEASE="$PUBLIC_ROOT/releases/${STAMP}-${TARGET_VERSION}"
 [[ ! -e "$PUBLIC_RELEASE" ]] || { printf 'UPGRADE_FINDING=target public release directory already exists: %s\n' "$PUBLIC_RELEASE" >&2; rollback_on_failure 1; }
 install -d -o root -g root -m 0755 "$PUBLIC_RELEASE"
@@ -323,6 +345,7 @@ PY
 chown root:root "$MARKER_FILE"
 chmod 0600 "$MARKER_FILE"
 
+report_progress "restart" "Restarting application services" 90
 postfix check
 doveconf -n >/dev/null
 nginx -t
@@ -337,6 +360,7 @@ curl --fail --silent --show-error --max-time 20 \
 curl --fail --silent --show-error --max-time 20 \
   --resolve "$PUBLIC_HOSTNAME:443:127.0.0.1" "https://$PUBLIC_HOSTNAME/" >/dev/null
 
+report_progress "complete" "Upgrade successfully completed" 100
 UPGRADE_COMPLETE=1
 trap - ERR INT TERM
 printf 'MAILSTACK_UPGRADE=PASS\n'

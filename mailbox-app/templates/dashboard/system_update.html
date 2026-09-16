@@ -1,0 +1,182 @@
+{% extends "base.html" %}
+{% block title %}System Update · MailStack{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div>
+    <div class="eyebrow">Maintenance</div>
+    <h1>System Update</h1>
+    <p class="muted">Check for updates and automatically upgrade MailStack.</p>
+  </div>
+</div>
+
+<div class="panel">
+  <div class="panel-header">
+    <h2>Update Status</h2>
+  </div>
+  <div style="padding: 1.5rem;">
+    <p><strong>Current Version:</strong> {{ current_version }}</p>
+    
+    <div id="update-check-section" style="margin-top: 1.5rem;">
+      <button class="btn btn-primary" id="btn-check-update">Check for Updates</button>
+      <div id="update-info" style="display: none; margin-top: 1.5rem;">
+        <p><strong>Latest Version:</strong> <span id="latest-version"></span></p>
+        <p style="margin-top: 1rem;"><strong>Release Notes:</strong></p>
+        <pre id="release-notes" style="background: var(--bg-offset); padding: 1rem; border-radius: 4px; font-size: 0.875rem; max-height: 250px; overflow-y: auto; white-space: pre-wrap; font-family: monospace;"></pre>
+        <div style="margin-top: 1.5rem;">
+          <button class="btn btn-danger" id="btn-start-update">Install Update</button>
+        </div>
+      </div>
+      <div id="update-error" style="display: none; margin-top: 1.5rem; color: var(--color-bad);"></div>
+    </div>
+
+    <div id="update-progress-section" style="display: none; margin-top: 2rem; background: var(--bg-offset); padding: 1.5rem; border-radius: 6px;">
+      <h3 style="margin-top: 0;">Update in Progress</h3>
+      <p id="progress-step" style="font-weight: 500; margin-top: 1rem;"></p>
+      <p id="progress-message" class="muted" style="margin-top: 0.5rem;"></p>
+      <div style="width: 100%; background: var(--bg-base); height: 8px; border-radius: 4px; overflow: hidden; margin-top: 1rem; border: 1px solid var(--border-color);">
+        <div id="progress-bar" style="width: 0%; height: 100%; background: var(--color-primary); transition: width 0.3s ease;"></div>
+      </div>
+      <div id="update-fatal-error" style="display: none; margin-top: 1.5rem; color: var(--color-bad); font-weight: 500;"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  const btnCheck = document.getElementById("btn-check-update");
+  const btnStart = document.getElementById("btn-start-update");
+  const checkSection = document.getElementById("update-check-section");
+  const infoSection = document.getElementById("update-info");
+  const errorEl = document.getElementById("update-error");
+  const progressSection = document.getElementById("update-progress-section");
+  
+  let archiveUrl = "";
+  let checksumUrl = "";
+  let pollInterval = null;
+
+  function getCSRFToken() {
+    return document.cookie.split('; ')
+      .find(row => row.startsWith('csrftoken='))
+      ?.split('=')[1] || '';
+  }
+
+  function startPolling() {
+    progressSection.style.display = "block";
+    btnCheck.style.display = "none";
+    infoSection.style.display = "none";
+    errorEl.style.display = "none";
+    
+    pollInterval = setInterval(async () => {
+      try {
+        const res = await fetch("{% url 'dashboard:update_status' %}");
+        const data = await res.json();
+        
+        document.getElementById("progress-step").textContent = "Step: " + data.step;
+        document.getElementById("progress-message").textContent = data.message;
+        
+        if (data.progress >= 0) {
+           document.getElementById("progress-bar").style.width = data.progress + "%";
+        }
+        
+        if (data.progress === 100) {
+          clearInterval(pollInterval);
+          document.getElementById("progress-bar").style.background = "var(--color-ok)";
+          setTimeout(() => {
+            alert("Update complete! Reloading page...");
+            window.location.reload();
+          }, 2000);
+        } else if (data.step === "error" || data.progress === -1) {
+          clearInterval(pollInterval);
+          document.getElementById("progress-bar").style.background = "var(--color-bad)";
+          document.getElementById("update-fatal-error").style.display = "block";
+          document.getElementById("update-fatal-error").textContent = data.message;
+        }
+      } catch (err) {
+        console.error("Polling error", err);
+      }
+    }, 2000);
+  }
+
+  fetch("{% url 'dashboard:update_status' %}")
+    .then(r => r.json())
+    .then(data => {
+      if (data && data.step && data.step !== "idle" && data.progress < 100 && data.progress !== -1) {
+         startPolling();
+      }
+    }).catch(e => console.error("Initial status check failed", e));
+
+  btnCheck.addEventListener("click", async () => {
+    btnCheck.disabled = true;
+    btnCheck.textContent = "Checking...";
+    errorEl.style.display = "none";
+    infoSection.style.display = "none";
+
+    try {
+      const res = await fetch("{% url 'dashboard:check_update' %}");
+      const data = await res.json();
+      
+      if (!res.ok) {
+        throw new Error(data.error || "Failed to check for updates");
+      }
+      
+      document.getElementById("latest-version").textContent = data.latest_version;
+      document.getElementById("release-notes").textContent = data.release_notes || "No release notes provided.";
+      archiveUrl = data.archive_url;
+      checksumUrl = data.checksum_url;
+      
+      if ("{{ current_version }}" !== data.latest_version && archiveUrl && checksumUrl) {
+         infoSection.style.display = "block";
+      } else {
+         errorEl.style.display = "block";
+         if (archiveUrl && checksumUrl) {
+            errorEl.style.color = "var(--color-ok)";
+            errorEl.textContent = "You are already on the latest version.";
+         } else {
+            errorEl.style.color = "var(--color-bad)";
+            errorEl.textContent = "Update artifacts not found for the latest release. Please ensure a GitHub Release has been created with the zip archive and sha256 checksum.";
+         }
+      }
+    } catch (err) {
+      errorEl.style.display = "block";
+      errorEl.textContent = err.message;
+    } finally {
+      btnCheck.disabled = false;
+      btnCheck.textContent = "Check for Updates";
+    }
+  });
+
+  btnStart.addEventListener("click", async () => {
+    if (!confirm("Are you sure you want to install this update? Services may be temporarily unavailable.")) {
+      return;
+    }
+    
+    btnStart.disabled = true;
+    
+    try {
+      const res = await fetch("{% url 'dashboard:start_update' %}", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": getCSRFToken()
+        },
+        body: JSON.stringify({
+          archive_url: archiveUrl,
+          checksum_url: checksumUrl
+        })
+      });
+      
+      if (res.ok) {
+        startPolling();
+      } else {
+        const data = await res.json();
+        alert("Failed to start update: " + data.error);
+        btnStart.disabled = false;
+      }
+    } catch (err) {
+      alert("Error: " + err.message);
+      btnStart.disabled = false;
+    }
+  });
+});
+</script>
+{% endblock %}

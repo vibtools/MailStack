@@ -29,7 +29,7 @@ This document serves as the persistent AI memory for the MailStack project. It m
 *   **Gunicorn Socket Permissions:** Nginx accesses Gunicorn via `/run/vibmail/gunicorn.sock`. Gunicorn runs under systemd with `UMask=0007` so Nginx (`www-data` group) can access the socket.
 *   **OpenDKIM Integration:** OpenDKIM automatically generates 2048-bit RSA keys during `install.sh` and links with Postfix as a milter to sign outbound mail securely.
 *   **Development Workflow:** Any template updates (like Nginx `app.conf.tpl` or `99-vibmail.conf.tpl`) must be validated against `install.sh` to ensure correct rendering.
-
+*   **Auto-Update System:** Implemented via GitHub Actions (`.github/workflows/auto_release.yml`) and a Dashboard UI page. Administrators can trigger an upgrade, which polls GitHub for the latest release, downloads the source/checksum zip files, and spawns the `sudo /opt/vibmail/app/scripts/upgrade.sh` script via a `sudoers.d` rule allowing the `vmail` user passwordless execution of the upgrade script. `upgrade.sh` reports JSON progress to `/tmp/vibmail_update_status.json`, polled by the frontend via AJAX.
 ---
 
 > **Note to AI Agents:** Review this file when joining a context to understand the project architecture, particularly the specific permission structures (like `vmail` and OpenDKIM groups) established in the MailStack.
