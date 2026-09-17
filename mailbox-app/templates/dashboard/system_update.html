@@ -1,43 +1,113 @@
 {% extends "base.html" %}
 {% block title %}System Update · MailStack{% endblock %}
 {% block content %}
-<div class="page-header">
+<div class="page-header licora-updater-head">
   <div>
     <div class="eyebrow">Maintenance</div>
-    <h1>System Update</h1>
+    <h1 class="licora-updater-title">System Update</h1>
     <p class="muted">Check for updates and automatically upgrade MailStack.</p>
   </div>
 </div>
 
-<div class="panel">
-  <div class="panel-header">
-    <h2>Update Status</h2>
-  </div>
-  <div style="padding: 1.5rem;">
-    <p><strong>Current Version:</strong> {{ current_version }}</p>
+<div class="licora-updater-grid">
+  <section class="licora-updater-card">
+    <h2>Current Installation</h2>
+    <div class="licora-updater-metrics">
+      <div class="licora-updater-metric">
+        <span>Current Version</span>
+        <strong id="current-version">{{ current_version }}</strong>
+      </div>
+      <div class="licora-updater-metric">
+        <span>Update Channel</span>
+        <strong>Stable</strong>
+      </div>
+      <div class="licora-updater-metric">
+        <span>Update System</span>
+        <strong>Signed / Resumable</strong>
+      </div>
+      <div class="licora-updater-metric">
+        <span>Status</span>
+        <strong id="last-checked">Checking...</strong>
+      </div>
+    </div>
+  </section>
+
+  <section class="licora-updater-card">
+    <div class="licora-card-heading">
+      <div><h2>Latest Stable Release</h2></div>
+      <span class="vib-badge" id="update-availability-badge">Check required</span>
+    </div>
     
-    <div id="update-check-section" style="margin-top: 1.5rem;">
-      <button class="btn btn-primary" id="btn-check-update">Check for Updates</button>
-      <div id="update-info" style="display: none; margin-top: 1.5rem;">
-        <p><strong>Latest Version:</strong> <span id="latest-version"></span></p>
-        <p style="margin-top: 1rem;"><strong>Release Notes:</strong></p>
-        <pre id="release-notes" style="background: var(--bg-offset); padding: 1rem; border-radius: 4px; font-size: 0.875rem; max-height: 250px; overflow-y: auto; white-space: pre-wrap; font-family: monospace;"></pre>
-        <div style="margin-top: 1.5rem;">
-          <button class="btn btn-danger" id="btn-start-update">Install Update</button>
+    <div id="update-info-container">
+      <div class="licora-release-box">
+        <div class="licora-release-line">
+          <span>Version</span>
+          <strong id="latest-version">Unknown</strong>
         </div>
       </div>
-      <div id="update-error" style="display: none; margin-top: 1.5rem; color: var(--color-bad);"></div>
+      <pre class="licora-release-notes ui-scrollbar" id="release-notes">Click 'Check for Updates' to fetch release metadata.</pre>
     </div>
+    
+    <div id="update-error" style="display: none; margin-top: 1.5rem;" class="licora-inline-error"></div>
 
-    <div id="update-progress-section" style="display: none; margin-top: 2rem; background: var(--bg-offset); padding: 1.5rem; border-radius: 6px;">
-      <h3 style="margin-top: 0;">Update in Progress</h3>
-      <p id="progress-step" style="font-weight: 500; margin-top: 1rem;"></p>
-      <p id="progress-message" class="muted" style="margin-top: 0.5rem;"></p>
-      <div style="width: 100%; background: var(--bg-base); height: 8px; border-radius: 4px; overflow: hidden; margin-top: 1rem; border: 1px solid var(--border-color);">
-        <div id="progress-bar" style="width: 0%; height: 100%; background: var(--color-primary); transition: width 0.3s ease;"></div>
-      </div>
-      <div id="update-fatal-error" style="display: none; margin-top: 1.5rem; color: var(--color-bad); font-weight: 500;"></div>
+    <div class="licora-updater-actions" style="margin-top:14px;">
+      <button class="btn" type="button" id="btn-check-update">Check for Updates</button>
+      <button class="btn btn-primary" type="button" id="btn-start-update" style="display:none;">Install Update</button>
     </div>
+  </section>
+</div>
+
+<section class="licora-updater-card" style="margin-top: 14px;">
+  <div class="licora-card-heading">
+    <div><h2>Installation State</h2></div>
+    <span class="vib-badge" id="preflight-summary">Idle</span>
+  </div>
+  
+  <div class="licora-preflight" id="preflight-results">
+    <div class="licora-inline-info">Updater logs will stream in the terminal window when started.</div>
+  </div>
+  
+  <div id="active-job-panel" class="licora-active-job" style="display:none;">
+    <div class="licora-release-line">
+      <span>Active Job</span>
+      <strong id="active-job-id">System Upgrade</strong>
+    </div>
+    <div class="licora-job-progress">
+      <div style="width: 100%; background: var(--ui-canvas); height: 8px; border-radius: 4px; overflow: hidden; margin-top: 6px; border: 1px solid var(--ui-border);">
+        <div id="progress-bar" style="width: 0%; height: 100%; background: var(--ui-primary); transition: width 0.3s ease;"></div>
+      </div>
+    </div>
+    <div class="licora-job-meta">
+      <span id="active-job-stage">Idle</span>
+      <span id="active-job-percent">0%</span>
+    </div>
+    <div id="update-fatal-error" class="licora-inline-error" style="display: none; margin-top: 10px;"></div>
+  </div>
+</section>
+
+<!-- Log Modal -->
+<div class="vib-modal-backdrop" id="licora-update-log-modal" role="dialog" aria-modal="true" aria-labelledby="licora-update-log-title" hidden>
+  <div class="vib-modal-dialog">
+    <header class="vib-log-modal-header">
+      <div class="vib-log-modal-title-row">
+        <h2 class="vib-log-modal-title" id="licora-update-log-title">MailStack Update</h2>
+        <button class="vib-log-close" type="button" id="log-close" aria-label="Close update logs">&times;</button>
+      </div>
+      <div class="vib-log-modal-subbar">
+        <div class="vib-log-modal-meta">
+          <span id="update-log-description">Verified updater event stream</span>
+        </div>
+      </div>
+    </header>
+    
+    <div class="vib-log-viewport" id="update-log-viewport" tabindex="0" aria-label="Update terminal log stream">
+      <div class="vib-log-empty" id="update-log-empty">Waiting for updater events...</div>
+    </div>
+    
+    <footer class="vib-log-footer">
+      <span id="update-log-stage">Stage: idle</span>
+      <span>Closing this window does not cancel the update</span>
+    </footer>
   </div>
 </div>
 
@@ -47,11 +117,19 @@
 document.addEventListener("DOMContentLoaded", function() {
   const btnCheck = document.getElementById("btn-check-update");
   const btnStart = document.getElementById("btn-start-update");
-  const checkSection = document.getElementById("update-check-section");
-  const infoSection = document.getElementById("update-info");
   const errorEl = document.getElementById("update-error");
-  const progressSection = document.getElementById("update-progress-section");
+  const activeJobPanel = document.getElementById("active-job-panel");
+  const preflightResults = document.getElementById("preflight-results");
+  const badgeAvailability = document.getElementById("update-availability-badge");
+  const preflightSummary = document.getElementById("preflight-summary");
   
+  // Log Modal
+  const logModal = document.getElementById("licora-update-log-modal");
+  const logClose = document.getElementById("log-close");
+  const logViewport = document.getElementById("update-log-viewport");
+  const logEmpty = document.getElementById("update-log-empty");
+  const logStage = document.getElementById("update-log-stage");
+
   let archiveUrl = "";
   let checksumUrl = "";
   let pollInterval = null;
@@ -60,37 +138,75 @@ document.addEventListener("DOMContentLoaded", function() {
     const input = document.querySelector('#csrf-form input[name="csrfmiddlewaretoken"]');
     return input ? input.value : '';
   }
+  
+  function appendLog(level, message) {
+    if (logEmpty) logEmpty.style.display = 'none';
+    
+    const time = new Date().toLocaleTimeString('en-US', { hour12: false });
+    const row = document.createElement('div');
+    row.className = 'vib-log-row';
+    row.setAttribute('data-level', level);
+    
+    row.innerHTML = `
+      <span class="vib-log-time">${time}</span>
+      <span class="vib-log-badge">${level}</span>
+      <span class="vib-log-message">${message}</span>
+    `;
+    
+    logViewport.appendChild(row);
+    logViewport.scrollTop = logViewport.scrollHeight;
+  }
+
+  logClose.addEventListener("click", () => {
+    logModal.hidden = true;
+  });
 
   function startPolling() {
-    progressSection.style.display = "block";
-    btnCheck.style.display = "none";
-    infoSection.style.display = "none";
-    errorEl.style.display = "none";
+    preflightResults.style.display = "none";
+    activeJobPanel.style.display = "block";
+    btnStart.disabled = true;
+    
+    logModal.hidden = false;
+    appendLog('info', 'Starting update process...');
     
     pollInterval = setInterval(async () => {
       try {
         const res = await fetch("{% url 'dashboard:update_status' %}");
         const data = await res.json();
         
-        document.getElementById("progress-step").textContent = "Step: " + data.step;
-        document.getElementById("progress-message").textContent = data.message;
+        document.getElementById("active-job-stage").textContent = data.step;
+        logStage.textContent = "Stage: " + data.step;
+        preflightSummary.textContent = "Installing";
+        
+        // Only append log if message changed (simple deduplication since backend doesn't stream array)
+        if (window._lastLogMsg !== data.message) {
+            appendLog(data.step === 'error' ? 'error' : 'info', data.message);
+            window._lastLogMsg = data.message;
+        }
         
         if (data.progress >= 0) {
            document.getElementById("progress-bar").style.width = data.progress + "%";
+           document.getElementById("active-job-percent").textContent = data.progress + "%";
         }
         
         if (data.progress === 100) {
           clearInterval(pollInterval);
-          document.getElementById("progress-bar").style.background = "var(--color-ok)";
+          document.getElementById("progress-bar").style.background = "var(--ui-success)";
+          preflightSummary.textContent = "Complete";
+          preflightSummary.className = "vib-badge vib-badge-success";
+          appendLog('success', 'Update complete! Reloading page in 2 seconds...');
+          
           setTimeout(() => {
-            alert("Update complete! Reloading page...");
             window.location.reload();
           }, 2000);
         } else if (data.step === "error" || data.progress === -1) {
           clearInterval(pollInterval);
-          document.getElementById("progress-bar").style.background = "var(--color-bad)";
+          document.getElementById("progress-bar").style.background = "var(--ui-danger)";
           document.getElementById("update-fatal-error").style.display = "block";
           document.getElementById("update-fatal-error").textContent = data.message;
+          preflightSummary.textContent = "Failed";
+          preflightSummary.className = "vib-badge vib-badge-danger";
+          appendLog('error', 'Update failed: ' + data.message);
         }
       } catch (err) {
         console.error("Polling error", err);
@@ -107,15 +223,22 @@ document.addEventListener("DOMContentLoaded", function() {
          } else if (data.step === "error" || data.progress === -1) {
              errorEl.style.display = "block";
              errorEl.textContent = "Previous update failed: " + data.message;
+             document.getElementById("last-checked").textContent = "Failed";
          }
+      } else {
+         document.getElementById("last-checked").textContent = "Idle";
       }
-    }).catch(e => console.error("Initial status check failed", e));
+    }).catch(e => {
+        console.error("Initial status check failed", e);
+        document.getElementById("last-checked").textContent = "Unknown";
+    });
 
   btnCheck.addEventListener("click", async () => {
     btnCheck.disabled = true;
     btnCheck.textContent = "Checking...";
     errorEl.style.display = "none";
-    infoSection.style.display = "none";
+    document.getElementById("last-checked").textContent = "Checking...";
+    badgeAvailability.textContent = "Checking";
 
     try {
       const res = await fetch("{% url 'dashboard:check_update' %}");
@@ -130,21 +253,27 @@ document.addEventListener("DOMContentLoaded", function() {
       archiveUrl = data.archive_url;
       checksumUrl = data.checksum_url;
       
+      document.getElementById("last-checked").textContent = new Date().toLocaleTimeString();
+      
       if ("{{ current_version }}" !== data.latest_version && archiveUrl && checksumUrl) {
-         infoSection.style.display = "block";
+         badgeAvailability.textContent = "Update available";
+         badgeAvailability.className = "vib-badge vib-badge-success";
+         btnStart.style.display = "inline-flex";
       } else {
-         errorEl.style.display = "block";
          if (archiveUrl && checksumUrl) {
-            errorEl.style.color = "var(--color-ok)";
-            errorEl.textContent = "You are already on the latest version.";
+            badgeAvailability.textContent = "Up to date";
+            badgeAvailability.className = "vib-badge";
          } else {
-            errorEl.style.color = "var(--color-bad)";
-            errorEl.textContent = "Update artifacts not found for the latest release. Please ensure a GitHub Release has been created with the zip archive and sha256 checksum.";
+            errorEl.style.display = "block";
+            errorEl.textContent = "Update artifacts not found for the latest release.";
+            badgeAvailability.textContent = "Error";
          }
       }
     } catch (err) {
       errorEl.style.display = "block";
       errorEl.textContent = err.message;
+      badgeAvailability.textContent = "Error";
+      document.getElementById("last-checked").textContent = "Failed";
     } finally {
       btnCheck.disabled = false;
       btnCheck.textContent = "Check for Updates";
@@ -152,10 +281,6 @@ document.addEventListener("DOMContentLoaded", function() {
   });
 
   btnStart.addEventListener("click", async () => {
-    if (!confirm("Are you sure you want to install this update? Services may be temporarily unavailable.")) {
-      return;
-    }
-    
     btnStart.disabled = true;
     
     try {

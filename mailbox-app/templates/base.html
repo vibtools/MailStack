@@ -9,6 +9,9 @@
   <title>{% block title %}MailStack{% endblock %}</title>
   <!--{% load static %}-->
   <link rel="icon" href="{% static 'brand/mailstack-logo.svg' %}" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap">
   <link rel="stylesheet" href="{% static 'css/app.css' %}">
   <link rel="stylesheet" href="{% static 'css/foundation.css' %}">
   <script src="{% static 'js/app.js' %}" defer></script>
@@ -21,7 +24,7 @@
     <aside id="app-sidebar" class="app-sidebar" aria-label="Application navigation" data-app-sidebar>
       <div class="sidebar-header">
         <a class="brand-lockup" href="{% url 'dashboard:index' %}" aria-label="MailStack dashboard">
-          <img class="brand-mark" src="{% static 'brand/mailstack-logo.svg' %}" alt="" width="38" height="38">
+          <img class="brand-mark" src="{% static 'brand/mailstack-logo.svg' %}" alt="" width="28" height="28">
           <span class="brand-name">MailStack</span>
         </a>
         <button class="icon-button sidebar-collapse" type="button" aria-label="Collapse navigation" aria-pressed="false"

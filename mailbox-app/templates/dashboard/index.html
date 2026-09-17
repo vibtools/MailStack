@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block title %}Dashboard · MailStack{% endblock %}
 {% block content %}
-<div class="page-header"><div><div class="eyebrow">Receive-only operations</div><h1>Dashboard</h1><p class="muted">Operational summary for your authorized {{ mail_domain }} mailboxes.</p></div><a class="btn btn-primary" href="{% url 'mailboxes:create' %}">Create mailbox</a></div>
+<div class="page-header"><h1>Dashboard</h1><a class="btn btn-primary" href="{% url 'mailboxes:create' %}">Create mailbox</a></div>
 <div class="stat-grid">
   <article class="stat-card"><span>Total mailboxes</span><strong data-live-summary="total_mailboxes">{{ total_mailboxes }}</strong></article>
   <article class="stat-card"><span>Active</span><strong data-live-summary="active_mailboxes">{{ active_mailboxes }}</strong></article>
@@ -18,7 +18,7 @@
 </div>
 {% endif %}
 <div class="two-column">
-<section class="panel"><div class="panel-header"><h2>Recently received</h2></div><div class="list-stack" data-live-recent-messages>{% for item in recent_messages %}<a class="list-row" data-message-uuid="{{ item.uuid }}" href="{% url 'messages:detail' item.mailbox.uuid item.uuid %}"><span class="truncate"><strong>{{ item.subject|default:"(No subject)" }}</strong><small>{{ item.sender_address|default:"Unknown sender" }} · {{ item.mailbox.email_address }}</small></span><time>{{ item.received_at|date:"M d, H:i"|default:"Unknown date" }}</time></a>{% empty %}<div class="empty-state" data-empty> No messages have been indexed.</div>{% endfor %}</div></section>
-<section class="panel"><div class="panel-header"><h2>Recently created mailboxes</h2></div><div class="list-stack">{% for mailbox in recent_mailboxes %}<div class="list-row mailbox-summary-row"><span><button type="button" class="copy-address" data-copy-email="{{ mailbox.email_address }}" title="Copy email address">{{ mailbox.email_address }}</button><small>{{ mailbox.get_status_display }} · <span data-live-mailbox-total="{{ mailbox.uuid }}">{{ mailbox.total_messages }}</span> messages</small></span><a class="btn btn-small" href="{% url 'messages:inbox' mailbox.uuid %}">Open</a></div>{% empty %}<div class="empty-state">No mailboxes created yet.</div>{% endfor %}</div></section>
+<div class="card"><div class="card-header"><h2>Recently received</h2></div><div class="card-body"><div class="list-stack" data-live-recent-messages>{% for item in recent_messages %}<a class="list-row" data-message-uuid="{{ item.uuid }}" href="{% url 'messages:detail' item.mailbox.uuid item.uuid %}"><span class="truncate"><strong>{{ item.subject|default:"(No subject)" }}</strong><small>{{ item.sender_address|default:"Unknown sender" }} · {{ item.mailbox.email_address }}</small></span><time>{{ item.received_at|date:"M d, H:i"|default:"Unknown date" }}</time></a>{% empty %}<div class="empty-state" data-empty> No messages have been indexed.</div>{% endfor %}</div></div></div>
+<div class="card"><div class="card-header"><h2>Recently created mailboxes</h2></div><div class="card-body"><div class="list-stack">{% for mailbox in recent_mailboxes %}<div class="list-row mailbox-summary-row"><span><button type="button" class="copy-address" data-copy-email="{{ mailbox.email_address }}" title="Copy email address">{{ mailbox.email_address }}</button><small>{{ mailbox.get_status_display }} · <span data-live-mailbox-total="{{ mailbox.uuid }}">{{ mailbox.total_messages }}</span> messages</small></span><a class="btn btn-small" href="{% url 'messages:inbox' mailbox.uuid %}">Open</a></div>{% empty %}<div class="empty-state">No mailboxes created yet.</div>{% endfor %}</div></div></div>
 </div>
 {% endblock %}
