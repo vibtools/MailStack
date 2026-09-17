@@ -196,6 +196,36 @@
   </div>
 </div>
 
+<!-- Update Available Modal -->
+<div class="vib-modal-backdrop" id="modal-update-available" role="dialog" aria-modal="true" hidden>
+  <div class="vib-modal-dialog" style="max-width: 400px; padding: 24px; border-radius: var(--radius); background: var(--bg-primary); border: 1px solid var(--border-color); box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);">
+    <h3 style="margin-top: 0; font-size: 16px; font-weight: 600; color: var(--text-primary);">Update Available</h3>
+    <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 24px;">
+      Version <strong id="modal-latest-version" style="color: var(--text-primary);"></strong> is available. Would you like to install it now?
+    </p>
+    <div style="display: flex; justify-content: flex-end; gap: 8px;">
+      <button class="btn" type="button" id="btn-update-cancel">Cancel</button>
+      <button class="btn btn-primary" type="button" id="btn-update-confirm">Yes, Install Update</button>
+    </div>
+  </div>
+</div>
+
+<!-- Up to Date Modal -->
+<div class="vib-modal-backdrop" id="modal-up-to-date" role="dialog" aria-modal="true" hidden>
+  <div class="vib-modal-dialog" style="max-width: 400px; padding: 24px; border-radius: var(--radius); background: var(--bg-primary); border: 1px solid var(--border-color); box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);">
+    <div style="text-align: center;">
+      <div style="display: inline-flex; align-items: center; justify-content: center; width: 48px; height: 48px; border-radius: 50%; background: #eefaf3; color: #16a34a; margin-bottom: 16px;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      </div>
+      <h3 style="margin-top: 0; font-size: 16px; font-weight: 600; color: var(--text-primary);">System is Up to Date</h3>
+      <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 24px;">
+        You are already running the latest version (<span id="modal-current-version"></span>).
+      </p>
+      <button class="btn btn-primary" type="button" id="btn-up-to-date-ok" style="width: 100%;">Ok</button>
+    </div>
+  </div>
+</div>
+
 <form style="display:none;" id="csrf-form">{% csrf_token %}</form>
 
 <script>
@@ -299,32 +329,18 @@ document.addEventListener("DOMContentLoaded", function() {
     }, 2000);
   }
 
-  fetch("{% url 'dashboard:update_status' %}")
-    .then(async r => {
-      if (!r.ok) throw new Error("Status API error: " + r.status);
-      return await r.json();
-    })
-    .then(data => {
-      if (data && data.step && data.step !== "idle") {
-         if (data.progress < 100 && data.progress !== -1) {
-             startPolling();
-         } else if (data.step === "error" || data.progress === -1) {
-             errorEl.style.display = "block";
-             errorEl.textContent = "Previous update failed: " + data.message;
-             document.getElementById("last-checked").textContent = "Failed";
-         }
-      } else {
-         document.getElementById("last-checked").textContent = "Idle";
-         setTimeout(() => btnCheck.click(), 100);
-      }
-    }).catch(e => {
-        console.error("Initial status check failed", e);
-        document.getElementById("last-checked").textContent = "Unknown";
-        alert("Initial update status check failed: " + e.message);
-        setTimeout(() => btnCheck.click(), 100);
-    });
+  const modalAvailable = document.getElementById("modal-update-available");
+  const modalUpToDate = document.getElementById("modal-up-to-date");
+  const btnUpdateCancel = document.getElementById("btn-update-cancel");
+  const btnUpdateConfirm = document.getElementById("btn-update-confirm");
+  const btnUpToDateOk = document.getElementById("btn-up-to-date-ok");
+  const modalLatestVersion = document.getElementById("modal-latest-version");
+  const modalCurrentVersion = document.getElementById("modal-current-version");
 
-  btnCheck.addEventListener("click", async () => {
+  btnUpdateCancel.addEventListener("click", () => modalAvailable.hidden = true);
+  btnUpToDateOk.addEventListener("click", () => modalUpToDate.hidden = true);
+
+  async function performCheck(showPopup = false) {
     btnCheck.disabled = true;
     btnCheck.textContent = "Checking...";
     errorEl.style.display = "none";
@@ -356,14 +372,25 @@ document.addEventListener("DOMContentLoaded", function() {
          badgeAvailability.textContent = "Update available";
          badgeAvailability.className = "update-badge success";
          btnStart.style.display = "inline-flex";
+         
+         if (showPopup) {
+            modalLatestVersion.textContent = data.latest_version;
+            modalAvailable.hidden = false;
+         }
       } else {
          if (archiveUrl && checksumUrl) {
             badgeAvailability.textContent = "Up to date";
             badgeAvailability.className = "update-badge";
+            
+            if (showPopup) {
+               modalCurrentVersion.textContent = "{{ current_version }}";
+               modalUpToDate.hidden = false;
+            }
          } else {
             errorEl.style.display = "block";
             errorEl.textContent = "Update artifacts not found for the latest release.";
             badgeAvailability.textContent = "Error";
+            if (showPopup) alert("Update artifacts not found for the latest release.");
          }
       }
     } catch (err) {
@@ -371,15 +398,43 @@ document.addEventListener("DOMContentLoaded", function() {
       errorEl.textContent = err.message;
       badgeAvailability.textContent = "Error";
       document.getElementById("last-checked").textContent = "Failed";
-      alert("Error checking for updates: " + err.message);
+      if (showPopup) alert("Error checking for updates: " + err.message);
     } finally {
       btnCheck.disabled = false;
       btnCheck.textContent = "Check for Updates";
     }
-  });
+  }
 
-  btnStart.addEventListener("click", async () => {
+  fetch("{% url 'dashboard:update_status' %}")
+    .then(async r => {
+      if (!r.ok) throw new Error("Status API error: " + r.status);
+      return await r.json();
+    })
+    .then(data => {
+      if (data && data.step && data.step !== "idle") {
+         if (data.progress < 100 && data.progress !== -1) {
+             startPolling();
+         } else if (data.step === "error" || data.progress === -1) {
+             errorEl.style.display = "block";
+             errorEl.textContent = "Previous update failed: " + data.message;
+             document.getElementById("last-checked").textContent = "Failed";
+         }
+      } else {
+         document.getElementById("last-checked").textContent = "Idle";
+         performCheck(false);
+      }
+    }).catch(e => {
+        console.error("Initial status check failed", e);
+        document.getElementById("last-checked").textContent = "Unknown";
+        alert("Initial update status check failed: " + e.message);
+        performCheck(false);
+    });
+
+  btnCheck.addEventListener("click", () => performCheck(true));
+
+  async function triggerUpdate() {
     btnStart.disabled = true;
+    modalAvailable.hidden = true; // close modal if open
     
     try {
       const res = await fetch("{% url 'dashboard:start_update' %}", {
@@ -405,7 +460,10 @@ document.addEventListener("DOMContentLoaded", function() {
       alert("Error: " + err.message);
       btnStart.disabled = false;
     }
-  });
+  }
+
+  btnStart.addEventListener("click", triggerUpdate);
+  btnUpdateConfirm.addEventListener("click", triggerUpdate);
 });
 </script>
 {% endblock %}
