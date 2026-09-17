@@ -200,3 +200,8 @@ This memory file should be treated as the canonical context snapshot for future 
 - Reduced shared application emphasis to the compact `500` weight by changing the UI bold token and normalizing semantic `strong`/`b` content, card/page headings, table values, Dashboard recent-message titles, User names, and System Update metrics/modal headings.
 - Preserved intentional brand, avatar, unread-state, navigation, and control emphasis weights.
 - Validation evidence: UI foundation checks passed (8), System Update functional tests passed (4), Django checks passed, release and upgrade contracts passed, forensic audit passed with `BLOCKING_FINDINGS=0`, and `git diff --check` passed.
+
+### [2026-09-17] CI stale documentation-contract correction
+
+- GitHub Action run `35251723880` failed in `python scripts/forensic_audit.py --root .` because `documents/DOCUMENTATION_MANIFEST.json` was stale; the dependent forensic inventory was also stale, producing three blocking findings.
+- Added a mandatory post-update rule to `AGENTS.md`: synchronize and check managed documentation, regenerate and check the forensic inventory, run forensic audit and relevant tests, and block commit/push until all generated contracts pass.

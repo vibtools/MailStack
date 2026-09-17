@@ -114,10 +114,10 @@
     },
     {
       "kind": "text",
-      "lines": 15,
+      "lines": 18,
       "path": "AGENTS.md",
-      "sha256": "70512f53ea12a2b34f66c1f2cc852a14b61695620ec171e0ea56587ab773842c",
-      "size_bytes": 1823
+      "sha256": "990117ffed8fa447d4060beeb32c07bc2079b6506357d1bb5907db5d36948640",
+      "size_bytes": 2736
     },
     {
       "kind": "text",
@@ -163,10 +163,10 @@
     },
     {
       "kind": "text",
-      "lines": 202,
+      "lines": 207,
       "path": "MEMORY.md",
-      "sha256": "c295d519b87e9d1d4cd990a2874863ec589a5b37a0f9ff50b5485f5dadedaf89",
-      "size_bytes": 11483
+      "sha256": "3e86653e91c9046e08f9c5093a9a21075475a1b8a0baeec1573d153b2491b58b",
+      "size_bytes": 12016
     },
     {
       "kind": "text",
@@ -889,7 +889,7 @@
       "kind": "text",
       "lines": 245,
       "path": "documents/DOCUMENTATION_MANIFEST.json",
-      "sha256": "ad33eb2f5f2139da0e85148d00080f99d23ee46cd97c913b76f2b9a2d1130963",
+      "sha256": "ce430d52c3cd8809329788d84684612811912aeaeacb96c452130e51eedfed90",
       "size_bytes": 9510
     },
     {
@@ -931,8 +931,8 @@
       "kind": "text",
       "lines": 55,
       "path": "documents/design/COMPONENT_MATRIX.md",
-      "sha256": "a92fa1ebcb49cd297c61df8efe2a05cf47857fbe38f69e57b8a98cf3334238f2",
-      "size_bytes": 3462
+      "sha256": "61e249d42aae204941d5948d457c3db50b57310757eff09b861a13a2afbfc3f8",
+      "size_bytes": 4679
     },
     {
       "kind": "text",
@@ -945,8 +945,8 @@
       "kind": "text",
       "lines": 48,
       "path": "documents/design/IMPLEMENTATION_STATUS.md",
-      "sha256": "9bc463242b01d089183a86e9144a6d5c9577c41a3f7b8757fd14a988762c8285",
-      "size_bytes": 2693
+      "sha256": "c910b941948a89dd5e7eee220f633a08d4084eb36908b72b5c212d114abf4dad",
+      "size_bytes": 3880
     },
     {
       "kind": "text",
@@ -959,8 +959,8 @@
       "kind": "text",
       "lines": 65,
       "path": "documents/design/SCREEN_CATALOG.md",
-      "sha256": "76e46c7a2c41851b37933eef1d214bf0465105371b090e18fa98734587568072",
-      "size_bytes": 3482
+      "sha256": "f9d95f94c61e821b76cf638110d3db878873907371f2a29ba21f84764195a5b6",
+      "size_bytes": 4891
     },
     {
       "kind": "text",
@@ -3737,8 +3737,8 @@
       "kind": "text",
       "lines": 1653,
       "path": "mailbox-app/static/css/app.css",
-      "sha256": "c7b2144852a601c233ef5cd816cf403ad601e4b61d9a4079b301d546b483d9aa",
-      "size_bytes": 35842
+      "sha256": "b68911b1350930842289125521248ea822604636cf27aeaf755adec9ca9f6923",
+      "size_bytes": 35843
     },
     {
       "kind": "text",
@@ -5771,7 +5771,7 @@
     "shell_files": 15,
     "shell_functions": 42,
     "text_files": 428,
-    "total_bytes": 32037531,
-    "total_text_lines": 36624
+    "total_bytes": 32042791,
+    "total_text_lines": 36632
   }
 }
