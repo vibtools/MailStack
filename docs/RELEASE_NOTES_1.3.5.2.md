@@ -11,6 +11,8 @@ and System Update behavior.
 - release identity, source archive, and upgrade validation now accept and order
   four-component versions such as `1.3.5.2`;
 - release metadata and package version are synchronized to `1.3.5.2`.
+- inventory generation, forensic auditing, and source packaging consistently exclude
+  local-only private reference material from CI comparisons and public archives.
 
 ## Compatibility
 

@@ -719,10 +719,10 @@
     },
     {
       "kind": "text",
-      "lines": 18,
+      "lines": 20,
       "path": "docs/RELEASE_NOTES_1.3.5.2.md",
-      "sha256": "a59e323d86fe4b7a72501393cfda456a79871ab015a8e88afbf83a9608b54c89",
-      "size_bytes": 632
+      "sha256": "1333b027c2bf9a96ee544cca03167f15c690a4305e08409f630478b2ae60edd3",
+      "size_bytes": 798
     },
     {
       "kind": "text",
@@ -5962,7 +5962,7 @@
     "shell_files": 15,
     "shell_functions": 42,
     "text_files": 436,
-    "total_bytes": 32123907,
-    "total_text_lines": 38364
+    "total_bytes": 32124073,
+    "total_text_lines": 38366
   }
 }
