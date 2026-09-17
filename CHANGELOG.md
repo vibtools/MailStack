@@ -10,6 +10,8 @@ All notable repository-level changes are recorded here. Application history befo
   per-domain uniqueness and Maildir paths, safe hostname validation, and bounded MX/A/AAAA checks.
 - Added admin domain list/create/edit/check/enable/disable routes and a verified-domain selector to
   mailbox creation; external mail-server reconciliation now receives the selected domain explicitly.
+- Excluded local-only private reference material consistently from inventory generation, forensic
+  audits, and public source archives so CI and release artifacts contain only tracked project files.
 
 ## Unreleased â€” PHASE-006 reader integrity and repair
 

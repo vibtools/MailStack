@@ -237,7 +237,7 @@
       "last_reviewed": "2026-09-18",
       "path": "documents/phases/PHASE-007-MULTI-DOMAIN-MAILBOX-AND-DNS.md",
       "phase_id": "PHASE-007",
-      "sha256": "75e1ba1c963398696da34cedd6564579cd554b0c918aee36c3cbe5d8aba5d801",
+      "sha256": "f80504b4b9d78dafddb1eb0368a91cfb408b3cf877fdf476918614702d4cdf93",
       "status": "active",
       "title": "Multi-domain Mailboxes and DNS Verification",
       "version": "1.3.5.2"

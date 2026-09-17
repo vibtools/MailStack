@@ -220,5 +220,7 @@ provider automation remain out of scope.
 
 The phase is active for implementation qualification. Before release, update the canonical
 administrator and user guides with domain management, DNS setup, mailbox creation, disable behavior,
-backup, and rollback instructions. Synchronize the documentation index and manifest, then regenerate
+backup, and rollback instructions. Release inventory, forensic-audit, and source-archive tooling
+excludes the local-only `reference/` directory so private reference material cannot create CI drift
+or enter a public source archive. Synchronize the documentation index and manifest, then regenerate
 and check the forensic inventory before any release or commit gate.
