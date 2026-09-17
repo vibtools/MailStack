@@ -221,5 +221,9 @@ This memory file should be treated as the canonical context snapshot for future 
 
 ### [2026-09-18] CI release verification false-positive correction
 
+### [2026-09-18] Permanent release-version IP-scan rule
+
+- Added a durable `AGENTS.md` contract: semantic release versions, including four-component values such as `1.3.5.1`, must never be treated as IP literals by forensic or release verification. Real global IP addresses must remain blocked and the exemption must stay regression-tested.
+
 - GitHub Action run `35256798900` failed in release verification because the four-component release version `1.3.5.1` matched the global IPv4 detector inside the source archive.
 - Updated `scripts/verify_release.py` to exempt only the archive's derived release version while continuing to reject real global IP literals; added a regression test covering both cases.
