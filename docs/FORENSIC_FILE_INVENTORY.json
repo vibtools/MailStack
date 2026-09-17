@@ -95,8 +95,8 @@
       "kind": "text",
       "lines": 131,
       "path": ".github/workflows/release.yml",
-      "sha256": "02e28cd89043db8c999bfc76458205b8399bdac808ba43ab3d144b809478297f",
-      "size_bytes": 4549
+      "sha256": "2c874f6377be2c0395d482c94077e326f3afb147cfa87e0573e669d6e88af2e0",
+      "size_bytes": 4418
     },
     {
       "kind": "text",
@@ -216,6 +216,13 @@
       "path": "assets/mailstack-logo.svg",
       "sha256": "f8a8eb7c44edb8acd88ee4b139490564aafb1829510a7fe0f113979d0b17173e",
       "size_bytes": 992
+    },
+    {
+      "kind": "text",
+      "lines": 0,
+      "path": "ci_log.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size_bytes": 0
     },
     {
       "kind": "text",
@@ -5723,15 +5730,15 @@
   },
   "summary": {
     "binary_files": 25,
-    "files": 450,
+    "files": 451,
     "python_classes": 86,
     "python_files": 155,
     "python_functions": 483,
     "python_methods": 75,
     "shell_files": 15,
     "shell_functions": 42,
-    "text_files": 425,
-    "total_bytes": 32027474,
+    "text_files": 426,
+    "total_bytes": 32027343,
     "total_text_lines": 36279
   }
 }
