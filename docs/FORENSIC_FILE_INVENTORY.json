@@ -121,10 +121,10 @@
     },
     {
       "kind": "text",
-      "lines": 193,
+      "lines": 195,
       "path": "CHANGELOG.md",
-      "sha256": "f18b0a6966ff6c5687abfd630de8d732913d6f73f30500a8ee99031bb7ff8930",
-      "size_bytes": 19464
+      "sha256": "114ac98b7ad9e36de60401a7f948f8232a406015128721f9c9b0d30801635284",
+      "size_bytes": 19907
     },
     {
       "kind": "text",
@@ -852,10 +852,10 @@
     },
     {
       "kind": "text",
-      "lines": 89,
+      "lines": 99,
       "path": "documents/ADMIN_GUIDE.md",
-      "sha256": "cf5eebb5cd455820f30ad199b5966d6e29dbba6688d5d5f2daf4d7a5d8ec1b49",
-      "size_bytes": 4718
+      "sha256": "34899819c61ff0e655d7342846a3a1c890bc884d21cc21aeb92067d2bc73567d",
+      "size_bytes": 5332
     },
     {
       "kind": "text",
@@ -868,7 +868,7 @@
       "kind": "text",
       "lines": 245,
       "path": "documents/DOCUMENTATION_MANIFEST.json",
-      "sha256": "58ae885fa3d9d04c2209950769fbf2dffe271194346b245f913d09825b3eaa17",
+      "sha256": "4fa23ffcb83ec5e33317d383beeac21602f0723d9b2f3ede50366ce882eb2d64",
       "size_bytes": 9570
     },
     {
@@ -992,10 +992,10 @@
     },
     {
       "kind": "text",
-      "lines": 96,
+      "lines": 107,
       "path": "documents/phases/PHASE-006-READER-INTEGRITY-DATA-REPAIR-AND-RUNTIME-ERROR-CLOSURE.md",
-      "sha256": "474435e8573635b749d6413f0d3b65deb63edf595f0ae84479da0e1ab0969c81",
-      "size_bytes": 6379
+      "sha256": "c8eb7e040696df88e713350b696b35377ab7d400d036f60b245468ed52275f6f",
+      "size_bytes": 7195
     },
     {
       "kind": "text",
@@ -5692,7 +5692,7 @@
     "shell_files": 15,
     "shell_functions": 42,
     "text_files": 422,
-    "total_bytes": 32014257,
-    "total_text_lines": 35989
+    "total_bytes": 32016130,
+    "total_text_lines": 36012
   }
 }

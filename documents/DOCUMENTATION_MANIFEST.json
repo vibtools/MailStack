@@ -9,7 +9,7 @@
       "last_reviewed": "2026-08-18",
       "path": "documents/ADMIN_GUIDE.md",
       "phase_id": null,
-      "sha256": "cf5eebb5cd455820f30ad199b5966d6e29dbba6688d5d5f2daf4d7a5d8ec1b49",
+      "sha256": "34899819c61ff0e655d7342846a3a1c890bc884d21cc21aeb92067d2bc73567d",
       "status": "active",
       "title": "MailStack Administrator Guide",
       "version": "1.3.4-rc.5"
@@ -225,7 +225,7 @@
       "last_reviewed": "2026-08-18",
       "path": "documents/phases/PHASE-006-READER-INTEGRITY-DATA-REPAIR-AND-RUNTIME-ERROR-CLOSURE.md",
       "phase_id": "PHASE-006",
-      "sha256": "474435e8573635b749d6413f0d3b65deb63edf595f0ae84479da0e1ab0969c81",
+      "sha256": "c8eb7e040696df88e713350b696b35377ab7d400d036f60b245468ed52275f6f",
       "status": "active",
       "title": "Reader Integrity, Data Repair and Runtime Error Closure",
       "version": "1.3.4-rc.5"

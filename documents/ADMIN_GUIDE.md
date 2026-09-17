@@ -70,6 +70,16 @@ live ingestion worker remains active and does not update its heartbeat. After de
 `postmaster@DOMAIN` and `abuse@DOMAIN`, Maildir creation, ingestion, browser visibility, and backup
 creation before onboarding users.
 
+## System Update
+
+Open **System Update** from the management sidebar. The page displays the currently installed
+version (read from `pyproject.toml`) and automatically checks GitHub Releases for the latest
+published version on load. If a newer release is available, click **Install Update** to download
+the signed deterministic archive and apply it. Update progress streams in the on-screen terminal
+log. If an update fails, a fatal-error message is displayed and the log can be used for diagnosis.
+Closing the log window does not cancel a running update. After a successful update the page
+reloads automatically.
+
 ## Security boundaries
 
 The shared shell uses only local CSS, JavaScript, logo, and SVG icon assets. Logout remains a

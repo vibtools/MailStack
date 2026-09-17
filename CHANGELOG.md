@@ -15,6 +15,8 @@ All notable repository-level changes are recorded here. Application history befo
 - Removed the permanent protected-rendering banner from the normal reader while retaining sandbox, no-referrer, sanitizer, URL and active-content restrictions.
 - Added a bounded, idempotent existing-message body repair path that re-parses verified Maildir source without delete/re-ingest behavior and preserves message identity/state/attachments.
 - Corrected stylesheet load order in `base.html` so `app.css` precedes `foundation.css`, aligned frozen UI foundation design token test expectations, and promoted release identity to `1.3.4-rc.5`.
+- Corrected the System Update page to read the installed version from `pyproject.toml`, updated the GitHub Releases API call to return the latest release including pre-releases, and auto-triggered the update check on page load so administrators see current release state without a manual button click.
+- Normalized page heading typography to 18 px / 600 weight across all dashboard pages for visual consistency with the compact design system.
 - Disabled the unused Gunicorn control interface through source-level configuration rather than weakening systemd filesystem confinement.
 
 ### Verification state

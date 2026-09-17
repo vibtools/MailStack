@@ -94,3 +94,14 @@ and continued absence of the previously observed repeated Gunicorn control-serve
 ## Documentation impact
 
 This RC2 release-identity candidate synchronizes the canonical version, CI artifact identity, current release/publishing guidance, managed-document versions, design/documentation metadata and forensic inventory with the already qualified scoped parser/dependency/tests. It does not claim PHASE-006 completion, GitHub CI success, tag publication or live acceptance. Final completion status is recorded only after post-promotion qualification, GitHub CI and controlled live acceptance gates pass.
+
+## RC5 UI and operator corrections
+
+The System Update dashboard page (`/system-update/`) is corrected to show the currently installed
+version drawn from `pyproject.toml` rather than the server-side `VERSION` file path, which is not
+accessible from inside the application directory in all deployment topologies. The GitHub Releases
+API endpoint is updated from `releases/latest` to `releases` list so that the most recent published
+release (including pre-releases) is always returned rather than only the most recent non-pre-release
+one. The Check for Updates button is triggered automatically on page load so administrators do not
+need a manual click to see current state. Page heading typography is normalized to 18 px / 600 weight
+across all dashboard pages for visual consistency with the compact design system.
