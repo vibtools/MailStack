@@ -9,10 +9,10 @@
       "last_reviewed": "2026-08-18",
       "path": "documents/ADMIN_GUIDE.md",
       "phase_id": null,
-      "sha256": "b2427765e0fbb4c51ce04a245779e3a1ed3584c1b7f1120aafb59353e7476f05",
+      "sha256": "1b50290c18453e06e982f492e1365dfe45893c9adeef7bf9eb0746eb74a3a353",
       "status": "active",
       "title": "MailStack Administrator Guide",
-      "version": "1.3.4-rc.2"
+      "version": "1.3.4-rc.3"
     },
     {
       "audience": "maintainers-and-operators",
@@ -21,10 +21,10 @@
       "last_reviewed": "2026-08-18",
       "path": "documents/BASELINE.md",
       "phase_id": null,
-      "sha256": "2589b546ec5b2a16d180505ae18676238706f362253df3ff96ed5ecbd9f8b3e8",
+      "sha256": "f165a4dc379f0b7b41f21ffe54ab692124165cb3bf612fea0bc7faa651b7acf2",
       "status": "active",
       "title": "MailStack Baseline",
-      "version": "1.3.4-rc.2"
+      "version": "1.3.4-rc.3"
     },
     {
       "audience": "contributors-and-maintainers",
@@ -33,10 +33,10 @@
       "last_reviewed": "2026-08-18",
       "path": "documents/DOCUMENTATION_POLICY.md",
       "phase_id": null,
-      "sha256": "087408b622ff7f5d833a12e565f34eb477c7464e5d8f28d83acd5844e9c25220",
+      "sha256": "ce3a638c4ea6b5517ef1a84d766211c2db8068a1864c1858b0fd863119fdb2cf",
       "status": "active",
       "title": "Documentation Policy",
-      "version": "1.3.4-rc.2"
+      "version": "1.3.4-rc.3"
     },
     {
       "audience": "mailbox-users-and-administrators",
@@ -45,10 +45,10 @@
       "last_reviewed": "2026-08-18",
       "path": "documents/HOW_TO_USE.md",
       "phase_id": null,
-      "sha256": "2a1ed7ebfc5a2bfbf378f7a6495f8ee2cd4458b8ceb37e281ea929d14f284164",
+      "sha256": "ad065f0b7e56e341a3cde93e340a1ff9b681bfff3cd89fc7a09b4e843bb2aef4",
       "status": "active",
       "title": "How to Use MailStack",
-      "version": "1.3.4-rc.2"
+      "version": "1.3.4-rc.3"
     },
     {
       "audience": "mailbox-users",
@@ -57,10 +57,10 @@
       "last_reviewed": "2026-08-18",
       "path": "documents/USER_MANUAL.md",
       "phase_id": null,
-      "sha256": "958230151e57ea5c1b93f9769e1b16b1d46b63d67427b2b914e2094bc13cd602",
+      "sha256": "3ae0033ec66410d6d7f977ac92b48e0ff366bbaa29549196a5b3856c6b757f0a",
       "status": "active",
       "title": "MailStack User Manual",
-      "version": "1.3.4-rc.2"
+      "version": "1.3.4-rc.3"
     },
     {
       "audience": "designers-developers-and-maintainers",
@@ -69,10 +69,10 @@
       "last_reviewed": "2026-08-18",
       "path": "documents/design/ACCESSIBILITY_SPECIFICATION.md",
       "phase_id": null,
-      "sha256": "2febd67099a885caa47d182f13b6f3b92308897b177eec02c3fe81303e7fd150",
+      "sha256": "a91816e3932e7b58e001c6d19c5088a5907bcc1d653ea8dddd701a7d627587ef",
       "status": "active",
       "title": "MailStack Accessibility Specification",
-      "version": "1.3.4-rc.2"
+      "version": "1.3.4-rc.3"
     },
     {
       "audience": "designers-developers-and-maintainers",
@@ -81,10 +81,10 @@
       "last_reviewed": "2026-08-18",
       "path": "documents/design/COMPONENT_MATRIX.md",
       "phase_id": null,
-      "sha256": "158f14d95aea1472c7dc1f77ea36c63cbc6694830532ae3b338f7400697ca8c6",
+      "sha256": "99cfb6033256926eca7ae8ebfd786f2765465ab0fcaf163ce2bb9bd5089bdb44",
       "status": "active",
       "title": "MailStack UI Component Matrix",
-      "version": "1.3.4-rc.2"
+      "version": "1.3.4-rc.3"
     },
     {
       "audience": "designers-developers-and-maintainers",
@@ -93,10 +93,10 @@
       "last_reviewed": "2026-08-18",
       "path": "documents/design/FUTURE_UI_ROADMAP.md",
       "phase_id": null,
-      "sha256": "4ea2310b4e03eb1636023377127134347caf2ede4679574474e8573389b49ff3",
+      "sha256": "56704f0cbf14e7cf84baca69e7417fd9ffc9350d0957a120a7e60fa341631eb0",
       "status": "active",
       "title": "MailStack Future UI Roadmap",
-      "version": "1.3.4-rc.2"
+      "version": "1.3.4-rc.3"
     },
     {
       "audience": "designers-developers-and-maintainers",
@@ -105,10 +105,10 @@
       "last_reviewed": "2026-08-18",
       "path": "documents/design/IMPLEMENTATION_STATUS.md",
       "phase_id": null,
-      "sha256": "fba21af7ca6bb34e363e9abdb460edfee17be841942b27e6a0e82ba0d9f93a5f",
+      "sha256": "2d05a822842de4aded588a65a733608bebbc1cb4c74efe59785a9ef34898360a",
       "status": "active",
       "title": "MailStack UI Implementation Status",
-      "version": "1.3.4-rc.2"
+      "version": "1.3.4-rc.3"
     },
     {
       "audience": "designers-developers-and-maintainers",
@@ -117,10 +117,10 @@
       "last_reviewed": "2026-08-18",
       "path": "documents/design/RESPONSIVE_SPECIFICATION.md",
       "phase_id": null,
-      "sha256": "a33781968bf7a14be2a7ee5b9d497ecb2cdc7f70fdc41067edd83b025434992e",
+      "sha256": "5f6794ee47fd610466a4ba7ac8c667ea537cf495a356877c39e5cacfd6b32187",
       "status": "active",
       "title": "MailStack Responsive Specification",
-      "version": "1.3.4-rc.2"
+      "version": "1.3.4-rc.3"
     },
     {
       "audience": "designers-developers-and-maintainers",
@@ -129,10 +129,10 @@
       "last_reviewed": "2026-08-18",
       "path": "documents/design/SCREEN_CATALOG.md",
       "phase_id": null,
-      "sha256": "2aa86ec8ca139c65928a689d7171723512a12e4c364edc4603ba2edba80e954b",
+      "sha256": "c73730927bfe758f520a2237a1be845eb9b525bbe344830183abeaac542730ae",
       "status": "active",
       "title": "MailStack UI Screen Catalog",
-      "version": "1.3.4-rc.2"
+      "version": "1.3.4-rc.3"
     },
     {
       "audience": "designers-developers-and-maintainers",
@@ -141,10 +141,10 @@
       "last_reviewed": "2026-08-18",
       "path": "documents/design/UI_FOUNDATION.md",
       "phase_id": null,
-      "sha256": "d069e44a89241838939636165b6ea47152c2ac9a57b4e8f34bb3e0530835d232",
+      "sha256": "ac523146945d1591a18649ce27e6766401f98294baf244657bc335bf2d7364ff",
       "status": "active",
       "title": "MailStack UI Foundation",
-      "version": "1.3.4-rc.2"
+      "version": "1.3.4-rc.3"
     },
     {
       "audience": "users-operators-and-maintainers",
@@ -153,10 +153,10 @@
       "last_reviewed": "2026-08-18",
       "path": "documents/phases/PHASE-000-BASELINE.md",
       "phase_id": "PHASE-000",
-      "sha256": "84724624c0319d9c6687f6e4e3a445cff20d8a95cfd983d7df6c00c9137b8d4c",
+      "sha256": "34a2b7e2fc1179f92a66453830bcdfddd3f4bf5651fe3311b1dc8de9568b0b2b",
       "status": "active",
       "title": "Documentation and Feature Baseline",
-      "version": "1.3.4-rc.2"
+      "version": "1.3.4-rc.3"
     },
     {
       "audience": "users-operators-designers-and-maintainers",
@@ -165,10 +165,10 @@
       "last_reviewed": "2026-08-18",
       "path": "documents/phases/PHASE-001-UI-DESIGN-INTAKE-BASELINE.md",
       "phase_id": "PHASE-001",
-      "sha256": "2e1baf74995622f90f4511c4b49aa4f415b4d3da831a35b0150e40cd9593bae7",
+      "sha256": "4bf9341075bf345f78b1b89eaa5d4ad5ebef5a2c8f6a041415db5aca6d7b5fe2",
       "status": "active",
       "title": "UI Design Intake Baseline",
-      "version": "1.3.4-rc.2"
+      "version": "1.3.4-rc.3"
     },
     {
       "audience": "users-operators-designers-and-maintainers",
@@ -177,10 +177,10 @@
       "last_reviewed": "2026-08-18",
       "path": "documents/phases/PHASE-002-SHARED-UI-FOUNDATION-AND-APPLICATION-SHELL.md",
       "phase_id": "PHASE-002",
-      "sha256": "2b118ee6d925095e4fd05f28fb8be8465af4e6e3832d53de423a0f57e56f79d6",
+      "sha256": "29cd239dc3c47c2209215886b8fec5b54c97346e5ea277ff9284282123f0ca0c",
       "status": "active",
       "title": "Shared UI Foundation and Application Shell",
-      "version": "1.3.4-rc.2"
+      "version": "1.3.4-rc.3"
     },
     {
       "audience": "users-operators-and-maintainers",
@@ -189,10 +189,10 @@
       "last_reviewed": "2026-08-18",
       "path": "documents/phases/PHASE-003-INSTALLATION-RECOVERY-AND-INBOUND-DELIVERY-RELIABILITY.md",
       "phase_id": "PHASE-003",
-      "sha256": "0dde3da3f4c74972b9d241d416751c388446264d38d1acbef90111f01bd4fcbc",
+      "sha256": "8c1ed1beeb45967b77067fcfb0ab217b8a45340c112ad2c103bfdeae272084c1",
       "status": "active",
       "title": "Installation, Recovery and Inbound Delivery Reliability",
-      "version": "1.3.4-rc.2"
+      "version": "1.3.4-rc.3"
     },
     {
       "audience": "users-operators-and-maintainers",
@@ -201,10 +201,10 @@
       "last_reviewed": "2026-08-18",
       "path": "documents/phases/PHASE-004-RELEASE-UPGRADE-AND-OPERATIONAL-RELIABILITY.md",
       "phase_id": "PHASE-004",
-      "sha256": "69a847629490679cd568d464e1fcca3dd040b0735f4b9ead509b691f725553ee",
+      "sha256": "8ee675c08371fce042454592ebcaf03cc4f7a0789a5a4518fef25fafc2d1adcf",
       "status": "active",
       "title": "Release, Upgrade and Operational Reliability",
-      "version": "1.3.4-rc.2"
+      "version": "1.3.4-rc.3"
     },
     {
       "audience": "users-operators-designers-and-maintainers",
@@ -213,10 +213,10 @@
       "last_reviewed": "2026-08-18",
       "path": "documents/phases/PHASE-005-UI-NAVIGATION-RELIABILITY-AND-COMPACT-MAILBOX-READER.md",
       "phase_id": "PHASE-005",
-      "sha256": "b964412d570e627c5950e9a3c32c7835efce9ba5f8e14d5ae5eead02a4aa0169",
+      "sha256": "017452f38f8d6da27b6a2ad0e8c18e8041fe3303c72b5b22b8ea2d7643fa5519",
       "status": "active",
       "title": "UI Navigation Reliability and Compact Mailbox Reader",
-      "version": "1.3.4-rc.2"
+      "version": "1.3.4-rc.3"
     },
     {
       "audience": "users-operators-and-maintainers",
@@ -225,14 +225,14 @@
       "last_reviewed": "2026-08-18",
       "path": "documents/phases/PHASE-006-READER-INTEGRITY-DATA-REPAIR-AND-RUNTIME-ERROR-CLOSURE.md",
       "phase_id": "PHASE-006",
-      "sha256": "1311281a1f03afb86163f2b01d29787f4ae5e09c0a5ff202e34b2163f7d382e6",
+      "sha256": "c6c3556032d9300c116480a34e023bbc4dd16e5ad09d63ba4086ad15be4b8d59",
       "status": "active",
       "title": "Reader Integrity, Data Repair and Runtime Error Closure",
-      "version": "1.3.4-rc.2"
+      "version": "1.3.4-rc.3"
     }
   ],
   "project": "MailStack",
-  "release_version": "1.3.4-rc.2",
+  "release_version": "1.3.4-rc.3",
   "schema_version": 1,
   "scope": "Managed user, administrator, how-to, policy, baseline, and phase Markdown documents.",
   "summary": {

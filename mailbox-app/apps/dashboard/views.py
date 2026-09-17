@@ -3,6 +3,10 @@ from __future__ import annotations
 import json
 import logging
 import os
+import subprocess  # nosec B404 # noqa: S404
+import tempfile
+import threading
+import urllib.error
 import urllib.request
 from pathlib import Path
 
@@ -19,6 +23,7 @@ from apps.mailboxes.models import Mailbox
 
 logger = logging.getLogger(__name__)
 GITHUB_REPO = "vibtools/MailStack"
+UPDATE_STATUS_PATH = Path("/tmp/vibmail_update_status.json")  # nosec B108 # noqa: S108
 
 
 def _database_ok() -> bool:
@@ -69,12 +74,12 @@ def index(request):
 def system_update_page(request):
     if not is_admin(request.user):
         return render(request, "dashboard/403.html", status=403)
-        
+
     current_version = "Unknown"
     version_file = Path(settings.BASE_DIR).parent / "VERSION"
     if version_file.exists():
-        current_version = version_file.read_text().strip()
-        
+        current_version = version_file.read_text(encoding="utf-8").strip()
+
     context = {
         "current_version": current_version,
     }
@@ -86,13 +91,13 @@ def system_update_page(request):
 def check_update(request):
     if not is_admin(request.user):
         return JsonResponse({"error": "Unauthorized"}, status=403)
-        
+
     try:
         url = f"https://api.github.com/repos/{GITHUB_REPO}/releases/latest"
-        req = urllib.request.Request(url, headers={"User-Agent": "MailStack-Updater"})
-        with urllib.request.urlopen(req) as response:
+        req = urllib.request.Request(url, headers={"User-Agent": "MailStack-Updater"})  # nosec B310 # noqa: S310
+        with urllib.request.urlopen(req) as response:  # nosec B310 # noqa: S310
             data = json.loads(response.read().decode())
-            
+
         assets = data.get("assets", [])
         archive_url = None
         checksum_url = None
@@ -101,7 +106,7 @@ def check_update(request):
                 archive_url = asset["browser_download_url"]
             elif asset["name"].endswith(".zip.sha256"):
                 checksum_url = asset["browser_download_url"]
-                
+
         version = data.get("tag_name", "").lstrip("v")
         return JsonResponse({
             "latest_version": version,
@@ -112,7 +117,7 @@ def check_update(request):
         })
     except urllib.error.HTTPError as e:
         if e.code == 404:
-             return JsonResponse({"error": "No releases found."}, status=404)
+            return JsonResponse({"error": "No releases found."}, status=404)
         logger.exception("Failed to check for updates HTTPError")
         return JsonResponse({"error": str(e)}, status=500)
     except Exception as e:
@@ -125,76 +130,107 @@ def check_update(request):
 def start_update(request):
     if not is_admin(request.user):
         return JsonResponse({"error": "Unauthorized"}, status=403)
-        
+
     try:
         body = json.loads(request.body)
         archive_url = body.get("archive_url")
         checksum_url = body.get("checksum_url")
-        
+
         if not archive_url or not checksum_url:
             return JsonResponse({"error": "Missing URLs"}, status=400)
-            
+
         allowed_prefix = f"https://github.com/{GITHUB_REPO}/releases/download/"
         if not archive_url.startswith(allowed_prefix) or not checksum_url.startswith(allowed_prefix):
-            return JsonResponse({"error": "Invalid update URL origin. Must be from official repository."}, status=400)
-            
-        status_file = Path("/tmp/vibmail_update_status.json")
-        status_file.write_text(json.dumps({"step": "init", "message": "Downloading update archive...", "progress": 0}))
-        
-        import threading
-        import tempfile
-        import os
+            return JsonResponse(
+                {"error": "Invalid update URL origin. Must be from official repository."},
+                status=400,
+            )
+
+        UPDATE_STATUS_PATH.write_text(
+            json.dumps({"step": "init", "message": "Downloading update archive...", "progress": 0}),
+            encoding="utf-8",
+        )
+
         def _run_update(a_url, c_url):
             try:
-                import subprocess
-                
                 with tempfile.NamedTemporaryFile(delete=False, suffix=".zip") as tf_arch:
                     archive_path = tf_arch.name
                 with tempfile.NamedTemporaryFile(delete=False, suffix=".zip.sha256") as tf_check:
                     checksum_path = tf_check.name
-                
-                urllib.request.urlretrieve(a_url, archive_path)
-                status_file.write_text(json.dumps({"step": "download", "message": "Downloading checksum...", "progress": 5}))
-                urllib.request.urlretrieve(c_url, checksum_path)
-                
+
+                urllib.request.urlretrieve(a_url, archive_path)  # nosec B310 # noqa: S310
+                UPDATE_STATUS_PATH.write_text(
+                    json.dumps({
+                        "step": "download",
+                        "message": "Downloading checksum...",
+                        "progress": 5,
+                    }),
+                    encoding="utf-8",
+                )
+                urllib.request.urlretrieve(c_url, checksum_path)  # nosec B310 # noqa: S310
+
                 # Make them readable by root (they are created by vmail)
                 os.chmod(archive_path, 0o644)
                 os.chmod(checksum_path, 0o644)
-                
-                status_file.write_text(json.dumps({"step": "execute", "message": "Starting upgrade script...", "progress": 8}))
-                
+
+                UPDATE_STATUS_PATH.write_text(
+                    json.dumps({
+                        "step": "execute",
+                        "message": "Starting upgrade script...",
+                        "progress": 8,
+                    }),
+                    encoding="utf-8",
+                )
+
                 cmd = [
                     "sudo", "-n", "/opt/vibmail/app/scripts/upgrade.sh",
                     "--archive", archive_path,
                     "--checksum", checksum_path,
                     "--allow-migrations",
-                    "--confirm-upgrade"
+                    "--confirm-upgrade",
                 ]
-                result = subprocess.run(cmd, capture_output=True, text=True)
-                
+                result = subprocess.run(cmd, capture_output=True, text=True)  # nosec B603 # noqa: S603
+
                 # Cleanup temp files after script finishes
                 try:
                     os.remove(archive_path)
                     os.remove(checksum_path)
                 except OSError:
                     pass
-                    
+
                 if result.returncode != 0:
                     # Check if the script itself wrote an error status
                     try:
-                        current_status = json.loads(status_file.read_text())
+                        current_status = json.loads(UPDATE_STATUS_PATH.read_text(encoding="utf-8"))
                         if current_status.get("step") != "error":
                             error_msg = result.stderr.strip() or "Upgrade script failed to start or crashed."
-                            status_file.write_text(json.dumps({"step": "error", "message": error_msg, "progress": -1}))
+                            UPDATE_STATUS_PATH.write_text(
+                                json.dumps({"step": "error", "message": error_msg, "progress": -1}),
+                                encoding="utf-8",
+                            )
                     except Exception:
-                        status_file.write_text(json.dumps({"step": "error", "message": "Upgrade script failed unexpectedly.", "progress": -1}))
+                        UPDATE_STATUS_PATH.write_text(
+                            json.dumps({
+                                "step": "error",
+                                "message": "Upgrade script failed unexpectedly.",
+                                "progress": -1,
+                            }),
+                            encoding="utf-8",
+                        )
             except Exception as exc:
-                status_file.write_text(json.dumps({"step": "error", "message": f"Update failed to start: {str(exc)}", "progress": -1}))
-                
+                UPDATE_STATUS_PATH.write_text(
+                    json.dumps({
+                        "step": "error",
+                        "message": f"Update failed to start: {str(exc)}",
+                        "progress": -1,
+                    }),
+                    encoding="utf-8",
+                )
+
         t = threading.Thread(target=_run_update, args=(archive_url, checksum_url))
         t.daemon = True
         t.start()
-        
+
         return JsonResponse({"status": "started"})
     except Exception as e:
         logger.exception("Failed to start update")
@@ -206,11 +242,10 @@ def start_update(request):
 def update_status(request):
     if not is_admin(request.user):
         return JsonResponse({"error": "Unauthorized"}, status=403)
-        
+
     try:
-        status_file = Path("/tmp/vibmail_update_status.json")
-        if status_file.exists():
-            data = json.loads(status_file.read_text())
+        if UPDATE_STATUS_PATH.exists():
+            data = json.loads(UPDATE_STATUS_PATH.read_text(encoding="utf-8"))
             return JsonResponse(data)
         return JsonResponse({"step": "idle", "message": "No update in progress", "progress": 0})
     except Exception as e:

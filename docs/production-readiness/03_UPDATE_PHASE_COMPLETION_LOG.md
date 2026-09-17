@@ -10,7 +10,7 @@ when a phase changes state so implementation cannot become unordered or ambiguou
 | Metric | Current value |
 |---|---|
 | Frozen baseline | MailStack `v1.3.3` |
-| PHASE-006 live-acceptance target | MailStack `v1.3.4-rc.2` pre-release |
+| PHASE-006 live-acceptance target | MailStack `v1.3.4-rc.3` pre-release |
 | Planned implementation phases | **2** |
 | Completed phases in this production-readiness cycle | **0 / 2** |
 | Remaining phases | **2 / 2** |

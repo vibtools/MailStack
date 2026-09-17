@@ -4,7 +4,7 @@ title: Reader Integrity, Data Repair and Runtime Error Closure
 document_type: phase
 audience: users-operators-and-maintainers
 status: active
-version: 1.3.4-rc.2
+version: 1.3.4-rc.3
 last_reviewed: 2026-08-18
 phase_id: PHASE-006
 ---
@@ -86,7 +86,7 @@ fidelity, so PHASE-006 remains open for the narrowly scoped RC2 continuation.
 
 RC2 qualification closure also advances the pinned Django 5.2 LTS runtime from 5.2.16 to 5.2.17 after the local `pip-audit` gate identified the upstream advisory, synchronizes the active exact-version deployment/security-test contracts, and removes Bandit B105 false positives through a semantics-only CSS parser local-variable rename rather than suppressing the security rule. No reader, mail-flow, schema, authorization, iframe/CSP, installer, or deployment-flow behavior is changed by that maintenance step.
 
-The combined RC2 implementation/dependency candidate passed local qualification on Python 3.12.8 before release-identity promotion: focused reader/repair/security/auth/deployment suites PASS; full suite `223 passed, 1 skipped`; coverage `93.03%`; Ruff and Bandit PASS; Django system check PASS; migration drift NONE; dependency consistency PASS; `pip-audit` reported no known vulnerabilities; documentation/design/installer/operations/release/upgrade gates PASS; and standard/full forensic audits reported zero blocking findings. The owner-approved release identity is now `1.3.4-rc.2`; post-promotion local requalification, GitHub branch/main CI and controlled live acceptance remain pending. Acceptance must verify
+The combined RC2 implementation/dependency candidate passed local qualification on Python 3.12.8 before release-identity promotion: focused reader/repair/security/auth/deployment suites PASS; full suite `223 passed, 1 skipped`; coverage `93.03%`; Ruff and Bandit PASS; Django system check PASS; migration drift NONE; dependency consistency PASS; `pip-audit` reported no known vulnerabilities; documentation/design/installer/operations/release/upgrade gates PASS; and standard/full forensic audits reported zero blocking findings. The owner-approved release identity is now `1.3.4-rc.3`; post-promotion local requalification, GitHub branch/main CI and controlled live acceptance remain pending. Acceptance must verify
 representative inline-style, style-block, table-layout and responsive HTML, malicious/remote CSS
 rejection, plain-text fallback, dry-run and bounded existing-message repair, health/service status,
 and continued absence of the previously observed repeated Gunicorn control-server filesystem finding.

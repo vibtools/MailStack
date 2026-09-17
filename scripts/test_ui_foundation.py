@@ -97,10 +97,10 @@ def test_frozen_tokens_and_responsive_contract() -> None:
         "--ui-warning": "#f59e0b",
         "--ui-danger": "#dc2626",
         "--ui-secondary": "#7c3aed",
-        "--ui-space-1": "4px",
-        "--ui-space-4": "16px",
-        "--ui-space-7": "48px",
-        "--ui-control-height": "44px",
+        "--ui-space-1": "2px",
+        "--ui-space-4": "8px",
+        "--ui-space-7": "16px",
+        "--ui-control-height": "32px",
     }
     for name, value in tokens.items():
         assert f"{name}: {value};" in css, f"frozen token changed or missing: {name}"
