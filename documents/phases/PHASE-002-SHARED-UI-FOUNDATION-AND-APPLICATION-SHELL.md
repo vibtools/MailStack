@@ -64,7 +64,9 @@ CDN assets, or third-party JavaScript additions. Cross-platform audit hardening 
 contact-service SQLite connection deterministically, retains the Maildir `0700` assertion on POSIX
 systems without treating Windows mode emulation as POSIX, and adds standalone contact-service
 Ruff/Bandit gates. CI lint corrections keep CSP nonce construction and upgrade-archive version
-validation Ruff-compliant without changing runtime behavior. Forensic inventory generation canonicalizes text line endings and aggregate byte
+validation Ruff-compliant without changing runtime behavior. Source-release verification excludes
+only the derived release version from global-IP scanning, preserving rejection of real public IPs.
+Forensic inventory generation canonicalizes text line endings and aggregate byte
 counts to keep Windows and Linux checkout validation identical, while ignored runtime state is
 excluded from source inventory and audit scans. Source-release generation now writes canonical POSIX ZIP metadata and stored
 entries for every member, eliminating host and zlib byte-stream variance between Windows and Linux.

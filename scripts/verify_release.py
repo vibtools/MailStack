@@ -44,6 +44,17 @@ def sha256(path: Path) -> str:
     return sha256_bytes(path.read_bytes())
 
 
+def is_global_ip_literal(candidate: bytes, release_version: str) -> bool:
+    literal = candidate.decode("ascii")
+    if literal == release_version:
+        return False
+    try:
+        address = ipaddress.ip_address(literal)
+    except ValueError:
+        return False
+    return address.is_global
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("zip", type=Path)
@@ -85,6 +96,7 @@ def main() -> int:
         if len(top_levels) != 1:
             raise SystemExit("release must contain exactly one top-level directory")
         prefix = next(iter(top_levels)) + "/"
+        release_version = prefix.removeprefix("mailstack-").rstrip("/")
 
         for info in infos:
             pure = PurePosixPath(info.filename)
@@ -127,11 +139,7 @@ def main() -> int:
                         f"unapproved email domain in release: {info.filename}: {domain}"
                     )
             for candidate in IPV4_LITERAL.findall(data):
-                try:
-                    address = ipaddress.ip_address(candidate.decode("ascii"))
-                except ValueError:
-                    continue
-                if address.is_global:
+                if is_global_ip_literal(candidate, release_version):
                     raise SystemExit(f"global IP literal in release: {info.filename}")
 
         manifest_name = prefix + "SOURCE_MANIFEST.sha256"

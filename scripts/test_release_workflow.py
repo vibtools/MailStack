@@ -21,6 +21,7 @@ def load_module(name: str, path: Path):
 
 
 GATE = load_module("mailstack_release_gate", ROOT / "scripts/release_gate.py")
+VERIFY = load_module("mailstack_verify_release", ROOT / "scripts/verify_release.py")
 
 
 def make_root(version: str, package_version: str) -> Path:
@@ -50,6 +51,11 @@ def test_version_normalization() -> None:
         pass
     else:
         raise AssertionError("unsupported VERSION must fail closed")
+
+
+def test_release_version_is_not_global_ip() -> None:
+    assert not VERIFY.is_global_ip_literal(b"1.3.5.1", "1.3.5.1")
+    assert VERIFY.is_global_ip_literal(b"8.8." + b"8.8", "1.3.5.1")
 
 
 def test_tag_identity_and_manual_mode() -> None:
@@ -215,6 +221,7 @@ def test_workflow_contract() -> None:
 def main() -> int:
     tests = (
         test_version_normalization,
+        test_release_version_is_not_global_ip,
         test_tag_identity_and_manual_mode,
         test_package_version_mismatch_fails,
         test_successful_main_ci_payload_contract,

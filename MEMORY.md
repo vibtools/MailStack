@@ -218,3 +218,8 @@ This memory file should be treated as the canonical context snapshot for future 
 
 - GitHub Action run `35255798358` failed in `ruff check .` with UP032 in `mailbox-app/apps/core/middleware.py` and E501 in `mailbox-app/scripts/verify_upgrade_archive.py`.
 - Replaced the CSP nonce `.format()` call with an f-string and wrapped the long `normalized_version` signature; the exact CI Ruff command now passes.
+
+### [2026-09-18] CI release verification false-positive correction
+
+- GitHub Action run `35256798900` failed in release verification because the four-component release version `1.3.5.1` matched the global IPv4 detector inside the source archive.
+- Updated `scripts/verify_release.py` to exempt only the archive's derived release version while continuing to reject real global IP literals; added a regression test covering both cases.
