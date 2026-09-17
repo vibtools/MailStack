@@ -130,19 +130,25 @@ select {
 
 .page-header {
     display: flex;
+    align-items: center;
     justify-content: space-between;
-    align-items: flex-start;
-    gap: 24px;
-    margin-bottom: 24px
+    gap: var(--ui-space-8);
+    margin: 0 auto 12px !important;
+    padding: 0 0 8px !important;
+    border: 0 !important;
+    border-bottom: 1px solid var(--ui-border) !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
 }
 
-.page-header h1 {
-    margin: .2rem 0 .25rem;
-    font-size: var(--ui-font-size-xl);
-    line-height: var(--ui-line-height-tight);
-    letter-spacing: -.03em;
+.page-header h1, .page-header h2 {
+    margin: 0 !important;
+    color: var(--ui-text) !important;
+    font-size: 18px;
+    line-height: 1.2;
+    letter-spacing: -.02em;
     font-weight: var(--ui-font-weight-bold);
-    color: oklch(0.208 0.042 265.755);
     font-family: var(--ui-font-sans);
 }
 
@@ -159,7 +165,15 @@ select {
 }
 
 .page-header p {
-    margin: 0
+    margin: 0;
+    max-width: 760px;
+    color: var(--ui-text-muted) !important;
+    font-size: var(--ui-font-size-sm);
+    line-height: 1.5;
+}
+
+.page-header i {
+    color: var(--ui-primary);
 }
 
 .stat-grid {
@@ -1172,8 +1186,9 @@ tbody tr:hover {
     }
 
     .page-header {
-        align-items: stretch;
-        flex-direction: column
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: var(--ui-space-6) !important;
     }
 
     .page-header>.btn {
@@ -1398,9 +1413,6 @@ tbody tr:hover {
         padding: 9px 10px
     }
 
-    .page-header h1 {
-        font-size: 1.7rem
-    }
 
     .mailbox-filter-bar select {
         flex-basis: 100%
