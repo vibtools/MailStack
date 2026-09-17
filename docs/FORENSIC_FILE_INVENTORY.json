@@ -163,10 +163,10 @@
     },
     {
       "kind": "text",
-      "lines": 292,
+      "lines": 293,
       "path": "MEMORY.md",
-      "sha256": "2ce653ca09cb0f397261f07c447f7d11613c7e5dc90eadc013decf641c047e96",
-      "size_bytes": 20087
+      "sha256": "00a2a0f4374f974af9253a427c31bf2cd74b443ec4e7efb4b137d9519ce73878",
+      "size_bytes": 20320
     },
     {
       "kind": "text",
@@ -5314,20 +5314,6 @@
     },
     {
       "kind": "text",
-      "lines": 451,
-      "path": "reference/CreateMailbox-Feature-Reffernce.html",
-      "sha256": "832dd3a6cb5f0243540dc0b83e1ef880de29061bc597ddfd1448fefb4da8e7d7",
-      "size_bytes": 21832
-    },
-    {
-      "kind": "text",
-      "lines": 30,
-      "path": "reference/README.md",
-      "sha256": "7613c90b203737c73192cbd34d03a13b9722b7f48d04b6542e97d11776072139",
-      "size_bytes": 1684
-    },
-    {
-      "kind": "text",
       "lines": 112,
       "path": "scripts/build_release.py",
       "python": {
@@ -5352,8 +5338,8 @@
         ],
         "methods": []
       },
-      "sha256": "790a0db0a9ef278b5e52ce662a840176ffa08b339888a3c95c1e01556e69f3fd",
-      "size_bytes": 4667
+      "sha256": "a8663ea18508adb88f7082243e81aa813d87f106f908996e1c6669ba98d49416",
+      "size_bytes": 4680
     },
     {
       "kind": "text",
@@ -5445,7 +5431,7 @@
     },
     {
       "kind": "text",
-      "lines": 415,
+      "lines": 416,
       "path": "scripts/forensic_audit.py",
       "python": {
         "classes": [],
@@ -5471,8 +5457,8 @@
         ],
         "methods": []
       },
-      "sha256": "12ec1d5c230f1183b27e0fbda62a0f9a40abc8a7a95b4b9afadb78af5b839fd3",
-      "size_bytes": 15207
+      "sha256": "ed5c7808ef67d5e9ce54639712f24c15b2b1bb47eaaab1e45c4c1ebfdfabf059",
+      "size_bytes": 15224
     },
     {
       "kind": "text",
@@ -5507,8 +5493,8 @@
           "Visitor.visit_ImportFrom"
         ]
       },
-      "sha256": "8f72e713dd719b3ad990265790e9d51837fec1cb3e23a6e5b4ae62cbcb46cccf",
-      "size_bytes": 6515
+      "sha256": "603696ccefde83e403b30f06458bf0147380a496642a0f863a42c0a9000fcdda",
+      "size_bytes": 6528
     },
     {
       "kind": "text",
@@ -5968,15 +5954,15 @@
   },
   "summary": {
     "binary_files": 25,
-    "files": 463,
+    "files": 461,
     "python_classes": 96,
     "python_files": 160,
     "python_functions": 533,
     "python_methods": 83,
     "shell_files": 15,
     "shell_functions": 42,
-    "text_files": 438,
-    "total_bytes": 32146752,
-    "total_text_lines": 38839
+    "text_files": 436,
+    "total_bytes": 32123512,
+    "total_text_lines": 38360
   }
 }

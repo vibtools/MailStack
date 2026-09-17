@@ -135,6 +135,7 @@ The active repository direction is a hardened, operationally auditable self-host
 - forensic inventory / audit gate compliance
 - design token and UI consistency updates
 - secure architecture and deployment hygiene
+- CI inventory drift was traced to the private `reference/` directory being included locally but absent from GitHub checkout; inventory generation, forensic audit, and release archive building now exclude that directory consistently
 - cleared workspace diagnostics caused by Django dynamic field/model typing and untyped attachment storage results using narrow casts, typed storage results, and typed queryset assertions; runtime behavior was preserved
 
 ## 5) Coding Conventions and Project Rules

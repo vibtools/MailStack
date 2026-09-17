@@ -123,6 +123,7 @@ BLOCKED_DIRS = {
     "node_modules",
     "Maildir",
     "attachments",
+    "reference",
 }
 PRIVATE_MARKERS = tuple(
     "-----BEGIN " + key_type + "PRIVATE KEY-----"

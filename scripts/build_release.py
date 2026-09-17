@@ -12,7 +12,7 @@ import tempfile
 import zipfile
 from pathlib import Path
 
-EXCLUDED_PARTS = {".git", ".venv", ".audit-venv", "venv", ".tox", ".nox", "__pycache__", ".pytest_cache", ".ruff_cache", "dist", "artifacts"}
+EXCLUDED_PARTS = {".git", ".venv", ".audit-venv", "venv", ".tox", ".nox", "__pycache__", ".pytest_cache", ".ruff_cache", "dist", "artifacts", "reference"}
 EXCLUDED_SUFFIXES = {".pyc", ".pyo", ".zip", ".tar", ".gz", ".log", ".sqlite", ".sqlite3", ".db"}
 CANONICAL_ZIP_TIMESTAMP = (2026, 1, 1, 0, 0, 0)
 CANONICAL_ZIP_CREATE_SYSTEM = 3
