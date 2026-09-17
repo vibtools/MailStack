@@ -2,7 +2,7 @@
 
 All notable repository-level changes are recorded here. Application history before the open-source conversion remains in `mailbox-app/CHANGELOG.md`.
 
-## Unreleased — PHASE-006 reader integrity and repair
+## Unreleased â€” PHASE-006 reader integrity and repair
 
 ### Corrected
 
@@ -14,7 +14,7 @@ All notable repository-level changes are recorded here. Application history befo
 - Removed blocked remote image nodes so tracking/remote images do not leave broken-image residue in the protected reader.
 - Removed the permanent protected-rendering banner from the normal reader while retaining sandbox, no-referrer, sanitizer, URL and active-content restrictions.
 - Added a bounded, idempotent existing-message body repair path that re-parses verified Maildir source without delete/re-ingest behavior and preserves message identity/state/attachments.
-- Corrected stylesheet load order in `base.html` so `app.css` precedes `foundation.css`, aligned frozen UI foundation design token test expectations, and promoted release identity to `1.3.4-rc.5`.
+- Corrected stylesheet load order in `base.html` so `app.css` precedes `foundation.css`, aligned frozen UI foundation design token test expectations, and promoted release identity to `1.3.4-rc.6`.
 - Corrected the System Update page to read the installed version from `pyproject.toml`, updated the GitHub Releases API call to return the latest release including pre-releases, and auto-triggered the update check on page load so administrators see current release state without a manual button click.
 - Normalized page heading typography to 18 px / 600 weight across all dashboard pages for visual consistency with the compact design system.
 - Disabled the unused Gunicorn control interface through source-level configuration rather than weakening systemd filesystem confinement.
@@ -25,13 +25,13 @@ All notable repository-level changes are recorded here. Application history befo
 - PHASE-006 implementation commit `90175b7a4549cb67d874692081bd5b0484eddccc` passed GitHub Actions CI run `32183300485`.
 - RC1 was squash-merged through PR #12 to `main` at `212ccaf7fab94e1b42ef2a57afb7bdfee673667e` and tagged `v1.3.4-rc.1`; controlled reader acceptance retained the security fix but found original HTML/CSS fidelity insufficient, opening the RC2 continuation.
 - The combined RC2 implementation/dependency candidate passed local qualification with 223 tests passed and one Windows symbolic-link capability skip, 93.03% coverage, Ruff/Bandit/Django/migration/dependency/documentation/design/installer/operations/release/upgrade gates PASS, `pip-audit` reporting no known vulnerabilities, and standard/full forensic audits with zero blocking findings.
-- Release identity is promoted to `1.3.4-rc.5` for repeat local qualification, branch/main CI, exact-main tag publication and controlled live acceptance; none of those post-promotion gates are claimed complete here.
+- Release identity is promoted to `1.3.4-rc.6` for repeat local qualification, branch/main CI, exact-main tag publication and controlled live acceptance; none of those post-promotion gates are claimed complete here.
 
 ### Compatibility
 
 - No database migration, Postfix/Dovecot/LMTP/Maildir routing change, authorization redesign, outbound feature, broad UI redesign, installer-flow change, reader-policy change, or application behavior change is introduced by the RC3 release-identity promotion.
 
-## 1.3.3 — PHASE-005A qualification correction
+## 1.3.3 â€” PHASE-005A qualification correction
 
 ### Corrected
 
@@ -46,7 +46,7 @@ All notable repository-level changes are recorded here. Application history befo
 - No model, migration, parser/sanitizer, mailbox permission, ingestion, Postfix/Dovecot, Maildir, MariaDB, attachment, installer, deployment-template, backup/restore, or upgrade/rollback behavior changes.
 - Published `v1.3.1` remains immutable official release provenance; `1.3.2` is retained only as failed development-qualification history and is not promoted as a release baseline.
 
-## 1.3.2 — PHASE-005A development
+## 1.3.2 â€” PHASE-005A development
 
 ### UI navigation reliability
 
@@ -66,7 +66,7 @@ All notable repository-level changes are recorded here. Application history befo
 - Synchronized the approved target identity to `1.3.2`, including CI deterministic-artifact verification and release-note file selection, without changing release-gate semantics.
 - Froze published `v1.3.1` as `MAILSTACK-1.3.1-OFFICIAL-SOURCE-BASELINE-001`, anchored to commit `039a6e6eea6e198b4b15612db9d2f208b6305a16`, tree `9437ba2ebac2033a229accd190268b8711d5b26e`, and deterministic source SHA-256 `517778967ca491974f315d231dfd43b3dba85fe86b47dcfc63e4c7051d1010bd`.
 
-## 1.3.1 — 2026-08-18
+## 1.3.1 â€” 2026-08-18
 
 ### Documentation and forensic baseline
 
@@ -101,7 +101,7 @@ All notable repository-level changes are recorded here. Application history befo
 - PHASE-004C changes maintained operational tooling only; it does not add a database migration, application route, authorization/UI/mail-flow behavior, installer behavior, deployment-template rewrite, DNS/TLS change, or automatic host-configuration migration.
 - `v1.3.0-rc.4` remains immutable historical release provenance. `v1.3.1` is the current frozen published source/release baseline; PHASE-005A develops `1.3.2` from that exact source without rewriting either historical tag.
 
-## Unreleased — MailStack repository bootstrap
+## Unreleased â€” MailStack repository bootstrap
 
 ### Changed
 
@@ -132,7 +132,7 @@ All notable repository-level changes are recorded here. Application history befo
 - Preserved `VIBMAIL_*` environment variables, `vibmail-*` service names, `/etc/vibmail` paths, database identifiers, source directories, and legacy deployment contracts.
 - No application behavior, database migration operations, mail-flow, authentication, authorization, or deployment contract was intentionally changed. Legacy protocol headers such as `X-VibMail-CSRF` remain unchanged.
 
-## 1.3.0-rc.3 — 2026-08-17
+## 1.3.0-rc.3 â€” 2026-08-17
 
 ### Security
 
@@ -145,7 +145,7 @@ All notable repository-level changes are recorded here. Application history befo
 - Corrected RC2 qualification records that could be read as if the current PHASE-003 dependency audit had passed. The RC2 branch passed structural/documentation/installer/operations gates but stopped at the blocking online advisory gate.
 - Regenerated deterministic documentation, design, and forensic inventories for RC3. Full dependency-backed GitHub Actions requalification remains mandatory before merge or release.
 
-## 1.3.0-rc.2 — 2026-08-17
+## 1.3.0-rc.2 â€” 2026-08-17
 
 ### Fixed
 
@@ -163,7 +163,7 @@ All notable repository-level changes are recorded here. Application history befo
 - Added SSH session-resilience guidance and a non-blocking installer warning when a mutating run starts outside `tmux`/`screen`.
 - Synchronized the live-staging fixes back into the canonical source so fresh deployments require no manual copies of the acceptance hotfixes.
 
-## 1.3.0-rc.1 — 2026-06-30
+## 1.3.0-rc.1 â€” 2026-06-30
 
 ### Preserved
 

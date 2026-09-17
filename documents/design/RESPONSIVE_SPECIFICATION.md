@@ -4,7 +4,7 @@ title: MailStack Responsive Specification
 document_type: design-reference
 audience: designers-developers-and-maintainers
 status: active
-version: 1.3.4-rc.5
+version: 1.3.4-rc.6
 last_reviewed: 2026-08-18
 ---
 
@@ -24,8 +24,8 @@ remain part of individual page phases.
 ## Approved baseline
 
 ```text
-Mobile:   0–767 px
-Tablet:   768–1199 px
+Mobile:   0â€“767 px
+Tablet:   768â€“1199 px
 Desktop:  1200 px and above
 ```
 

@@ -10,12 +10,12 @@ when a phase changes state so implementation cannot become unordered or ambiguou
 | Metric | Current value |
 |---|---|
 | Frozen baseline | MailStack `v1.3.3` |
-| PHASE-006 live-acceptance target | MailStack `v1.3.4-rc.5` pre-release |
+| PHASE-006 live-acceptance target | MailStack `v1.3.4-rc.6` pre-release |
 | Planned implementation phases | **2** |
 | Completed phases in this production-readiness cycle | **0 / 2** |
 | Remaining phases | **2 / 2** |
 | Current implementation state | PHASE-006 RC2 implementation/dependency candidate locally qualified; release-identity requalification, GitHub CI and live acceptance pending |
-| Runtime implementation started | Yes — PHASE-006 |
+| Runtime implementation started | Yes â€” PHASE-006 |
 | Production-ready acceptance | Not yet |
 
 ## Phase status ledger
@@ -79,7 +79,7 @@ GitHub branch/main CI, exact-main tag publication and controlled production read
 
 ## Phase completion decision
 
-`PENDING — controlled live acceptance still required`
+`PENDING â€” controlled live acceptance still required`
 
 ## Remaining after PHASE-006
 

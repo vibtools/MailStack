@@ -4,7 +4,7 @@ title: MailStack UI Foundation
 document_type: design-reference
 audience: designers-developers-and-maintainers
 status: active
-version: 1.3.4-rc.5
+version: 1.3.4-rc.6
 last_reviewed: 2026-08-18
 ---
 
@@ -52,7 +52,7 @@ That alias layer preserves existing page styles while page-by-page redesign rema
 ### Typography and spacing
 
 The runtime uses a system-safe sans-serif stack with no external font request. Body text begins at
-16 px, compact metadata uses 13–14 px, and page headings use a responsive 32–40 px scale. Layout
+16 px, compact metadata uses 13â€“14 px, and page headings use a responsive 32â€“40 px scale. Layout
 uses a 4 px base unit with common steps of 4, 8, 12, 16, 24, 32, and 48 px. Primary interactive
 controls target a minimum 44 px height.
 
