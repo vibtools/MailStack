@@ -47,3 +47,10 @@ This document serves as the persistent AI memory for the MailStack project. It m
 - Refactored mailbox-app/templates/dashboard/system_update.html to separate manual and automatic update checks.
 - Added modal-update-available (with Yes/Cancel) and modal-up-to-date (with beautiful checkmark and Ok) modals.
 - Wired the Yes button to correctly trigger the dashboard:start_update API logic.
+
+
+### [2026-09-17] System Update Forensic Audit + Bug Fixes (commit 1cf8f2c)
+- **Audit result:** No fake/demo code found. All backend APIs and upgrade.sh are 100% production-grade.
+- **BUG FIXED:** btnStart ("Install Update" button) was bypassing the confirmation modal and directly calling triggerUpdate(). Fixed to always open the modal with the correct version populated first.
+- **BUG FIXED:** alert() on initial page-load update_status failure replaced with inline errorEl display (non-blocking, consistent with rest of UI error handling).
+- FORENSIC_AUDIT=PASS, BLOCKING_FINDINGS=0.
