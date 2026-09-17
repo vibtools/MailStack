@@ -41,3 +41,9 @@ This document serves as the persistent AI memory for the MailStack project. It m
 
 ### [2024-09-17] Fixed UI silent failures in System Update
 - Added try-catch blocks and explicit lert() calls in mailbox-app/templates/dashboard/system_update.html to handle 500 errors gracefully from check_update and prevent the page from silently failing if JSON parsing fails.
+
+
+### [2024-09-17] Added Update Confirmation Modals
+- Refactored mailbox-app/templates/dashboard/system_update.html to separate manual and automatic update checks.
+- Added modal-update-available (with Yes/Cancel) and modal-up-to-date (with beautiful checkmark and Ok) modals.
+- Wired the Yes button to correctly trigger the dashboard:start_update API logic.
