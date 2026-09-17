@@ -37,3 +37,7 @@ This document serves as the persistent AI memory for the MailStack project. It m
 ---
 
 > **Note to AI Agents:** Review this file when joining a context to understand the project architecture, particularly the specific permission structures (like `vmail` and OpenDKIM groups) established in the MailStack.
+
+
+### [2024-09-17] Fixed UI silent failures in System Update
+- Added try-catch blocks and explicit lert() calls in mailbox-app/templates/dashboard/system_update.html to handle 500 errors gracefully from check_update and prevent the page from silently failing if JSON parsing fails.
