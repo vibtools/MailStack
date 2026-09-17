@@ -426,7 +426,8 @@ document.addEventListener("DOMContentLoaded", function() {
     }).catch(e => {
         console.error("Initial status check failed", e);
         document.getElementById("last-checked").textContent = "Unknown";
-        alert("Initial update status check failed: " + e.message);
+        errorEl.style.display = "block";
+        errorEl.textContent = "Status check failed: " + e.message;
         performCheck(false);
     });
 
@@ -462,7 +463,11 @@ document.addEventListener("DOMContentLoaded", function() {
     }
   }
 
-  btnStart.addEventListener("click", triggerUpdate);
+  btnStart.addEventListener("click", () => {
+    // Always show confirmation modal before triggering — never bypass it
+    modalLatestVersion.textContent = document.getElementById("latest-version").textContent;
+    modalAvailable.hidden = false;
+  });
   btnUpdateConfirm.addEventListener("click", triggerUpdate);
 });
 </script>

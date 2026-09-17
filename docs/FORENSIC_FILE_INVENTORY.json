@@ -3783,10 +3783,10 @@
     },
     {
       "kind": "text",
-      "lines": 469,
+      "lines": 474,
       "path": "mailbox-app/templates/dashboard/system_update.html",
-      "sha256": "49bba464cfcf3f10cd3579aee6389b5458facde48ac96c2f32998a4faf89ed0a",
-      "size_bytes": 18204
+      "sha256": "772775241a32a4b8e978bc02cefed5cf07ae74ca283b3d6f721559ac3007a109",
+      "size_bytes": 18446
     },
     {
       "kind": "text",
@@ -5692,7 +5692,7 @@
     "shell_files": 15,
     "shell_functions": 42,
     "text_files": 422,
-    "total_bytes": 32020470,
-    "total_text_lines": 36091
+    "total_bytes": 32020712,
+    "total_text_lines": 36096
   }
 }
