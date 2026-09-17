@@ -134,30 +134,60 @@ def start_update(request):
         if not archive_url or not checksum_url:
             return JsonResponse({"error": "Missing URLs"}, status=400)
             
+        allowed_prefix = f"https://github.com/{GITHUB_REPO}/releases/download/"
+        if not archive_url.startswith(allowed_prefix) or not checksum_url.startswith(allowed_prefix):
+            return JsonResponse({"error": "Invalid update URL origin. Must be from official repository."}, status=400)
+            
         status_file = Path("/tmp/vibmail_update_status.json")
         status_file.write_text(json.dumps({"step": "init", "message": "Downloading update archive...", "progress": 0}))
         
         import threading
+        import tempfile
+        import os
         def _run_update(a_url, c_url):
             try:
                 import subprocess
                 
-                archive_path = "/tmp/mailstack-update.zip"
-                checksum_path = "/tmp/mailstack-update.zip.sha256"
+                with tempfile.NamedTemporaryFile(delete=False, suffix=".zip") as tf_arch:
+                    archive_path = tf_arch.name
+                with tempfile.NamedTemporaryFile(delete=False, suffix=".zip.sha256") as tf_check:
+                    checksum_path = tf_check.name
                 
                 urllib.request.urlretrieve(a_url, archive_path)
                 status_file.write_text(json.dumps({"step": "download", "message": "Downloading checksum...", "progress": 5}))
                 urllib.request.urlretrieve(c_url, checksum_path)
                 
+                # Make them readable by root (they are created by vmail)
+                os.chmod(archive_path, 0o644)
+                os.chmod(checksum_path, 0o644)
+                
                 status_file.write_text(json.dumps({"step": "execute", "message": "Starting upgrade script...", "progress": 8}))
                 
                 cmd = [
-                    "sudo", "/opt/vibmail/app/scripts/upgrade.sh",
+                    "sudo", "-n", "/opt/vibmail/app/scripts/upgrade.sh",
                     "--archive", archive_path,
                     "--checksum", checksum_path,
+                    "--allow-migrations",
                     "--confirm-upgrade"
                 ]
-                subprocess.Popen(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                result = subprocess.run(cmd, capture_output=True, text=True)
+                
+                # Cleanup temp files after script finishes
+                try:
+                    os.remove(archive_path)
+                    os.remove(checksum_path)
+                except OSError:
+                    pass
+                    
+                if result.returncode != 0:
+                    # Check if the script itself wrote an error status
+                    try:
+                        current_status = json.loads(status_file.read_text())
+                        if current_status.get("step") != "error":
+                            error_msg = result.stderr.strip() or "Upgrade script failed to start or crashed."
+                            status_file.write_text(json.dumps({"step": "error", "message": error_msg, "progress": -1}))
+                    except Exception:
+                        status_file.write_text(json.dumps({"step": "error", "message": "Upgrade script failed unexpectedly.", "progress": -1}))
             except Exception as exc:
                 status_file.write_text(json.dumps({"step": "error", "message": f"Update failed to start: {str(exc)}", "progress": -1}))
                 

@@ -41,6 +41,8 @@
   </div>
 </div>
 
+<form style="display:none;" id="csrf-form">{% csrf_token %}</form>
+
 <script>
 document.addEventListener("DOMContentLoaded", function() {
   const btnCheck = document.getElementById("btn-check-update");
@@ -55,9 +57,8 @@ document.addEventListener("DOMContentLoaded", function() {
   let pollInterval = null;
 
   function getCSRFToken() {
-    return document.cookie.split('; ')
-      .find(row => row.startsWith('csrftoken='))
-      ?.split('=')[1] || '';
+    const input = document.querySelector('#csrf-form input[name="csrfmiddlewaretoken"]');
+    return input ? input.value : '';
   }
 
   function startPolling() {
@@ -100,8 +101,13 @@ document.addEventListener("DOMContentLoaded", function() {
   fetch("{% url 'dashboard:update_status' %}")
     .then(r => r.json())
     .then(data => {
-      if (data && data.step && data.step !== "idle" && data.progress < 100 && data.progress !== -1) {
-         startPolling();
+      if (data && data.step && data.step !== "idle") {
+         if (data.progress < 100 && data.progress !== -1) {
+             startPolling();
+         } else if (data.step === "error" || data.progress === -1) {
+             errorEl.style.display = "block";
+             errorEl.textContent = "Previous update failed: " + data.message;
+         }
       }
     }).catch(e => console.error("Initial status check failed", e));
 

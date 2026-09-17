@@ -453,6 +453,9 @@ CURRENT_PHASE="application-install"
 log "Installing application source and Python dependencies"
 rsync -a --delete --exclude='.git' --exclude='__pycache__' --exclude='*.pyc' \
   "$SOURCE_ROOT/mailbox-app/" /opt/vibmail/app/
+cp -a "$SOURCE_ROOT/VERSION" /opt/vibmail/VERSION
+chown root:vmail /opt/vibmail/VERSION
+chmod 0644 /opt/vibmail/VERSION
 chown -R root:vmail /opt/vibmail/app
 find /opt/vibmail/app -type d -exec chmod 0750 {} +
 find /opt/vibmail/app -type f -exec chmod 0640 {} +

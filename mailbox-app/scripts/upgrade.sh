@@ -276,6 +276,9 @@ chown -R root:vmail "$APP_ROOT"
 find "$APP_ROOT" -type d -exec chmod 0750 {} +
 find "$APP_ROOT" -type f -exec chmod 0640 {} +
 find "$APP_ROOT/scripts" -type f -name '*.sh' -exec chmod 0750 {} +
+cp -a "$TARGET_ROOT/VERSION" "$(dirname "$APP_ROOT")/VERSION"
+chown root:vmail "$(dirname "$APP_ROOT")/VERSION"
+chmod 0644 "$(dirname "$APP_ROOT")/VERSION"
 
 report_progress "mutate" "Installing Python dependencies" 60
 PIP_DISABLE_PIP_VERSION_CHECK=1 PIP_NO_INPUT=1 \
