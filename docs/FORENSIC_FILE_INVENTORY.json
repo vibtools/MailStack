@@ -5673,13 +5673,6 @@
       },
       "sha256": "4859b1af506bc34664b7ea392204d48604dba0c5020520c246bd96b81348e399",
       "size_bytes": 6930
-    },
-    {
-      "kind": "text",
-      "lines": 198,
-      "path": "test.js",
-      "sha256": "30fce9fc82e64589b1ab15b6a0844ecf8ed097ae3d4df5f31ab7c62e27181707",
-      "size_bytes": 7697
     }
   ],
   "release_version": "1.3.4",
@@ -5691,15 +5684,15 @@
   },
   "summary": {
     "binary_files": 25,
-    "files": 448,
+    "files": 447,
     "python_classes": 86,
     "python_files": 153,
     "python_functions": 483,
     "python_methods": 75,
     "shell_files": 15,
     "shell_functions": 42,
-    "text_files": 423,
-    "total_bytes": 32024198,
-    "total_text_lines": 36225
+    "text_files": 422,
+    "total_bytes": 32016501,
+    "total_text_lines": 36027
   }
 }
