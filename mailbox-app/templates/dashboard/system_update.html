@@ -300,7 +300,10 @@ document.addEventListener("DOMContentLoaded", function() {
   }
 
   fetch("{% url 'dashboard:update_status' %}")
-    .then(r => r.json())
+    .then(async r => {
+      if (!r.ok) throw new Error("Status API error: " + r.status);
+      return await r.json();
+    })
     .then(data => {
       if (data && data.step && data.step !== "idle") {
          if (data.progress < 100 && data.progress !== -1) {
@@ -317,6 +320,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }).catch(e => {
         console.error("Initial status check failed", e);
         document.getElementById("last-checked").textContent = "Unknown";
+        alert("Initial update status check failed: " + e.message);
         setTimeout(() => btnCheck.click(), 100);
     });
 
@@ -329,7 +333,13 @@ document.addEventListener("DOMContentLoaded", function() {
 
     try {
       const res = await fetch("{% url 'dashboard:check_update' %}");
-      const data = await res.json();
+      
+      let data;
+      try {
+        data = await res.json();
+      } catch (jsonErr) {
+        throw new Error("Server returned an invalid response (500 Internal Error). Check server logs.");
+      }
       
       if (!res.ok) {
         throw new Error(data.error || "Failed to check for updates");
@@ -361,6 +371,7 @@ document.addEventListener("DOMContentLoaded", function() {
       errorEl.textContent = err.message;
       badgeAvailability.textContent = "Error";
       document.getElementById("last-checked").textContent = "Failed";
+      alert("Error checking for updates: " + err.message);
     } finally {
       btnCheck.disabled = false;
       btnCheck.textContent = "Check for Updates";
