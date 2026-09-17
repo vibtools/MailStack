@@ -14,7 +14,7 @@ All notable repository-level changes are recorded here. Application history befo
 - Removed blocked remote image nodes so tracking/remote images do not leave broken-image residue in the protected reader.
 - Removed the permanent protected-rendering banner from the normal reader while retaining sandbox, no-referrer, sanitizer, URL and active-content restrictions.
 - Added a bounded, idempotent existing-message body repair path that re-parses verified Maildir source without delete/re-ingest behavior and preserves message identity/state/attachments.
-- Corrected stylesheet load order in `base.html` so `app.css` precedes `foundation.css`, aligned frozen UI foundation design token test expectations, and promoted release identity to `1.3.4-rc.6`.
+- Corrected stylesheet load order in `base.html` so `app.css` precedes `foundation.css`, aligned frozen UI foundation design token test expectations, and promoted release identity to `1.3.4`.
 - Corrected the System Update page to read the installed version from `pyproject.toml`, updated the GitHub Releases API call to return the latest release including pre-releases, and auto-triggered the update check on page load so administrators see current release state without a manual button click.
 - Normalized page heading typography to 18 px / 600 weight across all dashboard pages for visual consistency with the compact design system.
 - Disabled the unused Gunicorn control interface through source-level configuration rather than weakening systemd filesystem confinement.
@@ -25,7 +25,7 @@ All notable repository-level changes are recorded here. Application history befo
 - PHASE-006 implementation commit `90175b7a4549cb67d874692081bd5b0484eddccc` passed GitHub Actions CI run `32183300485`.
 - RC1 was squash-merged through PR #12 to `main` at `212ccaf7fab94e1b42ef2a57afb7bdfee673667e` and tagged `v1.3.4-rc.1`; controlled reader acceptance retained the security fix but found original HTML/CSS fidelity insufficient, opening the RC2 continuation.
 - The combined RC2 implementation/dependency candidate passed local qualification with 223 tests passed and one Windows symbolic-link capability skip, 93.03% coverage, Ruff/Bandit/Django/migration/dependency/documentation/design/installer/operations/release/upgrade gates PASS, `pip-audit` reporting no known vulnerabilities, and standard/full forensic audits with zero blocking findings.
-- Release identity is promoted to `1.3.4-rc.6` for repeat local qualification, branch/main CI, exact-main tag publication and controlled live acceptance; none of those post-promotion gates are claimed complete here.
+- Release identity is promoted to `1.3.4` for repeat local qualification, branch/main CI, exact-main tag publication and controlled live acceptance; none of those post-promotion gates are claimed complete here.
 
 ### Compatibility
 
