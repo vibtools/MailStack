@@ -14,8 +14,12 @@ const VibMail = (() => {
 
   function loadNotified() {
     try {
-      const values = JSON.parse(window.localStorage.getItem(STORAGE_KEY) || "[]");
-      notified = new Set(Array.isArray(values) ? values.slice(-MAX_NOTIFIED) : []);
+      const values = JSON.parse(
+        window.localStorage.getItem(STORAGE_KEY) || "[]",
+      );
+      notified = new Set(
+        Array.isArray(values) ? values.slice(-MAX_NOTIFIED) : [],
+      );
     } catch (_error) {
       notified = new Set();
     }
@@ -23,7 +27,10 @@ const VibMail = (() => {
 
   function saveNotified() {
     try {
-      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(Array.from(notified).slice(-MAX_NOTIFIED)));
+      window.localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify(Array.from(notified).slice(-MAX_NOTIFIED)),
+      );
     } catch (_error) {
       // Private browsing or storage restrictions must not break live updates.
     }
@@ -32,7 +39,8 @@ const VibMail = (() => {
   function markNotified(uuid) {
     if (notified.has(uuid)) return false;
     notified.add(uuid);
-    if (notified.size > MAX_NOTIFIED) notified.delete(notified.values().next().value);
+    if (notified.size > MAX_NOTIFIED)
+      notified.delete(notified.values().next().value);
     saveNotified();
     if (channel) channel.postMessage({ type: "notified", uuid });
     return true;
@@ -41,10 +49,13 @@ const VibMail = (() => {
   async function claimNotification(uuid) {
     if (navigator.locks?.request) {
       let claimed = false;
-      await navigator.locks.request(`vibmail-notification-${uuid}`, async () => {
-        loadNotified();
-        claimed = markNotified(uuid);
-      });
+      await navigator.locks.request(
+        `vibmail-notification-${uuid}`,
+        async () => {
+          loadNotified();
+          claimed = markNotified(uuid);
+        },
+      );
       return claimed;
     }
     loadNotified();
@@ -120,27 +131,41 @@ const VibMail = (() => {
 
   function updateSummary(summary) {
     Object.entries(summary || {}).forEach(([key, value]) => {
-      document.querySelectorAll(`[data-live-summary="${key}"]`).forEach((node) => {
-        node.textContent = key === "last_received" ? formatDate(value, "No email yet") : String(value);
-      });
+      document
+        .querySelectorAll(`[data-live-summary="${key}"]`)
+        .forEach((node) => {
+          node.textContent =
+            key === "last_received"
+              ? formatDate(value, "No email yet")
+              : String(value);
+        });
     });
   }
 
   function updateMailbox(mailbox) {
     const uuid = mailbox.uuid;
-    document.querySelectorAll(`[data-live-mailbox-total="${uuid}"]`).forEach((node) => {
-      node.textContent = String(mailbox.total_messages);
-    });
-    document.querySelectorAll(`[data-live-mailbox-unread="${uuid}"]`).forEach((node) => {
-      node.textContent = String(mailbox.unread_messages);
-    });
-    document.querySelectorAll(`[data-live-mailbox-last="${uuid}"]`).forEach((node) => {
-      node.textContent = formatDate(mailbox.last_received_at);
-    });
-    document.querySelectorAll(`[data-live-mailbox-status="${uuid}"]`).forEach((node) => {
-      node.textContent = mailbox.status.charAt(0).toUpperCase() + mailbox.status.slice(1);
-      node.className = `badge badge-${mailbox.status}`;
-    });
+    document
+      .querySelectorAll(`[data-live-mailbox-total="${uuid}"]`)
+      .forEach((node) => {
+        node.textContent = String(mailbox.total_messages);
+      });
+    document
+      .querySelectorAll(`[data-live-mailbox-unread="${uuid}"]`)
+      .forEach((node) => {
+        node.textContent = String(mailbox.unread_messages);
+      });
+    document
+      .querySelectorAll(`[data-live-mailbox-last="${uuid}"]`)
+      .forEach((node) => {
+        node.textContent = formatDate(mailbox.last_received_at);
+      });
+    document
+      .querySelectorAll(`[data-live-mailbox-status="${uuid}"]`)
+      .forEach((node) => {
+        node.textContent =
+          mailbox.status.charAt(0).toUpperCase() + mailbox.status.slice(1);
+        node.className = `badge badge-${mailbox.status}`;
+      });
   }
 
   function buildMessageRow(message) {
@@ -158,7 +183,8 @@ const VibMail = (() => {
     sender.className = "message-sender";
     const senderStrong = document.createElement("strong");
     senderStrong.className = "truncate";
-    senderStrong.textContent = message.sender_name || message.sender_address || "Unknown sender";
+    senderStrong.textContent =
+      message.sender_name || message.sender_address || "Unknown sender";
     const senderSmall = document.createElement("small");
     senderSmall.className = "truncate";
     senderSmall.textContent = message.sender_address || "";
@@ -198,7 +224,9 @@ const VibMail = (() => {
   }
 
   function addToInbox(message) {
-    const inbox = document.querySelector(`[data-live-inbox="${message.mailbox_uuid}"]`);
+    const inbox = document.querySelector(
+      `[data-live-inbox="${message.mailbox_uuid}"]`,
+    );
     if (!inbox || inbox.dataset.liveInboxEnabled !== "true") return;
     if (inbox.querySelector(`[data-message-uuid="${message.uuid}"]`)) return;
     inbox.querySelector("[data-empty]")?.remove();
@@ -210,7 +238,8 @@ const VibMail = (() => {
 
   function addToRecent(message) {
     const list = document.querySelector("[data-live-recent-messages]");
-    if (!list || list.querySelector(`[data-message-uuid="${message.uuid}"]`)) return;
+    if (!list || list.querySelector(`[data-message-uuid="${message.uuid}"]`))
+      return;
     list.querySelector("[data-empty]")?.remove();
     const link = document.createElement("a");
     link.className = "list-row";
@@ -227,19 +256,26 @@ const VibMail = (() => {
     time.textContent = formatShortDate(message.received_at);
     link.append(content, time);
     list.prepend(link);
-    while (list.querySelectorAll(".list-row").length > 8) list.querySelector(".list-row:last-child")?.remove();
+    while (list.querySelectorAll(".list-row").length > 8)
+      list.querySelector(".list-row:last-child")?.remove();
   }
 
   async function notify(message) {
     if (!(await claimNotification(message.uuid))) return;
     const subject = message.subject || "(No subject)";
-    toast(`${message.mailbox}: ${subject}`, { href: message.detail_url, tone: "success" });
+    toast(`${message.mailbox}: ${subject}`, {
+      href: message.detail_url,
+      tone: "success",
+    });
     if ("Notification" in window && Notification.permission === "granted") {
       try {
-        const notification = new Notification(`New email in ${message.mailbox}`, {
-          body: `${message.sender_address || "Unknown sender"} — ${subject}`,
-          tag: `vibmail-${message.uuid}`,
-        });
+        const notification = new Notification(
+          `New email in ${message.mailbox}`,
+          {
+            body: `${message.sender_address || "Unknown sender"} — ${subject}`,
+            tag: `vibmail-${message.uuid}`,
+          },
+        );
         notification.onclick = () => {
           window.focus();
           window.location.href = message.detail_url;
@@ -263,16 +299,19 @@ const VibMail = (() => {
       document
         .querySelectorAll(
           "[data-live-mailbox-total], [data-live-mailbox-unread], " +
-            "[data-live-mailbox-last], [data-live-mailbox-status]"
+            "[data-live-mailbox-last], [data-live-mailbox-status]",
         )
         .forEach((node) => {
           const attribute = Array.from(node.attributes).find((item) =>
-            item.name.startsWith("data-live-mailbox-")
+            item.name.startsWith("data-live-mailbox-"),
           );
           if (attribute?.value) visibleMailboxUuids.add(attribute.value);
         });
       if (visibleMailboxUuids.size) {
-        params.set("mailboxes", Array.from(visibleMailboxUuids).slice(0, 50).join(","));
+        params.set(
+          "mailboxes",
+          Array.from(visibleMailboxUuids).slice(0, 50).join(","),
+        );
       }
       const response = await fetch(`${url}?${params.toString()}`, {
         credentials: "same-origin",
@@ -283,13 +322,18 @@ const VibMail = (() => {
         cache: "no-store",
         signal: controller.signal,
       });
-      if (response.redirected && new URL(response.url).pathname.startsWith("/accounts/login/")) {
+      if (
+        response.redirected &&
+        new URL(response.url).pathname.startsWith("/accounts/login/")
+      ) {
         window.location.assign(response.url);
         return;
       }
-      if (!response.ok) throw new Error(`Live update failed: ${response.status}`);
+      if (!response.ok)
+        throw new Error(`Live update failed: ${response.status}`);
       const contentType = response.headers.get("content-type") || "";
-      if (!contentType.includes("application/json")) throw new Error("Live update returned non-JSON data");
+      if (!contentType.includes("application/json"))
+        throw new Error("Live update returned non-JSON data");
       const payload = await response.json();
       const firstPoll = !bootstrapped;
       cursor = Number(payload.cursor || 0);
@@ -346,7 +390,7 @@ const VibMail = (() => {
 
     function setSidebarInteractive(interactive) {
       const focusable = sidebar.querySelectorAll(
-        "a, button, input, select, textarea, summary, [tabindex]"
+        "a, button, input, select, textarea, summary, [tabindex]",
       );
       if ("inert" in sidebar) sidebar.inert = !interactive;
       focusable.forEach((element) => {
@@ -387,7 +431,10 @@ const VibMail = (() => {
 
       body.classList.toggle("shell-open", shouldOpen);
       toggle.setAttribute("aria-expanded", String(shouldOpen));
-      toggle.setAttribute("aria-label", shouldOpen ? "Close navigation" : "Open navigation");
+      toggle.setAttribute(
+        "aria-label",
+        shouldOpen ? "Close navigation" : "Open navigation",
+      );
       if (closeButton) closeButton.tabIndex = shouldOpen ? 0 : -1;
       setSidebarInteractive(desktop.matches || shouldOpen);
 
@@ -406,7 +453,7 @@ const VibMail = (() => {
         collapseButton.setAttribute("aria-pressed", String(shouldCollapse));
         collapseButton.setAttribute(
           "aria-label",
-          shouldCollapse ? "Expand navigation" : "Collapse navigation"
+          shouldCollapse ? "Expand navigation" : "Collapse navigation",
         );
       }
     }
@@ -417,7 +464,9 @@ const VibMail = (() => {
     }
 
     toggle.addEventListener("click", () => {
-      setDrawerOpen(!body.classList.contains("shell-open"), { moveFocus: true });
+      setDrawerOpen(!body.classList.contains("shell-open"), {
+        moveFocus: true,
+      });
     });
     closeButton?.addEventListener("click", () => setDrawerOpen(false));
     sidebar.querySelectorAll("a").forEach((link) => {
@@ -472,6 +521,138 @@ const VibMail = (() => {
     });
   }
 
+  function setupMailboxCreateModal() {
+    const modal = document.querySelector("[data-mailbox-create-modal]");
+    if (!modal) return;
+    const localPart = modal.querySelector("[name='local_part']");
+    const suggestions = modal.querySelector("[data-mailbox-suggestions]");
+    const firstNames = [
+      "james",
+      "olivia",
+      "liam",
+      "emma",
+      "noah",
+      "charlotte",
+      "ethan",
+      "amelia",
+      "lucas",
+      "sophia",
+      "mason",
+      "isabella",
+      "logan",
+      "harper",
+      "elijah",
+      "evelyn",
+      "aiden",
+      "abigail",
+      "jackson",
+      "emily",
+      "henry",
+      "elizabeth",
+      "alex",
+      "chloe",
+    ];
+    const lastNames = [
+      "smith",
+      "johnson",
+      "williams",
+      "brown",
+      "jones",
+      "miller",
+      "davis",
+      "garcia",
+      "rodriguez",
+      "wilson",
+      "martinez",
+      "anderson",
+      "taylor",
+      "thomas",
+      "moore",
+      "jackson",
+      "martin",
+      "lee",
+      "perez",
+      "thompson",
+      "white",
+      "harris",
+      "clark",
+    ];
+    const randomItem = (items) =>
+      items[Math.floor(Math.random() * items.length)];
+    const randomName = () =>
+      `${randomItem(firstNames)}.${randomItem(lastNames)}`;
+    const renderSuggestions = () => {
+      if (!suggestions) return;
+      suggestions.replaceChildren();
+      const names = new Set();
+      while (names.size < 3) names.add(randomName());
+      names.forEach((name) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "mailbox-suggestion";
+        button.textContent = name;
+        button.addEventListener("click", () => {
+          localPart.value = name;
+          localPart.focus();
+        });
+        suggestions.append(button);
+      });
+    };
+    let returnFocus = null;
+    const open = (trigger) => {
+      returnFocus = trigger || document.activeElement;
+      if (typeof modal.showModal === "function") modal.showModal();
+      else modal.setAttribute("open", "");
+      modal.querySelector("input, select, button")?.focus();
+      renderSuggestions();
+    };
+    const close = () => {
+      if (typeof modal.close === "function") modal.close();
+      else modal.removeAttribute("open");
+      returnFocus?.focus();
+    };
+    document.addEventListener("click", (event) => {
+      const trigger = event.target.closest("[data-open-mailbox-modal]");
+      if (trigger) {
+        event.preventDefault();
+        open(trigger);
+      }
+      if (event.target.closest("[data-close-mailbox-modal]")) close();
+    });
+    modal.addEventListener("click", (event) => {
+      if (event.target === modal) close();
+    });
+    modal.addEventListener("cancel", (event) => {
+      event.preventDefault();
+      close();
+    });
+    modal
+      .querySelector("[data-mailbox-random]")
+      ?.addEventListener("click", () => {
+        localPart.value = `${randomName()}${Math.floor(10 + Math.random() * 90)}`;
+        localPart.focus();
+      });
+    modal
+      .querySelector("[data-mailbox-refresh]")
+      ?.addEventListener("click", renderSuggestions);
+    localPart?.addEventListener("input", () => {
+      localPart.value = localPart.value
+        .toLowerCase()
+        .replace(/[^a-z0-9._-]/g, "");
+    });
+    modal.querySelector("form")?.addEventListener("submit", async (event) => {
+      if (!event.submitter?.matches("[data-mailbox-create-copy]")) return;
+      event.preventDefault();
+      const domain =
+        modal.querySelector("[name='domain']")?.value ||
+        modal.dataset.defaultDomain ||
+        "";
+      await copyText(`${localPart.value.trim()}@${domain}`);
+      HTMLFormElement.prototype.submit.call(event.currentTarget);
+    });
+    if (modal.hasAttribute("data-open-on-load")) open();
+  }
+
   function setupNotifications() {
     const button = document.querySelector("[data-enable-notifications]");
     if (!button || !("Notification" in window)) return;
@@ -484,13 +665,19 @@ const VibMail = (() => {
           permission === "granted"
             ? "Browser notifications enabled."
             : "Browser notifications were not enabled; in-app alerts remain active.",
-          { tone: permission === "granted" ? "success" : "info", timeout: 5000 }
+          {
+            tone: permission === "granted" ? "success" : "info",
+            timeout: 5000,
+          },
         );
       } catch (_error) {
-        toast("Browser notifications could not be enabled; in-app alerts remain active.", {
-          tone: "info",
-          timeout: 5000,
-        });
+        toast(
+          "Browser notifications could not be enabled; in-app alerts remain active.",
+          {
+            tone: "info",
+            timeout: 5000,
+          },
+        );
       }
     });
   }
@@ -500,19 +687,22 @@ const VibMail = (() => {
     if ("BroadcastChannel" in window) {
       channel = new BroadcastChannel("vibmail-live");
       channel.addEventListener("message", (event) => {
-        if (event.data?.type === "notified" && event.data.uuid) notified.add(event.data.uuid);
+        if (event.data?.type === "notified" && event.data.uuid)
+          notified.add(event.data.uuid);
       });
     }
 
     setupAppShell();
     setupUserMenu();
-
+    setupMailboxCreateModal();
 
     document.querySelectorAll(".status-form").forEach((form) => {
       form.addEventListener("submit", (event) => {
-        const action = form.querySelector("input[name='action']")?.value || "change";
+        const action =
+          form.querySelector("input[name='action']")?.value || "change";
         const mailbox = form.dataset.mailbox || "this mailbox";
-        if (!window.confirm(`Confirm ${action} for ${mailbox}?`)) event.preventDefault();
+        if (!window.confirm(`Confirm ${action} for ${mailbox}?`))
+          event.preventDefault();
       });
     });
 
@@ -523,7 +713,9 @@ const VibMail = (() => {
 
     setupNotifications();
     if (document.body.dataset.liveUrl) schedule(250);
-    document.addEventListener("visibilitychange", () => schedule(document.hidden ? 15000 : 500));
+    document.addEventListener("visibilitychange", () =>
+      schedule(document.hidden ? 15000 : 500),
+    );
   }
 
   return { init };

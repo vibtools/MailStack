@@ -20,6 +20,9 @@ def test_system_update_page_allows_nonce_protected_script(client, admin_user):
     assert response.status_code == 200
     assert 'id="btn-check-update"' in content
     assert 'id="btn-start-update"' in content
+    assert 'class="licora-confirm-dialog update-confirm-dialog"' in content
+    assert 'class="licora-confirm-dialog update-status-dialog"' in content
+    assert 'id="btn-update-confirm">Install Update</button>' in content
     assert 'nonce="' in content
     assert "script-src 'self' 'nonce-" in csp
     assert "style-src 'self' 'nonce-" in csp
@@ -40,18 +43,18 @@ def test_other_pages_do_not_receive_system_update_style_relaxation(client, admin
 def test_check_update_uses_latest_stable_release_and_source_assets(client, admin_user, monkeypatch):
     client.force_login(admin_user)
     response_body = {
-        "tag_name": "v1.3.5.1",
+        "tag_name": "v1.3.5.2",
         "draft": False,
         "prerelease": False,
         "body": "Release notes",
         "assets": [
             {
-                "name": "mailstack-1.3.5.1-source.zip",
-                "browser_download_url": "https://github.com/vibtools/MailStack/releases/download/v1.3.5.1/mailstack-1.3.5.1-source.zip",
+                "name": "mailstack-1.3.5.2-source.zip",
+                "browser_download_url": "https://github.com/vibtools/MailStack/releases/download/v1.3.5.2/mailstack-1.3.5.2-source.zip",
             },
             {
-                "name": "mailstack-1.3.5.1-source.zip.sha256",
-                "browser_download_url": "https://github.com/vibtools/MailStack/releases/download/v1.3.5.1/mailstack-1.3.5.1-source.zip.sha256",
+                "name": "mailstack-1.3.5.2-source.zip.sha256",
+                "browser_download_url": "https://github.com/vibtools/MailStack/releases/download/v1.3.5.2/mailstack-1.3.5.2-source.zip.sha256",
             },
         ],
     }
@@ -63,7 +66,7 @@ def test_check_update_uses_latest_stable_release_and_source_assets(client, admin
     result = client.get(reverse("dashboard:check_update"))
 
     assert result.status_code == 200
-    assert result.json()["latest_version"] == "1.3.5.1"
+    assert result.json()["latest_version"] == "1.3.5.2"
     assert result.json()["archive_url"].endswith("-source.zip")
     assert result.json()["checksum_url"].endswith("-source.zip.sha256")
 
@@ -79,8 +82,8 @@ def test_start_update_rejects_existing_active_job(client, admin_user, tmp_path, 
         reverse("dashboard:start_update"),
         data=json.dumps(
             {
-                "archive_url": "https://github.com/vibtools/MailStack/releases/download/v1.3.5.1/mailstack-1.3.5.1-source.zip",
-                "checksum_url": "https://github.com/vibtools/MailStack/releases/download/v1.3.5.1/mailstack-1.3.5.1-source.zip.sha256",
+                "archive_url": "https://github.com/vibtools/MailStack/releases/download/v1.3.5.2/mailstack-1.3.5.2-source.zip",
+                "checksum_url": "https://github.com/vibtools/MailStack/releases/download/v1.3.5.2/mailstack-1.3.5.2-source.zip.sha256",
             }
         ),
         content_type="application/json",

@@ -86,6 +86,21 @@ def test_create_mailbox_route_marks_create_navigation_current(client, admin_user
     assert 'href="/mailboxes/create/" aria-current="page"' in content
 
 
+@pytest.mark.django_db
+def test_create_mailbox_modal_contains_feature_controls(client, admin_user):
+    client.force_login(admin_user)
+    response = client.get(reverse("mailboxes:list"))
+
+    assert response.status_code == 200
+    content = response.content.decode()
+    assert 'data-mailbox-create-modal' in content
+    assert 'data-mailbox-random' in content
+    assert 'data-mailbox-suggestions' in content
+    assert 'data-mailbox-refresh' in content
+    assert 'data-mailbox-create-copy' in content
+    assert 'data-default-domain="vibmail.my"' in content
+
+
 def test_foundation_static_assets_and_frozen_tokens_exist():
     root = Path(__file__).resolve().parents[2]
     foundation = root / "static/css/foundation.css"

@@ -16,7 +16,9 @@ class Command(BaseCommand):
             raise CommandError("Mail storage root is missing or not a directory")
         errors = []
         for mailbox in Mailbox.objects.iterator():
-            _mailbox_root, maildir, _relative = mailbox_paths(mailbox.local_part, allow_reserved=True)
+            _mailbox_root, maildir, _relative = mailbox_paths(
+                mailbox.local_part, domain=mailbox.domain, allow_reserved=True
+            )
             for child in (maildir / "new", maildir / "cur", maildir / "tmp"):
                 if not child.is_dir():
                     errors.append(f"{mailbox.email_address}: missing {child.name}")

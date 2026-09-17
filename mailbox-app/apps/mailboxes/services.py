@@ -15,11 +15,12 @@ from apps.audit.services import record_audit
 from .mailserver import (
     MailServerContractError,
     create_mailserver_mailbox,
+    delete_mailserver_mailbox,
     mailserver_mailbox_exists,
     set_mailserver_mailbox_active,
 )
-from .models import Mailbox, MailboxMembership
-from .validators import confined_path, validate_local_part
+from .models import Domain, Mailbox, MailboxMembership
+from .validators import confined_path, validate_domain, validate_local_part
 
 logger = logging.getLogger(__name__)
 
@@ -28,11 +29,30 @@ class ProvisioningError(RuntimeError):
     """Raised when Maildir and database provisioning cannot complete safely."""
 
 
-def mailbox_paths(local_part: str, *, allow_reserved: bool = False) -> tuple[Path, Path, str]:
+def default_domain() -> Domain:
+    domain, _created = Domain.objects.get_or_create(
+        name=settings.MAIL_DOMAIN.strip().lower(),
+        defaults={
+            "status": Domain.Status.ACTIVE,
+            "verification_status": Domain.VerificationStatus.VERIFIED,
+            "verification_details": {"source": "configured-default"},
+        },
+    )
+    return domain
+
+
+def mailbox_paths(
+    local_part: str,
+    *,
+    domain: Domain | str | None = None,
+    allow_reserved: bool = False,
+) -> tuple[Path, Path, str]:
     local_part = validate_local_part(local_part, allow_reserved=allow_reserved)
-    mailbox_root = confined_path(settings.MAIL_STORAGE_ROOT, settings.MAIL_DOMAIN, local_part)
-    maildir = confined_path(settings.MAIL_STORAGE_ROOT, settings.MAIL_DOMAIN, local_part, "Maildir")
-    relative = f"{settings.MAIL_DOMAIN}/{local_part}/Maildir/"
+    domain_name = domain.name if isinstance(domain, Domain) else domain or settings.MAIL_DOMAIN
+    domain_name = validate_domain(domain_name)
+    mailbox_root = confined_path(settings.MAIL_STORAGE_ROOT, domain_name, local_part)
+    maildir = confined_path(settings.MAIL_STORAGE_ROOT, domain_name, local_part, "Maildir")
+    relative = f"{domain_name}/{local_part}/Maildir/"
     return mailbox_root, maildir, relative
 
 
@@ -63,14 +83,16 @@ def _safe_cleanup_created_paths(created_paths: list[Path]) -> None:
 def _provision_mailbox_locked(
     normalized: str,
     *,
+    domain: Domain,
     actor=None,
     request=None,
     allow_reserved: bool = False,
     assigned_users=None,
 ) -> Mailbox:
-    email = f"{normalized}@{settings.MAIL_DOMAIN}"
-    mailbox_root, maildir, relative = mailbox_paths(normalized, allow_reserved=allow_reserved)
-    if Mailbox.objects.filter(local_part__iexact=normalized).exists() or mailserver_mailbox_exists(email):
+    email = f"{normalized}@{domain.name}"
+    mailbox_root, maildir, relative = mailbox_paths(normalized, domain=domain, allow_reserved=allow_reserved)
+    mailbox_exists = Mailbox.objects.filter(domain=domain, local_part__iexact=normalized).exists()
+    if mailbox_exists or mailserver_mailbox_exists(email=email, domain_name=domain.name):
         raise ProvisioningError(f"Mailbox {email} already exists or is permanently reserved.")
     created_paths: list[Path] = []
     try:
@@ -93,10 +115,19 @@ def _provision_mailbox_locked(
             details={"stage": "filesystem", "error_type": type(exc).__name__},
         )
         raise ProvisioningError("Unable to create the mailbox filesystem safely.") from exc
+    remote_mailbox_created = False
     try:
         with transaction.atomic():
-            create_mailserver_mailbox(local_part=normalized, email=email, maildir=relative)
+            mailserver_kwargs = {
+                "local_part": normalized,
+                "email": email,
+                "maildir": relative,
+                "domain_name": domain.name,
+            }
+            create_mailserver_mailbox(**mailserver_kwargs)
+            remote_mailbox_created = True
             mailbox = Mailbox(
+                domain=domain,
                 local_part=normalized,
                 email_address=email,
                 maildir_relative_path=relative,
@@ -109,6 +140,14 @@ def _provision_mailbox_locked(
                 ignore_conflicts=True,
             )
     except (DatabaseError, IntegrityError, ValidationError, MailServerContractError) as exc:
+        if remote_mailbox_created:
+            try:
+                delete_mailserver_mailbox(email=email)
+            except MailServerContractError:
+                logger.exception(
+                    "Failed to remove an orphaned mail-server mailbox",
+                    extra={"event": "mailbox_remote_cleanup_failed", "mailbox": email},
+                )
         _safe_cleanup_created_paths(created_paths)
         record_audit(
             "mailbox_provisioning_failure",
@@ -136,25 +175,38 @@ def _provision_mailbox_locked(
 def provision_mailbox(
     local_part: str,
     *,
+    domain: Domain | None = None,
     actor=None,
     request=None,
     allow_reserved: bool = False,
     assigned_users=None,
 ) -> Mailbox:
     normalized = validate_local_part(local_part, allow_reserved=allow_reserved)
+    domain = domain or default_domain()
+    if (
+        domain.status != Domain.Status.ACTIVE
+        or domain.verification_status != Domain.VerificationStatus.VERIFIED
+    ):
+        raise ProvisioningError("Mailbox provisioning requires an active, DNS-verified domain.")
     lock_root = Path(settings.MAILBOX_PROVISION_LOCK_ROOT)
     try:
         lock_root.mkdir(parents=True, mode=0o700, exist_ok=True)
         if lock_root.is_symlink() or not lock_root.is_dir():
             raise OSError("Provisioning lock root is unsafe")
         os.chmod(lock_root, 0o700)
-        lock_path = confined_path(lock_root, f"{normalized}.lock")
+        lock_name = (
+            f"{normalized}.lock"
+            if domain.name == settings.MAIL_DOMAIN.strip().lower()
+            else f"{domain.name}-{normalized}.lock"
+        )
+        lock_path = confined_path(lock_root, lock_name)
         with FileLock(
             str(lock_path),
             timeout=settings.MAILBOX_PROVISION_LOCK_TIMEOUT_SECONDS,
         ):
             return _provision_mailbox_locked(
                 normalized,
+                domain=domain,
                 actor=actor,
                 request=request,
                 allow_reserved=allow_reserved,
@@ -170,7 +222,7 @@ def provision_mailbox(
             details={"stage": "lock", "error_type": type(exc).__name__},
         )
         raise ProvisioningError(
-            f"Mailbox {normalized}@{settings.MAIL_DOMAIN} is currently being provisioned."
+            f"Mailbox {normalized}@{domain.name} is currently being provisioned."
         ) from exc
     except (OSError, ValidationError) as exc:
         record_audit(
@@ -229,7 +281,9 @@ def soft_delete_mailbox(mailbox: Mailbox, *, actor=None, request=None) -> Mailbo
 
 
 def ensure_maildir(mailbox: Mailbox) -> Path:
-    mailbox_root, maildir, _relative = mailbox_paths(mailbox.local_part, allow_reserved=True)
+    mailbox_root, maildir, _relative = mailbox_paths(
+        mailbox.local_part, domain=mailbox.domain, allow_reserved=True
+    )
     created_paths: list[Path] = []
     _ensure_directory(mailbox_root, created_paths, parents=True)
     _ensure_directory(maildir, created_paths)

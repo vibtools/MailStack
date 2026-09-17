@@ -4,7 +4,7 @@ from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
 
 from apps.mailboxes.mailserver import integration_enabled, mailserver_mailbox_exists
-from apps.mailboxes.models import Mailbox
+from apps.mailboxes.models import Domain, Mailbox
 from apps.mailboxes.services import ProvisioningError, mailbox_paths, provision_mailbox
 from apps.mailboxes.validators import validate_local_part
 
@@ -28,7 +28,9 @@ class Command(BaseCommand):
         normalized = validate_local_part(options["local_part"], allow_reserved=True)
         email = f"{normalized}@{settings.MAIL_DOMAIN}"
         if options["if_missing"]:
-            existing = Mailbox.objects.filter(local_part__iexact=normalized).first()
+            existing = Mailbox.objects.filter(
+                domain__name__iexact=settings.MAIL_DOMAIN, local_part__iexact=normalized
+            ).first()
             server_exists = mailserver_mailbox_exists(email) if integration_enabled() else False
             if existing is not None:
                 if existing.status != Mailbox.Status.ACTIVE or existing.deleted_at is not None:
@@ -39,7 +41,9 @@ class Command(BaseCommand):
                     raise CommandError(f"Existing system mailbox {email} has inconsistent metadata")
                 if integration_enabled() and not server_exists:
                     raise CommandError(f"Existing system mailbox {email} is missing from the mail server")
-                _root, maildir, _relative = mailbox_paths(normalized, allow_reserved=True)
+                _root, maildir, _relative = mailbox_paths(
+                    normalized, domain=existing.domain, allow_reserved=True
+                )
                 required = (maildir, maildir / "new", maildir / "cur", maildir / "tmp")
                 if any(not path.is_dir() or path.is_symlink() for path in required):
                     raise CommandError(f"Existing system mailbox {email} has incomplete mail storage")
@@ -53,7 +57,11 @@ class Command(BaseCommand):
                 )
 
         try:
-            mailbox = provision_mailbox(normalized, allow_reserved=True)
+            mailbox = provision_mailbox(
+                normalized,
+                domain=Domain.objects.get(name__iexact=settings.MAIL_DOMAIN),
+                allow_reserved=True,
+            )
         except ProvisioningError as exc:
             raise CommandError(str(exc)) from exc
         self.stdout.write(self.style.SUCCESS(f"Created {mailbox.email_address}"))

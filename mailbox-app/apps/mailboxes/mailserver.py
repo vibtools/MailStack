@@ -54,7 +54,7 @@ def _disabled_password_hash() -> str:
     return f"!VIBMAIL-READ-ONLY!{secrets.token_urlsafe(48)}"
 
 
-def list_mailserver_mailboxes() -> list[MailServerMailbox]:
+def list_mailserver_mailboxes(*, domain_name: str | None = None) -> list[MailServerMailbox]:
     if not integration_enabled():
         return []
     tables = _tables()
@@ -62,11 +62,11 @@ def list_mailserver_mailboxes() -> list[MailServerMailbox]:
         SELECT m.local_part, m.email, m.maildir, m.active
         FROM {tables['mailboxes']} AS m
         INNER JOIN {tables['domains']} AS d ON d.id = m.domain_id
-        WHERE d.name = %s
+        {"WHERE d.name = %s" if domain_name else ""}
         ORDER BY m.email
     """
     with connection.cursor() as cursor:
-        cursor.execute(query, [settings.MAIL_DOMAIN])
+        cursor.execute(query, [domain_name] if domain_name else [])
         return [
             MailServerMailbox(
                 local_part=row[0],
@@ -78,16 +78,39 @@ def list_mailserver_mailboxes() -> list[MailServerMailbox]:
         ]
 
 
-def mailserver_mailbox_exists(email: str) -> bool:
+def mailserver_mailbox_exists(email: str, *, domain_name: str | None = None) -> bool:
     if not integration_enabled():
         return False
     tables = _tables()
     with connection.cursor() as cursor:
+        domain_clause = ""
+        params = [email]
+        if domain_name:
+            domain_clause = (
+                f" INNER JOIN {tables['domains']} AS d ON d.id = m.domain_id"
+                " WHERE m.email = %s AND d.name = %s"
+            )
+            params.append(domain_name)
+        else:
+            domain_clause = " WHERE m.email = %s"
         cursor.execute(
-            f"SELECT 1 FROM {tables['mailboxes']} WHERE email = %s LIMIT 1",  # noqa: S608
-            [email],
+            f"SELECT 1 FROM {tables['mailboxes']} AS m{domain_clause} LIMIT 1",  # noqa: S608
+            params,
         )
         return cursor.fetchone() is not None
+
+
+def delete_mailserver_mailbox(*, email: str) -> None:
+    if not integration_enabled():
+        return
+    tables = _tables()
+    with connection.cursor() as cursor:
+        cursor.execute(
+            f"DELETE FROM {tables['mailboxes']} WHERE email = %s",  # noqa: S608
+            [email],
+        )
+        if cursor.rowcount != 1:
+            raise MailServerContractError(f"Mail-server mailbox {email} is missing")
 
 
 def _alias_source_exists(email: str) -> bool:
@@ -100,7 +123,70 @@ def _alias_source_exists(email: str) -> bool:
         return cursor.fetchone() is not None
 
 
-def create_mailserver_mailbox(*, local_part: str, email: str, maildir: str) -> None:
+def ensure_mailserver_domain(*, domain_name: str, active: bool = True) -> bool:
+    if not integration_enabled():
+        return False
+    tables = _tables()
+    with connection.cursor() as cursor:
+        cursor.execute(
+            f"SELECT id FROM {tables['domains']} WHERE name = %s LIMIT 1",  # noqa: S608
+            [domain_name],
+        )
+        row = cursor.fetchone()
+        if row is None:
+            cursor.execute(
+                f"INSERT INTO {tables['domains']} (name, active) VALUES (%s, %s)",  # noqa: S608
+                [domain_name, 1 if active else 0],
+            )
+            return True
+        else:
+            cursor.execute(
+                f"UPDATE {tables['domains']} SET active = %s WHERE id = %s",  # noqa: S608
+                [1 if active else 0, row[0]],
+            )
+    return False
+
+
+def delete_mailserver_domain(*, domain_name: str) -> None:
+    if not integration_enabled():
+        return
+    tables = _tables()
+    with connection.cursor() as cursor:
+        cursor.execute(
+            f"SELECT id FROM {tables['domains']} WHERE name = %s LIMIT 1",  # noqa: S608
+            [domain_name],
+        )
+        row = cursor.fetchone()
+        if row is None:
+            return
+        cursor.execute(
+            f"SELECT 1 FROM {tables['mailboxes']} WHERE domain_id = %s LIMIT 1",  # noqa: S608
+            [row[0]],
+        )
+        if cursor.fetchone() is not None:
+            raise MailServerContractError(f"Mail-server domain {domain_name} still has mailboxes")
+        cursor.execute(
+            f"DELETE FROM {tables['domains']} WHERE id = %s",  # noqa: S608
+            [row[0]],
+        )
+
+
+def set_mailserver_domain_active(*, domain_name: str, active: bool) -> None:
+    if not integration_enabled():
+        return
+    tables = _tables()
+    with connection.cursor() as cursor:
+        cursor.execute(
+            f"UPDATE {tables['domains']} SET active = %s WHERE name = %s",  # noqa: S608
+            [1 if active else 0, domain_name],
+        )
+        if cursor.rowcount != 1:
+            raise MailServerContractError(f"Mail-server domain {domain_name} is missing")
+
+
+def create_mailserver_mailbox(
+    *, local_part: str, email: str, maildir: str, domain_name: str | None = None
+) -> None:
     if not integration_enabled():
         return
     if _alias_source_exists(email):
@@ -109,11 +195,13 @@ def create_mailserver_mailbox(*, local_part: str, email: str, maildir: str) -> N
     with connection.cursor() as cursor:
         cursor.execute(
             f"SELECT id FROM {tables['domains']} WHERE name = %s AND active = 1 LIMIT 1",  # noqa: S608
-            [settings.MAIL_DOMAIN],
+            [domain_name or settings.MAIL_DOMAIN],
         )
         row = cursor.fetchone()
         if row is None:
-            raise MailServerContractError(f"Active mail domain {settings.MAIL_DOMAIN} is unavailable")
+            raise MailServerContractError(
+                f"Active mail domain {domain_name or settings.MAIL_DOMAIN} is unavailable"
+            )
         domain_id = row[0]
         cursor.execute(
             f"SELECT 1 FROM {tables['mailboxes']} WHERE email = %s LIMIT 1",  # noqa: S608
@@ -171,15 +259,10 @@ def verify_mailserver_schema() -> dict[str, int]:
         return {"domains": 0, "mailboxes": 0, "postfix_rows": 0}
     tables = _tables()
     with connection.cursor() as cursor:
-        cursor.execute(
-            f"SELECT COUNT(*) FROM {tables['domains']} WHERE name = %s AND active = 1",  # noqa: S608
-            [settings.MAIL_DOMAIN],
-        )
+        cursor.execute(f"SELECT COUNT(*) FROM {tables['domains']} WHERE active = 1")  # noqa: S608
         active_domains = int(cursor.fetchone()[0])
-        if active_domains != 1:
-            raise MailServerContractError(
-                f"Exactly one active {settings.MAIL_DOMAIN} domain record is required"
-            )
+        if active_domains < 1:
+            raise MailServerContractError("At least one active mail domain record is required")
         cursor.execute(
             f"SELECT COUNT(*) FROM {tables['mailboxes']}"  # noqa: S608
         )

@@ -1,10 +1,13 @@
-from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
 from django.db import transaction
 
-from apps.mailboxes.mailserver import MailServerContractError, list_mailserver_mailboxes
-from apps.mailboxes.models import Mailbox
-from apps.mailboxes.validators import validate_local_part
+from apps.mailboxes.mailserver import (
+    MailServerContractError,
+    ensure_mailserver_domain,
+    list_mailserver_mailboxes,
+)
+from apps.mailboxes.models import Domain, Mailbox
+from apps.mailboxes.validators import validate_domain, validate_local_part
 
 
 class Command(BaseCommand):
@@ -27,15 +30,34 @@ class Command(BaseCommand):
             for source in source_rows:
                 try:
                     local_part = validate_local_part(source.local_part, allow_reserved=True)
-                    expected_email = f"{local_part}@{settings.MAIL_DOMAIN}"
-                    expected_maildir = f"{settings.MAIL_DOMAIN}/{local_part}/Maildir/"
+                    domain_name = validate_domain(source.email.rsplit("@", 1)[-1])
+                    domain, _created = Domain.objects.get_or_create(
+                        name=domain_name,
+                        defaults={
+                            "status": Domain.Status.DISABLED,
+                            "verification_status": Domain.VerificationStatus.PENDING,
+                            "verification_details": {"source": "mailserver-sync"},
+                        },
+                    )
+                    domain_ready = (
+                        domain.status == Domain.Status.ACTIVE
+                        and domain.verification_status == Domain.VerificationStatus.VERIFIED
+                    )
+                    ensure_mailserver_domain(domain_name=domain.name, active=domain_ready)
+                    status = (
+                        Mailbox.Status.ACTIVE
+                        if source.active and domain_ready
+                        else Mailbox.Status.DISABLED
+                    )
+                    expected_email = f"{local_part}@{domain.name}"
+                    expected_maildir = f"{domain.name}/{local_part}/Maildir/"
                     if source.email.lower() != expected_email or source.maildir != expected_maildir:
                         raise ValueError("email or Maildir path violates the MailStack contract")
-                    status = Mailbox.Status.ACTIVE if source.active else Mailbox.Status.DISABLED
-                    mailbox = Mailbox.objects.filter(local_part__iexact=local_part).first()
+                    mailbox = Mailbox.objects.filter(domain=domain, local_part__iexact=local_part).first()
                     if mailbox is None:
                         if not options["dry_run"]:
                             Mailbox.objects.create(
+                                domain=domain,
                                 local_part=local_part,
                                 email_address=expected_email,
                                 maildir_relative_path=expected_maildir,

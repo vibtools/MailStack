@@ -48,7 +48,7 @@ def source_path_for_message(message: Message) -> Path:
     try:
         return confined_path(
             settings.MAIL_STORAGE_ROOT,
-            settings.MAIL_DOMAIN,
+            message.mailbox.domain.name,
             message.mailbox.local_part,
             "Maildir",
             *parts,

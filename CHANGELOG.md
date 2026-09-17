@@ -2,12 +2,21 @@
 
 All notable repository-level changes are recorded here. Application history before the open-source conversion remains in `mailbox-app/CHANGELOG.md`.
 
+## Unreleased - PHASE-007 multi-domain mailbox and DNS
+
+### Added
+
+- Added domain-aware mailbox identity, a backward-compatible configured-domain migration backfill,
+  per-domain uniqueness and Maildir paths, safe hostname validation, and bounded MX/A/AAAA checks.
+- Added admin domain list/create/edit/check/enable/disable routes and a verified-domain selector to
+  mailbox creation; external mail-server reconciliation now receives the selected domain explicitly.
+
 ## Unreleased â€” PHASE-006 reader integrity and repair
 
 ### Corrected
 
 - Cleared CI Ruff findings in CSP middleware and upgrade-archive version validation without changing runtime behavior.
-- Corrected source-release verification so revision versions such as `1.3.5.1` are not mistaken for global IPv4 literals while real global IP addresses remain blocked.
+- Corrected source-release verification so revision versions such as `1.3.5.2` are not mistaken for global IPv4 literals while real global IP addresses remain blocked.
 - Made forensic inventory generation deterministic across Windows and Linux by canonicalizing text line endings, normalizing aggregate byte counts, and excluding ignored runtime state from source audits.
 - Advanced the pinned Django 5.2 LTS runtime from 5.2.16 to 5.2.17 after RC2 `pip-audit` identified the upstream security advisory, and synchronized active dependency, deployment verification, and security-test contracts without changing application behavior.
 - Renamed CSS parser token-kind locals to avoid Bandit B105 credential-name false positives; no Bandit rule, exclusion, sanitizer policy, or runtime behavior is weakened.

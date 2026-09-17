@@ -56,3 +56,6 @@ SOURCE_MANIFEST.sha256
 .idea/
 .DS_Store
 Thumbs.db
+
+# Development-only references
+reference/

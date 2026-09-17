@@ -84,6 +84,14 @@ The project is currently aligned to a versioned release workflow with a Python/D
 
 ## 4) Key Business Logic, Features, and Active Modules
 
+### Create mailbox modal workflow
+
+- Dashboard, mailbox list, and sidebar Create mailbox actions open a compact shared modal through `data-open-mailbox-modal`.
+- The existing `mailboxes:create` endpoint remains the no-JavaScript/direct-route fallback; successful POSTs still redirect to the mailbox list.
+- Invalid modal POSTs render the mailbox list with the bound form and reopen the dialog so validation errors remain visible.
+- The modal now provides a random USA-style local-part generator, three refreshable quick suggestions, and a `Create & copy` submit action that copies the composed address before the normal form POST.
+- The modal exposes the configured default domain to client-side copy composition when no verified domain option is available, matching the server-side form fallback.
+
 ### Receive-only mail server workflow
 
 MailStack is deliberately a receive-only mail system. It does not act as a public outbound email marketing platform. The operational model is built around:
@@ -127,6 +135,7 @@ The active repository direction is a hardened, operationally auditable self-host
 - forensic inventory / audit gate compliance
 - design token and UI consistency updates
 - secure architecture and deployment hygiene
+- cleared workspace diagnostics caused by Django dynamic field/model typing and untyped attachment storage results using narrow casts, typed storage results, and typed queryset assertions; runtime behavior was preserved
 
 ## 5) Coding Conventions and Project Rules
 
@@ -166,7 +175,7 @@ This repository expects AI agents to maintain durable context across sessions ra
 
 ## 7) Known Reality Checks
 
-- Release version currently tracked in project metadata: `1.3.5.1` (four-component revision releases are supported alongside legacy three-component versions)
+- Release version currently tracked in project metadata: `1.3.5.2` (four-component revision releases are supported alongside legacy three-component versions)
 - Deployment is designed for Ubuntu 24.04 with native package installation, not Docker-first packaging
 - The application is intentionally receive-only and not a general outbound marketing mail platform
 - Security and audit compliance are treated as first-class project constraints
@@ -188,11 +197,65 @@ This memory file should be treated as the canonical context snapshot for future 
 - Follow-up audit fix: scoped the inline-style CSP exception to `/system-update/` only, and changed updater log rendering to `textContent` to prevent status messages from becoming admin-browser HTML.
 - Follow-up validation: System Update/security tests passed with 19 tests, and Django test-settings checks passed with no issues.
 
-### [2026-09-17] Version 1.3.5.1 revision release support
+### [2026-09-18] Compact System Update modal UI
 
-- Promoted the canonical root and Django package version to `1.3.5.1`.
+- Replaced the Check/Install Update and Up-to-Date dialogs' generic log-modal layout with the existing compact confirmation-dialog pattern.
+- Added page-local sizing, centered status content, compact actions, and mobile-safe button stacking while preserving the existing update controls and CSP-safe template structure.
+- Added functional template assertions for the compact modal classes and Install Update action.
+
+### [2026-09-18] Compact application scrollbars
+
+- Added a shared 6px scrollbar baseline in `foundation.css` with lightweight thumb styling and transparent tracks.
+- Normalized the table, update log, release notes, and history scroll regions to the same compact dimensions while preserving visible hover contrast.
+
+### [2026-09-18] PHASE-007 multi-domain implementation plan
+
+- Created draft `documents/phases/PHASE-007-MULTI-DOMAIN-MAILBOX-AND-DNS.md` before runtime implementation.
+- The plan covers admin domain CRUD, bounded DNS verification, enable/disable behavior, mailbox domain selection, per-domain uniqueness and Maildir paths, existing-mailbox migration, and parameterized Postfix/mail-server provisioning.
+- Runtime implementation is active: Domain migration/backfill, admin CRUD, DNS verification, mailbox
+  domain selection, per-domain Maildir paths, parameterized mail-server provisioning, and compatibility
+  regression coverage are implemented and under full-suite qualification.
+
+### [2026-09-18] PHASE-007 multi-domain vertical slice
+
+- Added `Domain` with normalized safe hostnames, active/disabled delivery status, pending/verified/failed DNS state, check timestamps, and safe verification details.
+- Added migration `mailboxes.0005_domain_and_mailbox_domain` to create the configured `MAIL_DOMAIN` as the active verified default, backfill existing mailboxes, preserve addresses and paths, and replace global local-part uniqueness with `(domain, local_part)` case-insensitive uniqueness.
+- Added bounded dependency-free MX/A/AAAA verification, admin domain CRUD/check/toggle routes and templates, verified active-domain mailbox selection, and explicit domain-aware provisioning, ingestion, Maildir, sync, and mailserver integration.
+- Added focused domain validation, DNS, provisioning, form, and admin route tests. Focused Ruff, Django checks, selected pytest coverage, and migration-drift checks passed; full repository release/audit validation remains to be run after documentation synchronization.
+
+### [2026-09-18] PHASE-007 audit and production fixes
+
+- Blocked renaming an existing domain because it would invalidate mailbox addresses, Maildir paths,
+  and external Postfix domain rows.
+- Added safe removal for empty secondary domains, protected the configured default domain, and kept
+  domains with mailboxes disable/archive-only.
+- Added cleanup of newly-created external domain rows when Django domain persistence fails.
+- Added regression coverage for rename protection and empty-domain removal.
+- Corrected mail-server sync so newly discovered domains remain DNS-pending until explicitly verified;
+  corrected the DNS form to avoid presenting an unknown public IP as a concrete value.
+- Corrected mail-server mailbox listing so sync imports all configured domains when no domain filter is
+  requested, while retaining explicit single-domain filtering for callers that need it.
+- Clarified the global top-bar domain label as the configured default domain so multi-domain users are
+  not misled into treating the bootstrap setting as the only mailbox domain.
+- Made domain status edits fail gracefully when external mailserver reconciliation fails, instead of
+  returning an unhandled error or saving only the application-side state.
+- Enforced the delivery state machine so pending/failed DNS domains cannot be enabled; new domains
+  default to disabled, and a failed DNS check disables external delivery and the application record.
+- Wrapped domain create/edit application and external mailserver reconciliation in one transaction to
+  prevent partial domain-state updates when either persistence step fails.
+- Hardened external mailbox sync input and fail-closed behavior: unsafe source domains are rejected,
+  newly discovered unverified domains are disabled externally and in Django, and imported mailboxes
+  under those domains are not marked active.
+- Removed implicit default-domain fallback from mailbox provisioning by propagating the selected domain
+  explicitly to external existence and creation operations, including the configured baseline domain.
+- Hardened the dependency-free DNS packet parser against compressed-name offset errors, malformed label
+  lengths, out-of-range pointers, and pointer cycles; added compressed MX-name regression coverage.
+
+### [2026-09-17] Version 1.3.5.2 revision release support
+
+- Promoted the canonical root and Django package version to `1.3.5.2`.
 - Extended release-gate, source-upgrade archive, and production upgrade-wrapper validation to accept optional four-component revision versions while preserving legacy `major.minor.patch` and RC formats.
-- Added release identity, normalization, ordering, and workflow coverage for `1.3.5.1`; added `docs/RELEASE_NOTES_1.3.5.1.md` and synchronized the release workflow artifact and notes paths.
+- Added release identity, normalization, ordering, and workflow coverage for `1.3.5.2`; added `docs/RELEASE_NOTES_1.3.5.2.md` and synchronized the release workflow artifact and notes paths.
 - Validation evidence: release workflow tests passed (7), upgrade contract tests passed, and diagnostics reported no errors in the touched Python files.
 
 ### [2026-09-17] Compact UI typography correction
@@ -223,7 +286,7 @@ This memory file should be treated as the canonical context snapshot for future 
 
 ### [2026-09-18] Permanent release-version IP-scan rule
 
-- Added a durable `AGENTS.md` contract: semantic release versions, including four-component values such as `1.3.5.1`, must never be treated as IP literals by forensic or release verification. Real global IP addresses must remain blocked and the exemption must stay regression-tested.
+- Added a durable `AGENTS.md` contract: semantic release versions, including four-component values such as `1.3.5.2`, must never be treated as IP literals by forensic or release verification. Real global IP addresses must remain blocked and the exemption must stay regression-tested.
 
-- GitHub Action run `35256798900` failed in release verification because the four-component release version `1.3.5.1` matched the global IPv4 detector inside the source archive.
+- GitHub Action run `35256798900` failed in release verification because the four-component release version `1.3.5.2` matched the global IPv4 detector inside the source archive.
 - Updated `scripts/verify_release.py` to exempt only the archive's derived release version while continuing to reject real global IP literals; added a regression test covering both cases.

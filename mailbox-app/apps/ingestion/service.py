@@ -35,7 +35,7 @@ class IngestionResult:
 
 
 def source_key(mailbox: Mailbox, source_path: Path) -> str:
-    _root, maildir, _relative = mailbox_paths(mailbox.local_part, allow_reserved=True)
+    _root, maildir, _relative = mailbox_paths(mailbox.local_part, domain=mailbox.domain, allow_reserved=True)
     resolved = source_path.resolve()
     try:
         relative = resolved.relative_to(maildir.resolve())
@@ -176,10 +176,10 @@ def ingest_file(mailbox: Mailbox, path: Path, *, dry_run: bool = False) -> str:
 
 
 def iter_maildir_files(mailbox: Mailbox):
-    _root, maildir, _relative = mailbox_paths(mailbox.local_part, allow_reserved=True)
+    _root, maildir, _relative = mailbox_paths(mailbox.local_part, domain=mailbox.domain, allow_reserved=True)
     for folder_name in ("new", "cur"):
         folder = confined_path(
-            settings.MAIL_STORAGE_ROOT, settings.MAIL_DOMAIN, mailbox.local_part, "Maildir", folder_name
+            settings.MAIL_STORAGE_ROOT, mailbox.domain.name, mailbox.local_part, "Maildir", folder_name
         )
         if not folder.is_dir():
             continue

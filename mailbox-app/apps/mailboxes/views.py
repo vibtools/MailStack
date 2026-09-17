@@ -1,10 +1,13 @@
 from __future__ import annotations
 
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
-from django.db.models import Q
+from django.db import DatabaseError, transaction
+from django.db.models import Count, Q
 from django.shortcuts import get_object_or_404, redirect, render
+from django.utils import timezone
 from django.views.decorators.http import require_http_methods, require_POST
 
 from apps.audit.services import record_audit
@@ -15,8 +18,15 @@ from apps.core.access import (
     user_can_delete_mailbox,
 )
 
-from .forms import MailboxCreateForm
-from .models import Mailbox
+from .dns import verify_domain
+from .forms import DomainForm, MailboxCreateForm
+from .mailserver import (
+    MailServerContractError,
+    delete_mailserver_domain,
+    ensure_mailserver_domain,
+    set_mailserver_domain_active,
+)
+from .models import Domain, Mailbox
 from .services import ProvisioningError, provision_mailbox, set_mailbox_status, soft_delete_mailbox
 
 
@@ -40,6 +50,9 @@ def mailbox_list(request):
 @login_required
 @require_http_methods(["GET", "POST"])
 def mailbox_create(request):
+    if request.method == "GET":
+        form = MailboxCreateForm(user=request.user)
+        return render(request, "mailboxes/create.html", {"form": form, "is_admin": is_admin(request.user)})
     form = MailboxCreateForm(request.POST or None, user=request.user)
     if request.method == "POST" and form.is_valid():
         assigned_users = (
@@ -50,6 +63,7 @@ def mailbox_create(request):
         try:
             mailbox = provision_mailbox(
                 form.cleaned_data["local_part"],
+                domain=form.cleaned_data["domain"],
                 actor=request.user,
                 request=request,
                 assigned_users=assigned_users,
@@ -59,7 +73,150 @@ def mailbox_create(request):
         else:
             messages.success(request, f"Mailbox {mailbox.email_address} created.")
             return redirect("mailboxes:list")
-    return render(request, "mailboxes/create.html", {"form": form, "is_admin": is_admin(request.user)})
+    return render(
+        request,
+        "mailboxes/list.html",
+        {
+            "form": form,
+            "mailbox_create_form": form,
+            "open_create_modal": True,
+            "page_obj": Paginator(accessible_mailboxes(request.user), 25).get_page(None),
+            "query": "",
+            "status": "",
+            "is_admin": is_admin(request.user),
+        },
+    )
+
+
+@login_required
+def domain_list(request):
+    require_admin(request.user)
+    domains = Domain.objects.annotate(mailbox_count=Count("mailboxes")).order_by("name")
+    return render(request, "mailboxes/domains.html", {"domains": domains})
+
+
+@login_required
+@require_http_methods(["GET", "POST"])
+def domain_create(request):
+    require_admin(request.user)
+    form = DomainForm(request.POST or None)
+    if request.method == "POST" and form.is_valid():
+        domain = form.save(commit=False)
+        created_external = False
+        try:
+            with transaction.atomic():
+                created_external = ensure_mailserver_domain(
+                    domain_name=domain.name,
+                    active=(
+                        domain.status == Domain.Status.ACTIVE
+                        and domain.verification_status == Domain.VerificationStatus.VERIFIED
+                    ),
+                )
+                domain.save()
+        except Exception:
+            if created_external:
+                delete_mailserver_domain(domain_name=domain.name)
+            form.add_error(None, "The domain could not be reconciled with the mail server.")
+        else:
+            messages.success(request, f"Domain {domain.name} added. Publish DNS records, then check DNS.")
+            return redirect("mailboxes:domains")
+    return render(request, "mailboxes/domain_form.html", {"form": form, "creating": True})
+
+
+@login_required
+@require_http_methods(["GET", "POST"])
+def domain_edit(request, domain_uuid):
+    require_admin(request.user)
+    domain = get_object_or_404(Domain, uuid=domain_uuid)
+    form = DomainForm(request.POST or None, instance=domain)
+    if request.method == "POST" and form.is_valid():
+        try:
+            with transaction.atomic():
+                domain.status = form.cleaned_data["status"]
+                domain.save(update_fields=["status", "updated_at"])
+                ensure_mailserver_domain(
+                    domain_name=domain.name,
+                    active=(
+                        domain.status == Domain.Status.ACTIVE
+                        and domain.verification_status == Domain.VerificationStatus.VERIFIED
+                    ),
+                )
+        except (DatabaseError, MailServerContractError):
+            form.add_error(None, "The domain could not be reconciled with the mail server.")
+        else:
+            messages.success(request, f"Domain {domain.name} updated.")
+            return redirect("mailboxes:domains")
+    return render(request, "mailboxes/domain_form.html", {"form": form, "domain": domain, "creating": False})
+
+
+@login_required
+@require_POST
+def domain_check(request, domain_uuid):
+    require_admin(request.user)
+    domain = get_object_or_404(Domain, uuid=domain_uuid)
+    result = verify_domain(domain.name)
+    if not result["verified"]:
+        try:
+            set_mailserver_domain_active(domain_name=domain.name, active=False)
+        except (DatabaseError, MailServerContractError):
+            messages.error(request, "DNS verification failed and delivery could not be disabled safely.")
+        domain.status = Domain.Status.DISABLED
+    domain.verification_status = (
+        Domain.VerificationStatus.VERIFIED
+        if result["verified"]
+        else Domain.VerificationStatus.FAILED
+    )
+    domain.verification_details = {
+        key: value for key, value in result.items() if key != "verified"
+    }
+    domain.last_checked_at = timezone.now()
+    update_fields = ["verification_status", "verification_details", "last_checked_at", "updated_at"]
+    if not result["verified"]:
+        update_fields.append("status")
+    domain.save(update_fields=update_fields)
+    if result["verified"]:
+        messages.success(request, str(result["message"]))
+    else:
+        messages.error(request, str(result["message"]))
+    return redirect("mailboxes:domains")
+
+
+@login_required
+@require_POST
+def domain_toggle(request, domain_uuid):
+    require_admin(request.user)
+    domain = get_object_or_404(Domain, uuid=domain_uuid)
+    target = Domain.Status.DISABLED if domain.status == Domain.Status.ACTIVE else Domain.Status.ACTIVE
+    if target == Domain.Status.ACTIVE and domain.verification_status != Domain.VerificationStatus.VERIFIED:
+        messages.error(request, "A domain must pass DNS verification before it can be enabled.")
+        return redirect("mailboxes:domains")
+    set_mailserver_domain_active(domain_name=domain.name, active=target == Domain.Status.ACTIVE)
+    domain.status = target
+    domain.save(update_fields=["status", "updated_at"])
+    status_label = dict(Domain.Status.choices).get(domain.status, domain.status)
+    messages.success(request, f"Domain {domain.name} {status_label.lower()}.")
+    return redirect("mailboxes:domains")
+
+
+@login_required
+@require_POST
+def domain_delete(request, domain_uuid):
+    require_admin(request.user)
+    domain = get_object_or_404(Domain, uuid=domain_uuid)
+    if domain.name == settings.MAIL_DOMAIN.strip().lower():
+        messages.error(request, "The configured default domain cannot be removed.")
+        return redirect("mailboxes:domains")
+    if Mailbox.objects.filter(domain=domain).exists():
+        messages.error(request, "A domain with mailboxes cannot be removed; disable it instead.")
+        return redirect("mailboxes:domains")
+    try:
+        delete_mailserver_domain(domain_name=domain.name)
+        domain.delete()
+    except MailServerContractError as exc:
+        messages.error(request, str(exc))
+    else:
+        messages.success(request, f"Domain {domain.name} removed.")
+    return redirect("mailboxes:domains")
 
 
 @login_required

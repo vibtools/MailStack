@@ -7,7 +7,50 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models.functions import Lower
 
-from .validators import validate_local_part
+from .validators import validate_domain, validate_local_part
+
+
+class Domain(models.Model):
+    class Status(models.TextChoices):
+        ACTIVE = "active", "Active"
+        DISABLED = "disabled", "Disabled"
+
+    class VerificationStatus(models.TextChoices):
+        PENDING = "pending", "Pending"
+        VERIFIED = "verified", "Verified"
+        FAILED = "failed", "Failed"
+
+    uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
+    name = models.CharField(max_length=253, unique=True)
+    status = models.CharField(
+        max_length=16, choices=Status.choices, default=Status.ACTIVE, db_index=True
+    )
+    verification_status = models.CharField(
+        max_length=16, choices=VerificationStatus.choices, default=VerificationStatus.PENDING, db_index=True
+    )
+    last_checked_at = models.DateTimeField(null=True, blank=True)
+    verification_details = models.JSONField(default=dict, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ["name"]
+        constraints = [
+            models.UniqueConstraint(Lower("name"), name="mail_domain_name_ci_unique"),
+            models.CheckConstraint(
+                condition=models.Q(status__in=["active", "disabled"]), name="mail_domain_valid_status"
+            ),
+            models.CheckConstraint(
+                condition=models.Q(verification_status__in=["pending", "verified", "failed"]),
+                name="mail_domain_valid_verification_status",
+            ),
+        ]
+
+    def clean(self) -> None:
+        self.name = validate_domain(self.name)
+
+    def __str__(self) -> str:
+        return self.name
 
 
 class Mailbox(models.Model):
@@ -17,7 +60,8 @@ class Mailbox(models.Model):
         DELETED = "deleted", "Deleted"
 
     uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
-    local_part = models.CharField(max_length=64, unique=True)
+    domain = models.ForeignKey(Domain, on_delete=models.PROTECT, related_name="mailboxes")
+    local_part = models.CharField(max_length=64)
     email_address = models.EmailField(max_length=320, unique=True)
     status = models.CharField(max_length=16, choices=Status.choices, default=Status.ACTIVE, db_index=True)
     maildir_relative_path = models.CharField(max_length=255)
@@ -38,7 +82,9 @@ class Mailbox(models.Model):
     class Meta:
         ordering = ["local_part"]
         constraints = [
-            models.UniqueConstraint(Lower("local_part"), name="mailbox_local_part_ci_unique"),
+            models.UniqueConstraint(
+                "domain", Lower("local_part"), name="mailbox_domain_local_part_ci_unique"
+            ),
             models.UniqueConstraint(Lower("email_address"), name="mailbox_email_address_ci_unique"),
             models.CheckConstraint(
                 condition=models.Q(status__in=["active", "disabled", "deleted"]),
@@ -50,15 +96,30 @@ class Mailbox(models.Model):
             models.Index(fields=["deleted_at", "status"]),
         ]
 
+    def clean_fields(self, exclude=None) -> None:
+        excluded = set(exclude or ())
+        if self.__dict__.get("domain_id") is None:
+            excluded.add("domain")
+        super().clean_fields(exclude=excluded)
+
     def clean(self) -> None:
         normalized = validate_local_part(self.local_part, allow_reserved=True)
         self.local_part = normalized
-        domain = settings.MAIL_DOMAIN.strip().lower()
+        if self.__dict__.get("domain_id") is None:
+            self.domain, _created = Domain.objects.get_or_create(
+                name=settings.MAIL_DOMAIN.strip().lower(),
+                defaults={
+                    "status": Domain.Status.ACTIVE,
+                    "verification_status": Domain.VerificationStatus.VERIFIED,
+                    "verification_details": {"source": "configured-default"},
+                },
+            )
+        domain = validate_domain(self.domain.name)
         expected_email = f"{normalized}@{domain}"
         expected_path = f"{domain}/{normalized}/Maildir/"
         if self.email_address and self.email_address.lower() != expected_email:
             raise ValidationError(
-                {"email_address": f"Email address must match the configured {domain} domain."}
+                {"email_address": f"Email address must match the selected {domain} domain."}
             )
         if self.maildir_relative_path and self.maildir_relative_path != expected_path:
             raise ValidationError(
@@ -66,6 +127,18 @@ class Mailbox(models.Model):
             )
         self.email_address = expected_email
         self.maildir_relative_path = expected_path
+
+    def save(self, *args, **kwargs):
+        if self.__dict__.get("domain_id") is None:
+            self.domain, _created = Domain.objects.get_or_create(
+                name=settings.MAIL_DOMAIN.strip().lower(),
+                defaults={
+                    "status": Domain.Status.ACTIVE,
+                    "verification_status": Domain.VerificationStatus.VERIFIED,
+                    "verification_details": {"source": "configured-default"},
+                },
+            )
+        super().save(*args, **kwargs)
 
     def __str__(self) -> str:
         return self.email_address

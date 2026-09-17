@@ -44,7 +44,7 @@ roots: list[tempfile.TemporaryDirectory[str]] = []
 def test_version_normalization() -> None:
     assert GATE.normalize_package_version("1.3.0-rc.5") == "1.3.0rc5"
     assert GATE.normalize_package_version("1.3.0") == "1.3.0"
-    assert GATE.normalize_package_version("1.3.5.1") == "1.3.5.1"
+    assert GATE.normalize_package_version("1.3.5.2") == "1.3.5.2"
     try:
         GATE.normalize_package_version("1.3")
     except GATE.ReleaseGateError:
@@ -54,8 +54,8 @@ def test_version_normalization() -> None:
 
 
 def test_release_version_is_not_global_ip() -> None:
-    assert not VERIFY.is_global_ip_literal(b"1.3.5.1", "1.3.5.1")
-    assert VERIFY.is_global_ip_literal(b"8.8." + b"8.8", "1.3.5.1")
+    assert not VERIFY.is_global_ip_literal(b"1.3.5.2", "1.3.5.2")
+    assert VERIFY.is_global_ip_literal(b"8.8." + b"8.8", "1.3.5.2")
 
 
 def test_tag_identity_and_manual_mode() -> None:
@@ -82,15 +82,15 @@ def test_tag_identity_and_manual_mode() -> None:
 
 
 def test_revision_release_identity() -> None:
-    root = make_root("1.3.5.1", "1.3.5.1")
+    root = make_root("1.3.5.2", "1.3.5.2")
     identity = GATE.validate_local_identity(
         root,
         event_name="push",
         ref_type="tag",
-        ref_name="v1.3.5.1",
+        ref_name="v1.3.5.2",
         sha="c" * 40,
     )
-    assert identity.tag == "v1.3.5.1"
+    assert identity.tag == "v1.3.5.2"
     assert identity.prerelease is False
 
     stable_root = make_root("1.3.0", "1.3.0")
@@ -208,7 +208,7 @@ def test_workflow_contract() -> None:
         "--latest",
         'dist/*.zip',
         'dist/*.sha256',
-        'docs/RELEASE_NOTES_1.3.5.1.md',
+        'docs/RELEASE_NOTES_1.3.5.2.md',
     )
     for marker in required:
         assert marker in text, marker

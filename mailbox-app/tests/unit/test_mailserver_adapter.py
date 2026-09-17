@@ -3,6 +3,7 @@ from __future__ import annotations
 from unittest.mock import MagicMock, patch
 
 import pytest
+from django.core.exceptions import ValidationError
 
 from apps.mailboxes import mailserver
 from apps.mailboxes.mailserver import MailServerContractError
@@ -45,6 +46,16 @@ def test_list_mailserver_mailboxes_maps_rows(settings):
         )
     ]
     assert "`vibmail`.`mailboxes`" in cursor.execute.call_args.args[0]
+    assert "WHERE d.name" not in cursor.execute.call_args.args[0]
+
+
+def test_list_mailserver_mailboxes_filters_when_domain_is_requested(settings):
+    settings.MAILSERVER_INTEGRATION_ENABLED = True
+    context, cursor = cursor_context()
+    with patch("apps.mailboxes.mailserver.connection.cursor", return_value=context):
+        mailserver.list_mailserver_mailboxes(domain_name="example.test")
+    assert "WHERE d.name = %s" in cursor.execute.call_args.args[0]
+    assert cursor.execute.call_args.args[1] == ["example.test"]
 
 
 def test_mailserver_exists_and_disabled_mode(settings):
@@ -54,6 +65,25 @@ def test_mailserver_exists_and_disabled_mode(settings):
     context, _cursor = cursor_context(fetchone=(1,))
     with patch("apps.mailboxes.mailserver.connection.cursor", return_value=context):
         assert mailserver.mailserver_mailbox_exists("mailbox1@example.com") is True
+
+
+def test_mailserver_exists_scopes_explicit_domain(settings):
+    settings.MAILSERVER_INTEGRATION_ENABLED = True
+    context, cursor = cursor_context(fetchone=(1,))
+    with patch("apps.mailboxes.mailserver.connection.cursor", return_value=context):
+        assert mailserver.mailserver_mailbox_exists(
+            "mailbox1@example.com", domain_name="example.com"
+        )
+    assert "INNER JOIN" in cursor.execute.call_args.args[0]
+    assert cursor.execute.call_args.args[1] == ["mailbox1@example.com", "example.com"]
+
+
+def test_delete_mailserver_mailbox_requires_existing_row(settings):
+    settings.MAILSERVER_INTEGRATION_ENABLED = True
+    context, cursor = cursor_context(rowcount=1)
+    with patch("apps.mailboxes.mailserver.connection.cursor", return_value=context):
+        mailserver.delete_mailserver_mailbox(email="mailbox1@example.com")
+    assert "DELETE FROM" in cursor.execute.call_args.args[0]
 
 
 def test_create_mailserver_mailbox_executes_expected_insert(settings):
@@ -132,16 +162,35 @@ def test_status_adapter_rejects_missing_mailbox(settings):
 def test_provisioning_calls_mailserver_inside_application_flow(settings):
     settings.MAILSERVER_INTEGRATION_ENABLED = True
     with (
-        patch("apps.mailboxes.services.mailserver_mailbox_exists", return_value=False),
+        patch("apps.mailboxes.services.mailserver_mailbox_exists", return_value=False) as exists_remote,
         patch("apps.mailboxes.services.create_mailserver_mailbox") as create_remote,
     ):
         mailbox = provision_mailbox("transactional")
+    exists_remote.assert_called_once_with(email="transactional@vibmail.my", domain_name="vibmail.my")
     create_remote.assert_called_once_with(
         local_part="transactional",
         email="transactional@vibmail.my",
         maildir="vibmail.my/transactional/Maildir/",
+        domain_name="vibmail.my",
     )
     assert mailbox.email_address == "transactional@vibmail.my"
+
+
+@pytest.mark.django_db
+def test_provisioning_cleans_up_remote_mailbox_when_database_save_fails(settings):
+    settings.MAILSERVER_INTEGRATION_ENABLED = True
+    with (
+        patch("apps.mailboxes.services.mailserver_mailbox_exists", return_value=False),
+        patch("apps.mailboxes.services.create_mailserver_mailbox"),
+        patch(
+            "apps.mailboxes.services.Mailbox.save",
+            side_effect=ValidationError("database failure"),
+        ),
+        patch("apps.mailboxes.services.delete_mailserver_mailbox") as delete_remote,
+        pytest.raises(ProvisioningError, match="database failure"),
+    ):
+        provision_mailbox("remote-cleanup")
+    delete_remote.assert_called_once_with(email="remote-cleanup@vibmail.my")
 
 
 @pytest.mark.django_db
@@ -177,6 +226,6 @@ def test_verify_mailserver_schema_rejects_missing_domain(settings):
     context, _cursor = cursor_context(fetchone=(0,))
     with (
         patch("apps.mailboxes.mailserver.connection.cursor", return_value=context),
-        pytest.raises(MailServerContractError, match="Exactly one"),
+        pytest.raises(MailServerContractError, match="At least one"),
     ):
         mailserver.verify_mailserver_schema()

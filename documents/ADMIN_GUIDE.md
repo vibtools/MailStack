@@ -4,7 +4,7 @@ title: MailStack Administrator Guide
 document_type: admin-guide
 audience: mailstack-administrators
 status: active
-version: 1.3.5.1
+version: 1.3.5.2
 last_reviewed: 2026-08-18
 ---
 
@@ -12,7 +12,7 @@ last_reviewed: 2026-08-18
 
 ## Administrator role
 
-Administrators can view all maintained mailboxes, create and manage ordinary users, assign mailbox
+Administrators can view all maintained mailboxes, manage receive domains, create and manage ordinary users, assign mailbox
 memberships, control deletion permissions, create mailboxes, enable or disable mailboxes, and
 review operational health. The authenticated shell displays **User management** only when the
 existing administrator authorization check passes. Administrator accounts are intentionally not
@@ -36,6 +36,27 @@ users or leave the mailbox administrator-only. From **Mailboxes**, administrator
 disable an address. Disabled or deleted addresses must reject new delivery according to the
 Postfix recipient contract. Deletion requires full-address confirmation, performs a soft deletion,
 and leaves the local part permanently reserved.
+
+## Domain administration
+
+Open **Domains** under **Management** to add a DNS hostname. MailStack rejects IP literals,
+unsafe labels, and duplicate names. Publish an MX record for the domain pointing to the configured
+mail host and ensure that host has an A or AAAA record; SPF is recommended but is not required for
+receive-only provisioning. Use **Check DNS** to run the bounded resolver and review the safe result.
+
+Only active, verified domains appear in **Create mailbox**. Mailbox local parts are unique within a
+domain, and Maildir data is stored below `<mail-storage-root>/<domain>/<local-part>/Maildir/`.
+Disabling a domain stops new mailbox provisioning and external delivery while preserving existing
+mailboxes, messages, and Maildir files. Re-enable only after DNS is verified again. Hard deletion is
+not allowed for domains with mailbox data; those domains must remain disabled or be archived. Empty
+secondary domains can be removed from the Domains table, while the configured default domain cannot
+be removed.
+
+Before migration, back up the application database, external mail database, and Maildir root. The
+PHASE-007 migration creates the configured `MAIL_DOMAIN` as the verified default and attaches
+existing mailboxes without changing their addresses or paths. Rolling back after adding secondary
+domains requires explicit review of those records and Maildir paths before returning to a single
+domain release.
 
 Review assignments before granting destructive permissions. Ordinary users can see only assigned
 mailboxes. Message and mailbox deletion controls remain hidden unless policy allows them.

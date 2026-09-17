@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block title %}Dashboard · MailStack{% endblock %}
 {% block content %}
-<div class="page-header"><h1>Dashboard</h1><a class="btn btn-primary" href="{% url 'mailboxes:create' %}">Create mailbox</a></div>
+<div class="page-header"><h1>Dashboard</h1><button class="btn btn-primary" type="button" data-open-mailbox-modal>Create mailbox</button></div>
 <div class="stat-grid">
   <article class="stat-card"><span>Total mailboxes</span><strong data-live-summary="total_mailboxes">{{ total_mailboxes }}</strong></article>
   <article class="stat-card"><span>Active</span><strong data-live-summary="active_mailboxes">{{ active_mailboxes }}</strong></article>

@@ -57,7 +57,7 @@
             <span class="nav-label">Mailboxes</span>
           </a>
           <a class="nav-item{% if request.resolver_match and request.resolver_match.namespace == 'mailboxes' and request.resolver_match.url_name == 'create' %} is-active{% endif %}"
-            href="{% url 'mailboxes:create' %}"{% if request.resolver_match and request.resolver_match.namespace == 'mailboxes' and request.resolver_match.url_name == 'create' %} aria-current="page"{% endif %}>
+            href="{% url 'mailboxes:create' %}"{% if request.resolver_match and request.resolver_match.namespace == 'mailboxes' and request.resolver_match.url_name == 'create' %} aria-current="page"{% endif %} data-open-mailbox-modal>
             <svg class="ui-icon" aria-hidden="true">
               <use href="{% static 'icons/mailstack-icons.svg' %}#icon-plus-circle"></use>
             </svg>
@@ -74,6 +74,9 @@
         {% if is_vibmail_admin %}
         <div class="nav-section">
           <div class="nav-section-label">Management</div>
+          <a class="nav-item{% if request.resolver_match and request.resolver_match.namespace == 'mailboxes' and 'domain' in request.resolver_match.url_name %} is-active{% endif %}" href="{% url 'mailboxes:domains' %}">
+            <span class="nav-label">Domains</span>
+          </a>
           <a class="nav-item{% if request.resolver_match and request.resolver_match.namespace == 'accounts' and request.resolver_match.url_name != 'login' and request.resolver_match.url_name != 'logout' %} is-active{% endif %}"
             href="{% url 'accounts:user_list' %}"{% if request.resolver_match and request.resolver_match.namespace == 'accounts' and request.resolver_match.url_name != 'login' and request.resolver_match.url_name != 'logout' %} aria-current="page"{% endif %}>
             <svg class="ui-icon" aria-hidden="true">
@@ -116,7 +119,7 @@
           </button>
           <div class="topbar-context">
             <span class="topbar-product">MailStack</span>
-            <span class="topbar-domain">{{ mail_domain }}</span>
+            <span class="topbar-domain">Default domain: {{ mail_domain }}</span>
           </div>
         </div>
 
@@ -135,7 +138,7 @@
             <div class="user-menu-panel">
               <div class="user-menu-meta">
                 <strong>{{ request.user.username }}</strong>
-                <span>{{ mail_domain }}</span>
+                <span>Default domain: {{ mail_domain }}</span>
               </div>
               <form action="{% url 'accounts:logout' %}" method="post">
                 {% csrf_token %}
@@ -171,6 +174,7 @@
                 </div>
                 {% endif %}
                 {% block content %}{% endblock %}
+                {% if mailbox_create_form %}{% include "mailboxes/_create_modal.html" with form=mailbox_create_form %}{% endif %}
                 {% if request.user.is_authenticated %}
               </div>
             </main>

@@ -594,6 +594,35 @@ summary {
   display: none;
 }
 
+*,
+*::before,
+*::after {
+  scrollbar-width: thin;
+  scrollbar-color: #b8c3d1 transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  min-height: 28px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: #b8c3d1;
+  background-clip: padding-box;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+  background-clip: padding-box;
+}
+
 /* Shared component normalization. Page-specific redesign remains outside this phase. */
 .page-header {
   margin-bottom: 24px;

@@ -3,6 +3,7 @@ from __future__ import annotations
 import mimetypes
 import os
 import uuid
+from typing import TypedDict
 
 from django.conf import settings
 from django.core.exceptions import ValidationError
@@ -16,7 +17,17 @@ class AttachmentTooLarge(ValueError):
     """Raised when an attachment exceeds the configured extraction limit."""
 
 
-def store_attachment(content: bytes, original_filename: str) -> dict[str, object]:
+class StoredAttachment(TypedDict):
+    safe_filename: str
+    stored_filename: str
+    storage_relative_path: str
+    detected_mime_type: str
+    size_bytes: int
+    sha256: str
+    path: object
+
+
+def store_attachment(content: bytes, original_filename: str) -> StoredAttachment:
     max_bytes = settings.MAX_ATTACHMENT_SIZE_MB * 1024 * 1024
     if len(content) > max_bytes:
         raise AttachmentTooLarge(f"Attachment exceeds {settings.MAX_ATTACHMENT_SIZE_MB} MB")
