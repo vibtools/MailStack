@@ -63,7 +63,9 @@ There are no database migrations, configuration changes, package dependencies, e
 CDN assets, or third-party JavaScript additions. Cross-platform audit hardening closes every
 contact-service SQLite connection deterministically, retains the Maildir `0700` assertion on POSIX
 systems without treating Windows mode emulation as POSIX, and adds standalone contact-service
-Ruff/Bandit gates. Source-release generation now writes canonical POSIX ZIP metadata and stored
+Ruff/Bandit gates. Forensic inventory generation canonicalizes text line endings and aggregate byte
+counts to keep Windows and Linux checkout validation identical, while ignored runtime state is
+excluded from source inventory and audit scans. Source-release generation now writes canonical POSIX ZIP metadata and stored
 entries for every member, eliminating host and zlib byte-stream variance between Windows and Linux.
 Rollback consists of restoring the prior base template and JavaScript, removing
 the new foundation stylesheet and local static assets, and reverting those audit-only hardening

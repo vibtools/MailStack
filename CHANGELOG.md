@@ -6,6 +6,7 @@ All notable repository-level changes are recorded here. Application history befo
 
 ### Corrected
 
+- Made forensic inventory generation deterministic across Windows and Linux by canonicalizing text line endings, normalizing aggregate byte counts, and excluding ignored runtime state from source audits.
 - Advanced the pinned Django 5.2 LTS runtime from 5.2.16 to 5.2.17 after RC2 `pip-audit` identified the upstream security advisory, and synchronized active dependency, deployment verification, and security-test contracts without changing application behavior.
 - Renamed CSS parser token-kind locals to avoid Bandit B105 credential-name false positives; no Bandit rule, exclusion, sanitizer policy, or runtime behavior is weakened.
 - Added the RC2 high-fidelity reader candidate: safe inline CSS and bounded sanitized `<style>`/responsive `@media` rules are preserved through an explicit allowlist while CSS URLs, imports, fonts, dynamic/custom-property functions, active positioning/effects and remote resources remain denied.
