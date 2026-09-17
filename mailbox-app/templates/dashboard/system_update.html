@@ -312,10 +312,12 @@ document.addEventListener("DOMContentLoaded", function() {
          }
       } else {
          document.getElementById("last-checked").textContent = "Idle";
+         setTimeout(() => btnCheck.click(), 100);
       }
     }).catch(e => {
         console.error("Initial status check failed", e);
         document.getElementById("last-checked").textContent = "Unknown";
+        setTimeout(() => btnCheck.click(), 100);
     });
 
   btnCheck.addEventListener("click", async () => {

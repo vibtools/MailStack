@@ -76,8 +76,16 @@ def system_update_page(request):
         return render(request, "dashboard/403.html", status=403)
 
     current_version = "Unknown"
+    pyproject_file = Path(settings.BASE_DIR) / "pyproject.toml"
     version_file = Path(settings.BASE_DIR).parent / "VERSION"
-    if version_file.exists():
+    
+    if pyproject_file.exists():
+        import re
+        content = pyproject_file.read_text(encoding="utf-8")
+        match = re.search(r'^version\s*=\s*"([^"]+)"', content, re.MULTILINE)
+        if match:
+            current_version = match.group(1)
+    elif version_file.exists():
         current_version = version_file.read_text(encoding="utf-8").strip()
 
     context = {
@@ -93,10 +101,13 @@ def check_update(request):
         return JsonResponse({"error": "Unauthorized"}, status=403)
 
     try:
-        url = f"https://api.github.com/repos/{GITHUB_REPO}/releases/latest"
+        url = f"https://api.github.com/repos/{GITHUB_REPO}/releases"
         req = urllib.request.Request(url, headers={"User-Agent": "MailStack-Updater"})  # nosec B310 # noqa: S310
         with urllib.request.urlopen(req) as response:  # nosec B310 # noqa: S310
-            data = json.loads(response.read().decode())
+            releases = json.loads(response.read().decode())
+            if not releases:
+                return JsonResponse({"error": "No releases found."}, status=404)
+            data = releases[0]
 
         assets = data.get("assets", [])
         archive_url = None
