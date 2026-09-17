@@ -3714,8 +3714,8 @@
       "kind": "text",
       "lines": 1644,
       "path": "mailbox-app/static/css/app.css",
-      "sha256": "65e4212818a4716e2c846748c21f41ef9ec2504accf0c9b8ecd1ae5a2003ca44",
-      "size_bytes": 40458
+      "sha256": "ccb439cb08519bee651a5cfe27196316c74be1fb301dffbce0e8d1921afa3b15",
+      "size_bytes": 38815
     },
     {
       "kind": "text",
@@ -5691,7 +5691,7 @@
     "shell_files": 15,
     "shell_functions": 42,
     "text_files": 422,
-    "total_bytes": 32016331,
+    "total_bytes": 32014688,
     "total_text_lines": 35884
   }
 }
