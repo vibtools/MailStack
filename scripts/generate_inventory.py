@@ -12,7 +12,7 @@ from pathlib import Path
 
 EXCLUDED_PARTS = {
     ".git", ".venv", ".audit-venv", "venv", ".tox", ".nox", "__pycache__",
-    ".pytest_cache", ".ruff_cache", "dist", "artifacts",
+    ".pytest_cache", ".ruff_cache", ".runtime", "dist", "artifacts",
 }
 SELF_PATH = "docs/FORENSIC_FILE_INVENTORY.json"
 EXCLUDED_NAMES = {".coverage", "SOURCE_MANIFEST.sha256"}
@@ -81,18 +81,25 @@ def build(root: Path) -> dict[str, object]:
         if path.suffix.lower() in {".zip", ".tar", ".gz"}:
             continue
         data = path.read_bytes()
-        entry: dict[str, object] = {
-            "path": relative,
-            "size_bytes": len(data),
-            "sha256": hashlib.sha256(data).hexdigest(),
-        }
         total_bytes += len(data)
         try:
             text = data.decode("utf-8")
         except UnicodeDecodeError:
+            entry = {
+                "path": relative,
+                "size_bytes": len(data),
+                "sha256": hashlib.sha256(data).hexdigest(),
+            }
             entry["kind"] = "binary"
             binary_files += 1
         else:
+            canonical_text = text.replace("\r\n", "\n").replace("\r", "\n")
+            canonical_data = canonical_text.encode("utf-8")
+            entry = {
+                "path": relative,
+                "size_bytes": len(canonical_data),
+                "sha256": hashlib.sha256(canonical_data).hexdigest(),
+            }
             line_count = len(text.splitlines())
             entry.update({"kind": "text", "lines": line_count})
             text_files += 1

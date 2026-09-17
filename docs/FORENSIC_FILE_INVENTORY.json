@@ -67,8 +67,8 @@
       "kind": "text",
       "lines": 39,
       "path": ".github/copilot-instructions.md",
-      "sha256": "7bde2e7a013f3e78da0e2f597949a34a26b20c260e4f7472d7654249b45c2be7",
-      "size_bytes": 2301
+      "sha256": "18fa7dcddcbc73e1ca0cb93f69d1b1f59625007c8a67ae35b0a9f823454a2dcf",
+      "size_bytes": 2300
     },
     {
       "kind": "text",
@@ -163,10 +163,10 @@
     },
     {
       "kind": "text",
-      "lines": 212,
+      "lines": 214,
       "path": "MEMORY.md",
-      "sha256": "5baabce374427add03fd0d66e06b30df2059f186bc34c477b362f423dc5568d7",
-      "size_bytes": 12456
+      "sha256": "12838022e927e984ed78cce3e7d6ed26548ec34a9b8bab51bad123884c09e221",
+      "size_bytes": 12934
     },
     {
       "kind": "text",
@@ -5242,7 +5242,7 @@
     },
     {
       "kind": "text",
-      "lines": 414,
+      "lines": 415,
       "path": "scripts/forensic_audit.py",
       "python": {
         "classes": [],
@@ -5268,12 +5268,12 @@
         ],
         "methods": []
       },
-      "sha256": "25c26876c925a898ab650f45753d0139b94fa6aa9b33d8a3c7c7c3ee69dedd9d",
-      "size_bytes": 15191
+      "sha256": "aaa2f21e61647832576e03b283b1dfa81544262eb0ba9d38adf11da602bfec9b",
+      "size_bytes": 15207
     },
     {
       "kind": "text",
-      "lines": 167,
+      "lines": 174,
       "path": "scripts/generate_inventory.py",
       "python": {
         "classes": [
@@ -5304,8 +5304,8 @@
           "Visitor.visit_ImportFrom"
         ]
       },
-      "sha256": "d8a1cc16bc6a9a4050cd3dfd2d96d364560104b9d14daa4a193a193e92f7b259",
-      "size_bytes": 6124
+      "sha256": "66a1763d90e15a6815b24df17403e4c8d74a52c2f697738ecfd20b6d3405b30e",
+      "size_bytes": 6464
     },
     {
       "kind": "text",
@@ -5771,7 +5771,7 @@
     "shell_files": 15,
     "shell_functions": 42,
     "text_files": 428,
-    "total_bytes": 32043518,
-    "total_text_lines": 36638
+    "total_bytes": 32044352,
+    "total_text_lines": 36648
   }
 }

@@ -119,6 +119,7 @@ BLOCKED_DIRS = {
     "__pycache__",
     ".pytest_cache",
     ".ruff_cache",
+    ".runtime",
     "node_modules",
     "Maildir",
     "attachments",
