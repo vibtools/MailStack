@@ -81,10 +81,10 @@ def build(root: Path) -> dict[str, object]:
         if path.suffix.lower() in {".zip", ".tar", ".gz"}:
             continue
         data = path.read_bytes()
-        total_bytes += len(data)
         try:
             text = data.decode("utf-8")
         except UnicodeDecodeError:
+            total_bytes += len(data)
             entry = {
                 "path": relative,
                 "size_bytes": len(data),
@@ -95,6 +95,7 @@ def build(root: Path) -> dict[str, object]:
         else:
             canonical_text = text.replace("\r\n", "\n").replace("\r", "\n")
             canonical_data = canonical_text.encode("utf-8")
+            total_bytes += len(canonical_data)
             entry = {
                 "path": relative,
                 "size_bytes": len(canonical_data),

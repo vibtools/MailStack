@@ -209,6 +209,7 @@ This memory file should be treated as the canonical context snapshot for future 
 - Strengthened the post-update contract to require inventory regeneration/check after the final file edit with no subsequent tracked-file edits before commit or push.
 - GitHub Action run `35253574019` reproduced the failure on commit `6deac14`: `.github/copilot-instructions.md` was hashed as 2301-byte CRLF content in the Windows-generated inventory, while GitHub's LF checkout was 2300 bytes. The inventory gate therefore failed despite a clean local check.
 - Fixed the root cause in `scripts/generate_inventory.py` by canonicalizing UTF-8 text line endings to LF before calculating hashes and sizes; binary files remain byte-for-byte hashed.
+- Fresh-checkout verification of `98c80aa` exposed the remaining aggregate mismatch: `summary.total_bytes` still counted raw CRLF bytes. Updated the generator to total the same canonical LF bytes used for text-file entries.
 
 - GitHub Action run `35251723880` failed in `python scripts/forensic_audit.py --root .` because `documents/DOCUMENTATION_MANIFEST.json` was stale; the dependent forensic inventory was also stale, producing three blocking findings.
 - Added a mandatory post-update rule to `AGENTS.md`: synchronize and check managed documentation, regenerate and check the forensic inventory, run forensic audit and relevant tests, and block commit/push until all generated contracts pass.
