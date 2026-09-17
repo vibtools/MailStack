@@ -600,8 +600,11 @@ summary {
 }
 
 .page-header h1 {
-  color: var(--ui-text);
-  font-size: clamp(1.85rem, 3vw, 2.5rem);
+  color: #111827;
+  font-size: 18px;
+  line-height: 22px;
+  font-weight: 600;
+  margin: 0;
 }
 
 .eyebrow {

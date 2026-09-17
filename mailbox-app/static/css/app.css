@@ -144,11 +144,11 @@ select {
 
 .page-header h1, .page-header h2 {
     margin: 0 !important;
-    color: var(--ui-text) !important;
+    color: #111827 !important;
     font-size: 18px;
-    line-height: 1.2;
+    line-height: 22px;
     letter-spacing: -.02em;
-    font-weight: var(--ui-font-weight-bold);
+    font-weight: 600;
     font-family: var(--ui-font-sans);
 }
 

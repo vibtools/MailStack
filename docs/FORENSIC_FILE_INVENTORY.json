@@ -3714,15 +3714,15 @@
       "kind": "text",
       "lines": 1648,
       "path": "mailbox-app/static/css/app.css",
-      "sha256": "ce30e191a4b1c44ffe696936dafc50757435c928f9939b5bd5c45f1d852b6496",
-      "size_bytes": 35759
+      "sha256": "4ba10e69238cbe4de706af2d6f3af4d7f7d5de02e34a637d355d2a6acfb070fa",
+      "size_bytes": 35730
     },
     {
       "kind": "text",
-      "lines": 967,
+      "lines": 970,
       "path": "mailbox-app/static/css/foundation.css",
-      "sha256": "5673eef632fb6c0d1b2e4bd793f63820d5b5326fb85e40f577dee6eca9b11712",
-      "size_bytes": 19234
+      "sha256": "a4485d8e10089cdd081275f0c6ec9a153a2e378c30abed41a888578a1b4e841d",
+      "size_bytes": 19258
     },
     {
       "kind": "text",
@@ -5691,7 +5691,7 @@
     "shell_files": 15,
     "shell_functions": 42,
     "text_files": 422,
-    "total_bytes": 32013702,
-    "total_text_lines": 35973
+    "total_bytes": 32013697,
+    "total_text_lines": 35976
   }
 }
