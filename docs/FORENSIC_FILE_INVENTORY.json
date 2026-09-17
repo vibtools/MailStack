@@ -5233,7 +5233,7 @@
     },
     {
       "kind": "text",
-      "lines": 167,
+      "lines": 176,
       "path": "scripts/generate_inventory.py",
       "python": {
         "classes": [
@@ -5251,6 +5251,7 @@
           "__future__",
           "argparse",
           "ast",
+          "difflib",
           "hashlib",
           "json",
           "pathlib",
@@ -5264,8 +5265,8 @@
           "Visitor.visit_ImportFrom"
         ]
       },
-      "sha256": "d8a1cc16bc6a9a4050cd3dfd2d96d364560104b9d14daa4a193a193e92f7b259",
-      "size_bytes": 6124
+      "sha256": "d4316fe5e92484b71c666723817603026c28f0fa276e964fe4c39f2d1b481e90",
+      "size_bytes": 6465
     },
     {
       "kind": "text",
@@ -5730,7 +5731,7 @@
     "shell_files": 15,
     "shell_functions": 42,
     "text_files": 425,
-    "total_bytes": 32027133,
-    "total_text_lines": 36270
+    "total_bytes": 32027474,
+    "total_text_lines": 36279
   }
 }
