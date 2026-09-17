@@ -203,5 +203,10 @@ This memory file should be treated as the canonical context snapshot for future 
 
 ### [2026-09-17] CI stale documentation-contract correction
 
+### [2026-09-17] CI inventory freshness follow-up
+
+- GitHub Action run `35252391632` failed because a later `AGENTS.md` edit was pushed without regenerating `docs/FORENSIC_FILE_INVENTORY.json`; the forensic gate reported `INVENTORY_OUT_OF_DATE` with one blocking finding.
+- Strengthened the post-update contract to require inventory regeneration/check after the final file edit with no subsequent tracked-file edits before commit or push.
+
 - GitHub Action run `35251723880` failed in `python scripts/forensic_audit.py --root .` because `documents/DOCUMENTATION_MANIFEST.json` was stale; the dependent forensic inventory was also stale, producing three blocking findings.
 - Added a mandatory post-update rule to `AGENTS.md`: synchronize and check managed documentation, regenerate and check the forensic inventory, run forensic audit and relevant tests, and block commit/push until all generated contracts pass.

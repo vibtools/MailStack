@@ -114,10 +114,10 @@
     },
     {
       "kind": "text",
-      "lines": 18,
+      "lines": 19,
       "path": "AGENTS.md",
-      "sha256": "990117ffed8fa447d4060beeb32c07bc2079b6506357d1bb5907db5d36948640",
-      "size_bytes": 2736
+      "sha256": "0a3cbb85994e7e992aba67f542285e63d28d6ed99b084b0e3db2303b912c5169",
+      "size_bytes": 3023
     },
     {
       "kind": "text",
@@ -163,10 +163,10 @@
     },
     {
       "kind": "text",
-      "lines": 207,
+      "lines": 212,
       "path": "MEMORY.md",
-      "sha256": "3e86653e91c9046e08f9c5093a9a21075475a1b8a0baeec1573d153b2491b58b",
-      "size_bytes": 12016
+      "sha256": "5baabce374427add03fd0d66e06b30df2059f186bc34c477b362f423dc5568d7",
+      "size_bytes": 12456
     },
     {
       "kind": "text",
@@ -5771,7 +5771,7 @@
     "shell_files": 15,
     "shell_functions": 42,
     "text_files": 428,
-    "total_bytes": 32042791,
-    "total_text_lines": 36632
+    "total_bytes": 32043518,
+    "total_text_lines": 36638
   }
 }
