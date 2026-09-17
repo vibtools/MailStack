@@ -1,85 +1,174 @@
 {% extends "base.html" %}
 {% block title %}System Update · MailStack{% endblock %}
 {% block content %}
+<style>
+  .update-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+  .update-metrics {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  .update-metric {
+    padding: 12px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    background: var(--bg-secondary);
+  }
+  .update-metric span {
+    display: block;
+    font-size: 11px;
+    color: var(--text-secondary);
+    margin-bottom: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .update-metric strong {
+    font-size: 13px;
+    color: var(--text-primary);
+  }
+  .update-box {
+    padding: 12px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    background: var(--bg-secondary);
+    font-size: 12px;
+    color: var(--text-primary);
+  }
+  .update-release-notes {
+    margin: 8px 0 0;
+    padding: 12px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    font-size: 11px;
+    line-height: 1.5;
+    max-height: 140px;
+    overflow-y: auto;
+    white-space: pre-wrap;
+    font-family: var(--font-mono);
+  }
+  .update-error-box {
+    margin-top: 12px;
+    padding: 12px;
+    border: 1px solid #fecdd3;
+    background: #fff1f2;
+    color: #e11d48;
+    border-radius: var(--radius);
+    font-size: 12px;
+  }
+  .update-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+  .update-header-row h2 {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 600;
+  }
+  .update-badge {
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 500;
+    background: var(--bg-secondary);
+    color: var(--text-secondary);
+    border: 1px solid var(--border-color);
+  }
+  .update-badge.success { background: #eefaf3; color: #166534; border-color: #c4e8d0; }
+  .update-badge.danger { background: #fff1f2; color: #e11d48; border-color: #fecdd3; }
+</style>
+
 <div class="page-header">
   <h1>System Update</h1>
 </div>
 
-<div class="licora-updater-grid">
-  <section class="licora-updater-card">
-    <h2>Current Installation</h2>
-    <div class="licora-updater-metrics">
-      <div class="licora-updater-metric">
-        <span>Current Version</span>
-        <strong id="current-version">{{ current_version }}</strong>
+<div class="update-grid">
+  <div class="card" style="margin-bottom: 0;">
+    <div class="card-body">
+      <div class="update-header-row">
+        <h2>Current Installation</h2>
       </div>
-      <div class="licora-updater-metric">
-        <span>Update Channel</span>
-        <strong>Stable</strong>
-      </div>
-      <div class="licora-updater-metric">
-        <span>Update System</span>
-        <strong>Signed / Resumable</strong>
-      </div>
-      <div class="licora-updater-metric">
-        <span>Status</span>
-        <strong id="last-checked">Checking...</strong>
-      </div>
-    </div>
-  </section>
-
-  <section class="licora-updater-card">
-    <div class="licora-card-heading">
-      <div><h2>Latest Stable Release</h2></div>
-      <span class="vib-badge" id="update-availability-badge">Check required</span>
-    </div>
-    
-    <div id="update-info-container">
-      <div class="licora-release-box">
-        <div class="licora-release-line">
-          <span>Version</span>
-          <strong id="latest-version">Unknown</strong>
+      <div class="update-metrics">
+        <div class="update-metric">
+          <span>Current Version</span>
+          <strong id="current-version">{{ current_version }}</strong>
+        </div>
+        <div class="update-metric">
+          <span>Update Channel</span>
+          <strong>Stable</strong>
+        </div>
+        <div class="update-metric">
+          <span>Update System</span>
+          <strong>Signed / Resumable</strong>
+        </div>
+        <div class="update-metric">
+          <span>Status</span>
+          <strong id="last-checked">Idle</strong>
         </div>
       </div>
-      <pre class="licora-release-notes ui-scrollbar" id="release-notes">Click 'Check for Updates' to fetch release metadata.</pre>
     </div>
-    
-    <div id="update-error" style="display: none; margin-top: 1.5rem;" class="licora-inline-error"></div>
-
-    <div class="licora-updater-actions" style="margin-top:14px;">
-      <button class="btn" type="button" id="btn-check-update">Check for Updates</button>
-      <button class="btn btn-primary" type="button" id="btn-start-update" style="display:none;">Install Update</button>
-    </div>
-  </section>
-</div>
-
-<section class="licora-updater-card" style="margin-top: 14px;">
-  <div class="licora-card-heading">
-    <div><h2>Installation State</h2></div>
-    <span class="vib-badge" id="preflight-summary">Idle</span>
   </div>
-  
-  <div class="licora-preflight" id="preflight-results">
-    <div class="licora-inline-info">Updater logs will stream in the terminal window when started.</div>
-  </div>
-  
-  <div id="active-job-panel" class="licora-active-job" style="display:none;">
-    <div class="licora-release-line">
-      <span>Active Job</span>
-      <strong id="active-job-id">System Upgrade</strong>
-    </div>
-    <div class="licora-job-progress">
-      <div style="width: 100%; background: var(--ui-canvas); height: 8px; border-radius: 4px; overflow: hidden; margin-top: 6px; border: 1px solid var(--ui-border);">
-        <div id="progress-bar" style="width: 0%; height: 100%; background: var(--ui-primary); transition: width 0.3s ease;"></div>
+
+  <div class="card" style="margin-bottom: 0;">
+    <div class="card-body">
+      <div class="update-header-row">
+        <h2>Latest Release</h2>
+        <span class="update-badge" id="update-availability-badge">Check required</span>
+      </div>
+      
+      <div id="update-info-container">
+        <div class="update-box" style="display: flex; justify-content: space-between; align-items: center;">
+          <span style="color: var(--text-secondary);">Version</span>
+          <strong id="latest-version">Unknown</strong>
+        </div>
+        <pre class="update-release-notes" id="release-notes">Click 'Check for Updates' to fetch release metadata.</pre>
+      </div>
+      
+      <div id="update-error" style="display: none;" class="update-error-box"></div>
+
+      <div class="actions" style="margin-top: 16px; gap: 8px;">
+        <button class="btn" type="button" id="btn-check-update">Check for Updates</button>
+        <button class="btn btn-primary" type="button" id="btn-start-update" style="display:none;">Install Update</button>
       </div>
     </div>
-    <div class="licora-job-meta">
-      <span id="active-job-stage">Idle</span>
-      <span id="active-job-percent">0%</span>
-    </div>
-    <div id="update-fatal-error" class="licora-inline-error" style="display: none; margin-top: 10px;"></div>
   </div>
-</section>
+</div>
+
+<div class="card">
+  <div class="card-body">
+    <div class="update-header-row">
+      <h2>Installation State</h2>
+      <span class="update-badge" id="preflight-summary">Idle</span>
+    </div>
+    
+    <div id="preflight-results" class="update-box" style="color: var(--text-secondary);">
+      Updater logs will stream in the terminal window when started.
+    </div>
+    
+    <div id="active-job-panel" style="display:none;">
+      <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+        <span style="font-size: 12px; color: var(--text-secondary);">Active Job</span>
+        <strong id="active-job-id" style="font-size: 12px; color: var(--text-primary);">System Upgrade</strong>
+      </div>
+      <div style="width: 100%; background: var(--border-color); height: 6px; border-radius: 3px; overflow: hidden; margin-bottom: 8px;">
+        <div id="progress-bar" style="width: 0%; height: 100%; background: var(--primary-color); transition: width 0.3s ease;"></div>
+      </div>
+      <div style="display: flex; justify-content: space-between; font-size: 11px; color: var(--text-secondary);">
+        <span id="active-job-stage">Idle</span>
+        <span id="active-job-percent">0%</span>
+      </div>
+      <div id="update-fatal-error" style="display: none;" class="update-error-box"></div>
+    </div>
+  </div>
+</div>
 
 <!-- Log Modal -->
 <div class="vib-modal-backdrop" id="licora-update-log-modal" role="dialog" aria-modal="true" aria-labelledby="licora-update-log-title" hidden>
@@ -187,9 +276,9 @@ document.addEventListener("DOMContentLoaded", function() {
         
         if (data.progress === 100) {
           clearInterval(pollInterval);
-          document.getElementById("progress-bar").style.background = "var(--ui-success)";
+          document.getElementById("progress-bar").style.background = "#16a34a";
           preflightSummary.textContent = "Complete";
-          preflightSummary.className = "vib-badge vib-badge-success";
+          preflightSummary.className = "update-badge success";
           appendLog('success', 'Update complete! Reloading page in 2 seconds...');
           
           setTimeout(() => {
@@ -197,11 +286,11 @@ document.addEventListener("DOMContentLoaded", function() {
           }, 2000);
         } else if (data.step === "error" || data.progress === -1) {
           clearInterval(pollInterval);
-          document.getElementById("progress-bar").style.background = "var(--ui-danger)";
+          document.getElementById("progress-bar").style.background = "#dc2626";
           document.getElementById("update-fatal-error").style.display = "block";
           document.getElementById("update-fatal-error").textContent = data.message;
           preflightSummary.textContent = "Failed";
-          preflightSummary.className = "vib-badge vib-badge-danger";
+          preflightSummary.className = "update-badge danger";
           appendLog('error', 'Update failed: ' + data.message);
         }
       } catch (err) {
@@ -253,12 +342,12 @@ document.addEventListener("DOMContentLoaded", function() {
       
       if ("{{ current_version }}" !== data.latest_version && archiveUrl && checksumUrl) {
          badgeAvailability.textContent = "Update available";
-         badgeAvailability.className = "vib-badge vib-badge-success";
+         badgeAvailability.className = "update-badge success";
          btnStart.style.display = "inline-flex";
       } else {
          if (archiveUrl && checksumUrl) {
             badgeAvailability.textContent = "Up to date";
-            badgeAvailability.className = "vib-badge";
+            badgeAvailability.className = "update-badge";
          } else {
             errorEl.style.display = "block";
             errorEl.textContent = "Update artifacts not found for the latest release.";

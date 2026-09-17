@@ -1,8 +1,8 @@
-# MailStack 1.3.4-rc.4 — PHASE-006 reader-fidelity continuation candidate
+# MailStack 1.3.4-rc.5 — PHASE-006 reader-fidelity continuation candidate
 
 ## Purpose
 
-`1.3.4-rc.4` is the owner-approved PHASE-006 continuation pre-release identity for controlled
+`1.3.4-rc.5` is the owner-approved PHASE-006 continuation pre-release identity for controlled
 acceptance of the high-fidelity safe HTML reader correction. It retains the RC1 reader-integrity,
 existing-message repair, and Gunicorn runtime protections while restoring a bounded, sanitized subset
 of sender presentation CSS. The frozen production baseline remains published/live-verified `v1.3.3`;

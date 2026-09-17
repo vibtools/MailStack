@@ -432,6 +432,15 @@ const VibMail = (() => {
       updateCollapseState(collapsed);
     });
 
+    const brandLockup = sidebar.querySelector(".brand-lockup");
+    brandLockup?.addEventListener("click", (event) => {
+      if (body.classList.contains("sidebar-collapsed") && desktop.matches) {
+        event.preventDefault();
+        saveSidebarPreference(false);
+        updateCollapseState(false);
+      }
+    });
+
     document.addEventListener("keydown", (event) => {
       if (event.key === "Escape" && body.classList.contains("shell-open")) {
         event.preventDefault();

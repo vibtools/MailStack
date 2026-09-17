@@ -537,6 +537,17 @@ tbody tr:hover {
     background: #fff0c2;
     color: #774d00
 }
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0 24px;
+}
+
+@media (min-width: 768px) {
+    .form-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
 
 .form-group {
     margin-bottom: 14px;
@@ -832,7 +843,7 @@ tbody tr:hover {
 
 .message-attachment {
     color: #596579;
-    font-weight: 700
+    font-weight: 500
 }
 
 .message-time {
@@ -971,7 +982,7 @@ tbody tr:hover {
 
 .message-routing-details dt {
     color: var(--muted);
-    font-weight: 700
+    font-weight: 500
 }
 
 .message-routing-details dd {
@@ -1452,30 +1463,57 @@ tbody tr:hover {
 .copy-mini {
     border: 0;
     background: transparent;
-    color: var(--brand);
-    padding: 0;
+    color: var(--ui-text);
+    padding: 2px 6px;
+    margin: -2px -6px; /* Offset padding so it aligns visually with surrounding text */
+    border-radius: var(--ui-radius-sm);
     cursor: pointer;
     font: inherit;
-    font-weight: 700;
+    font-weight: var(--ui-font-weight-medium);
     text-align: left;
-    overflow-wrap:anywhere
+    overflow-wrap: anywhere;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    transition: background 0.15s ease;
 }
 
 .copy-address:hover,
 .copy-mini:hover {
-    text-decoration: underline
+    text-decoration: none;
+    background: var(--ui-canvas);
+}
+
+.copy-address::after,
+.copy-mini::after {
+    content: "";
+    display: inline-block;
+    flex-shrink: 0;
+    width: 14px;
+    height: 14px;
+    opacity: 0.4;
+    background-color: currentColor;
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2' ry='2'%3E%3C/rect%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'%3E%3C/path%3E%3C/svg%3E") no-repeat center / contain;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2' ry='2'%3E%3C/rect%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'%3E%3C/path%3E%3C/svg%3E") no-repeat center / contain;
+    transition: opacity 0.15s ease;
+}
+
+.copy-address:hover::after,
+.copy-mini:hover::after {
+    opacity: 0.8;
 }
 
 .heading-copy {
     font-size: inherit;
     line-height: inherit;
-    color: var(--text);
-    font-weight: inherit
+    color: var(--ui-text);
+    font-weight: inherit;
 }
 
 .copy-mini {
     font-size: .78rem;
-    margin-left: .35rem
+    margin-left: .15rem;
 }
 
 .mailbox-summary-row {
@@ -1551,53 +1589,7 @@ tbody tr:hover {
         max-width: 100%
     }
 }
-/* MailStack Updater — migrated from Licora updater.css; all tokens resolved to --ui-* */
-.licora-updater-shell { width:100%; color:var(--ui-text); }
-.licora-updater-head { display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:0 0 12px;border-bottom:1px solid var(--ui-border); }
-.licora-updater-kicker { margin:0 0 3px;color:var(--ui-primary);font-size:9.5px;font-weight:600;letter-spacing:.07em;text-transform:uppercase; }
-.licora-updater-title { margin:0;color:var(--ui-text);font-size:20px;line-height:1.22;letter-spacing:-.02em;font-weight:600; }
-.licora-updater-subtitle { margin:4px 0 0;max-width:820px;color:var(--ui-text-muted);font-size:11.5px;line-height:1.5; }
-.licora-updater-actions { display:flex;align-items:center;gap:6px;flex-wrap:wrap; }
-.licora-updater-body { display:grid;gap:10px;padding-top:10px; }
-.licora-updater-grid { display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px; }
-.licora-updater-card { padding:11px 12px;border:1px solid var(--ui-border);border-radius:var(--ui-radius-lg);background:#fff;color:var(--ui-text); }
-.licora-updater-card > h2,.licora-updater-card .licora-card-heading h2 { margin:0;color:var(--ui-text);font-size:12.5px;line-height:1.3;font-weight:600; }
-.licora-updater-card > p,.licora-updater-card .licora-card-heading p { margin:3px 0 0;color:var(--ui-text-muted);font-size:10.5px;line-height:1.45; }
-.licora-card-heading { display:flex;align-items:flex-start;justify-content:space-between;gap:10px; }
-.licora-updater-metrics { display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin-top:10px; }
-.licora-updater-metric { min-height:58px;padding:8px;border:1px solid var(--ui-border);border-radius:var(--ui-radius-md);background:#fbfcfe; }
-.licora-updater-metric span { display:block;color:var(--ui-text-muted);font-size:9.5px;line-height:1.3; }
-.licora-updater-metric strong { display:block;margin-top:4px;color:var(--ui-text);font-size:11.5px;line-height:1.35;font-weight:600;overflow-wrap:anywhere; }
-.vib-badge { display:inline-flex;align-items:center;gap:4px;min-height:20px;padding:2px 6px;border:1px solid var(--ui-border);border-radius:999px;background:#f7f9fc;color:var(--ui-text-muted);font-size:9.5px;font-weight:500; }
-.vib-badge-success { color:var(--ui-success);border-color:#c4e8d0;background:#eefaf3; }
-.vib-badge-warning { color:#9a6700;border-color:#eed9a5;background:#fff8e8; }
-.vib-badge-danger { color:var(--ui-danger);border-color:#fecdd3;background:#fff1f2; }
-.licora-release-box { margin-top:10px;display:grid;gap:7px; }
-.licora-release-line { display:flex;justify-content:space-between;gap:10px;padding-bottom:6px;border-bottom:1px solid var(--ui-border); }
-.licora-release-line:last-child { border-bottom:0;padding-bottom:0; }
-.licora-release-line span { color:var(--ui-text-muted);font-size:10.5px; }
-.licora-release-line strong { color:var(--ui-text);font-size:10.5px;font-weight:500;text-align:right;overflow-wrap:anywhere; }
-.licora-release-notes { max-height:180px;overflow:auto;white-space:pre-wrap;margin:9px 0 0;padding:8px;border:1px solid var(--ui-border);border-radius:var(--ui-radius-md);background:#fbfcfe;color:var(--ui-text);font:10px/1.5 var(--ui-font-mono); }
-.licora-preflight { display:grid;gap:4px;margin-top:9px; }
-.licora-preflight-row { display:grid;grid-template-columns:16px minmax(120px,180px) 1fr;gap:7px;align-items:start;padding:5px 0;border-bottom:1px solid var(--ui-border); }
-.licora-preflight-row:last-child { border-bottom:0; }
-.licora-preflight-icon { font-weight:600; }
-.licora-preflight-row[data-ok="1"] .licora-preflight-icon { color:var(--ui-success); }
-.licora-preflight-row[data-ok="0"] .licora-preflight-icon { color:var(--ui-danger); }
-.licora-preflight-label { color:var(--ui-text);font-size:10.5px;font-weight:500; }
-.licora-preflight-detail { color:var(--ui-text-muted);font-size:10.5px;overflow-wrap:anywhere; }
-.licora-active-job { margin-top:10px; }
-.licora-job-progress { height:6px;border-radius:999px;background:#e6ebf1;overflow:hidden;margin-top:9px; }
-.licora-job-progress>span { display:block;height:100%;width:0;background:var(--ui-primary);transition:width 0.35s ease; }
-.licora-job-meta { display:flex;justify-content:space-between;gap:8px;margin-top:6px;color:var(--ui-text-muted);font-size:9.5px; }
-.licora-history-scroll { overflow-x:auto; }
-.licora-update-history { width:100%;border-collapse:collapse;margin-top:9px;min-width:640px; }
-.licora-update-history th,.licora-update-history td { padding:7px 8px;border-bottom:1px solid var(--ui-border);text-align:left;vertical-align:middle; }
-.licora-update-history th { color:var(--ui-text-muted);font-size:9.5px;font-weight:600;background:#f7f9fc; }
-.licora-update-history td { color:var(--ui-text);font-size:10.5px; }
-.licora-update-history tr:last-child td { border-bottom:0; }
-.licora-inline-error { border:1px solid #fecdd3;background:#fff1f2;color:var(--ui-danger);border-radius:var(--ui-radius-md);padding:8px 9px;font-size:10.5px; }
-.licora-inline-info { border:1px solid var(--ui-border);background:#f8fafc;color:var(--ui-text-muted);border-radius:var(--ui-radius-md);padding:8px 9px;font-size:10.5px; }
+/* MailStack Updater styles moved directly to system_update.html for clean component scoping */
 /* Log modal */
 .vib-modal-backdrop { position:fixed;inset:0;z-index:2080;display:flex;align-items:center;justify-content:center;padding:22px;background:rgba(15,23,42,.34);backdrop-filter:blur(3px); }
 .vib-modal-backdrop[hidden] { display:none!important; }
