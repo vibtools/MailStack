@@ -11,11 +11,11 @@ import zipfile
 from pathlib import Path, PurePosixPath
 
 VERSION_PATTERN = re.compile(
-    r"^(?P<major>0|[1-9]\d*)\.(?P<minor>0|[1-9]\d*)\.(?P<patch>0|[1-9]\d*)"
+    r"^(?P<major>0|[1-9]\d*)\.(?P<minor>0|[1-9]\d*)\.(?P<patch>0|[1-9]\d*)(?:\.(?P<revision>0|[1-9]\d*))?"
     r"(?:-rc\.(?P<rc>0|[1-9]\d*))?$"
 )
 PACKAGE_PATTERN = re.compile(
-    r"^(?P<major>0|[1-9]\d*)\.(?P<minor>0|[1-9]\d*)\.(?P<patch>0|[1-9]\d*)"
+    r"^(?P<major>0|[1-9]\d*)\.(?P<minor>0|[1-9]\d*)\.(?P<patch>0|[1-9]\d*)(?:\.(?P<revision>0|[1-9]\d*))?"
     r"(?:rc(?P<rc>0|[1-9]\d*))?$"
 )
 MANIFEST_LINE = re.compile(r"^([0-9a-f]{64})  (.+)$")
@@ -54,18 +54,22 @@ def sha256(path: Path) -> str:
     return hasher.hexdigest()
 
 
-def normalized_version(value: str, *, package: bool = False) -> tuple[str, tuple[int, int, int, int, int]]:
+def normalized_version(value: str, *, package: bool = False) -> tuple[str, tuple[int, int, int, int, int, int]]:
     pattern = PACKAGE_PATTERN if package else VERSION_PATTERN
     match = pattern.fullmatch(value.strip())
     if not match:
         kind = "package version" if package else "VERSION"
         raise UpgradeArchiveError(f"unsupported {kind}: {value!r}")
     major, minor, patch = (int(match.group(name)) for name in ("major", "minor", "patch"))
+    revision = int(match.group("revision") or 0)
     rc_text = match.group("rc")
     stable_rank = 1 if rc_text is None else 0
     rc = 0 if rc_text is None else int(rc_text)
-    canonical = f"{major}.{minor}.{patch}" + (f"-rc.{rc}" if rc_text is not None else "")
-    return canonical, (major, minor, patch, stable_rank, rc)
+    canonical = f"{major}.{minor}.{patch}"
+    if match.group("revision") is not None:
+        canonical += f".{revision}"
+    canonical += f"-rc.{rc}" if rc_text is not None else ""
+    return canonical, (major, minor, patch, revision, stable_rank, rc)
 
 
 def package_from_release(version: str) -> str:
@@ -73,6 +77,8 @@ def package_from_release(version: str) -> str:
     if not match:
         raise UpgradeArchiveError(f"unsupported VERSION: {version!r}")
     base = f"{match.group('major')}.{match.group('minor')}.{match.group('patch')}"
+    if match.group("revision") is not None:
+        base += f".{match.group('revision')}"
     rc = match.group("rc")
     return f"{base}rc{rc}" if rc is not None else base
 

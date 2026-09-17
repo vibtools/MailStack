@@ -58,6 +58,7 @@ REQUIRED = {
     "docs/RELEASE_NOTES_1.3.3.md",
     "docs/RELEASE_NOTES_1.3.4.md",
     "docs/RELEASE_NOTES_1.3.5.md",
+    "docs/RELEASE_NOTES_1.3.5.1.md",
     "documents/README.md",
     "documents/USER_MANUAL.md",
     "documents/HOW_TO_USE.md",
@@ -187,6 +188,7 @@ def main() -> int:
     file_count = 0
     python_count = 0
     shell_count = 0
+    release_version = (root / "VERSION").read_text(encoding="utf-8").strip()
 
     for required in sorted(REQUIRED):
         if not (root / required).exists():
@@ -234,6 +236,8 @@ def main() -> int:
                 findings.append(f"UNAPPROVED_EMAIL_DOMAIN:{relative}:{domain}")
 
         for candidate in IPV4_LITERAL.findall(text):
+            if candidate == release_version:
+                continue
             try:
                 address = ipaddress.ip_address(candidate)
             except ValueError:

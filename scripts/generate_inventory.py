@@ -147,16 +147,7 @@ def main() -> int:
     output = args.output or (root / SELF_PATH)
     content = encoded(build(root))
     if args.check:
-        existing = output.read_text(encoding="utf-8") if output.is_file() else ""
-        if existing != content:
-            import difflib
-            diff = '\n'.join(difflib.unified_diff(
-                existing.splitlines(),
-                content.splitlines(),
-                fromfile="committed_inventory.json",
-                tofile="generated_on_ci.json"
-            ))
-            print(f"DIFF:\\n{diff}\\n")
+        if not output.is_file() or output.read_text(encoding="utf-8") != content:
             print(f"INVENTORY_OUT_OF_DATE={output}")
             return 1
         print(f"INVENTORY_FILE={output}")

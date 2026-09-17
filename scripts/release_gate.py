@@ -16,7 +16,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-VERSION_PATTERN = re.compile(r"^(?P<major>0|[1-9]\d*)\.(?P<minor>0|[1-9]\d*)\.(?P<patch>0|[1-9]\d*)(?:-rc\.(?P<rc>0|[1-9]\d*))?$")
+VERSION_PATTERN = re.compile(r"^(?P<major>0|[1-9]\d*)\.(?P<minor>0|[1-9]\d*)\.(?P<patch>0|[1-9]\d*)(?:\.(?P<revision>0|[1-9]\d*))?(?:-rc\.(?P<rc>0|[1-9]\d*))?$")
 SHA_PATTERN = re.compile(r"^[0-9a-f]{40}$")
 API_VERSION = "2022-11-28"
 
@@ -39,6 +39,8 @@ def normalize_package_version(version: str) -> str:
     if not match:
         raise ReleaseGateError(f"unsupported VERSION format: {version!r}")
     base = f"{match.group('major')}.{match.group('minor')}.{match.group('patch')}"
+    if match.group("revision") is not None:
+        base += f".{match.group('revision')}"
     rc = match.group("rc")
     return f"{base}rc{rc}" if rc is not None else base
 

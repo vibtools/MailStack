@@ -43,6 +43,7 @@ roots: list[tempfile.TemporaryDirectory[str]] = []
 def test_version_normalization() -> None:
     assert GATE.normalize_package_version("1.3.0-rc.5") == "1.3.0rc5"
     assert GATE.normalize_package_version("1.3.0") == "1.3.0"
+    assert GATE.normalize_package_version("1.3.5.1") == "1.3.5.1"
     try:
         GATE.normalize_package_version("1.3")
     except GATE.ReleaseGateError:
@@ -72,6 +73,19 @@ def test_tag_identity_and_manual_mode() -> None:
         sha="b" * 40,
     )
     assert manual.publish is False
+
+
+def test_revision_release_identity() -> None:
+    root = make_root("1.3.5.1", "1.3.5.1")
+    identity = GATE.validate_local_identity(
+        root,
+        event_name="push",
+        ref_type="tag",
+        ref_name="v1.3.5.1",
+        sha="c" * 40,
+    )
+    assert identity.tag == "v1.3.5.1"
+    assert identity.prerelease is False
 
     stable_root = make_root("1.3.0", "1.3.0")
     stable = GATE.validate_local_identity(
@@ -188,7 +202,7 @@ def test_workflow_contract() -> None:
         "--latest",
         'dist/*.zip',
         'dist/*.sha256',
-        'docs/RELEASE_NOTES_1.3.5.md',
+        'docs/RELEASE_NOTES_1.3.5.1.md',
     )
     for marker in required:
         assert marker in text, marker

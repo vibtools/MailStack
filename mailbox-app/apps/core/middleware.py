@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import secrets
 from collections.abc import Callable
 
 from django.http import HttpRequest, HttpResponse
@@ -10,6 +11,7 @@ class SecurityHeadersMiddleware:
         self.get_response = get_response
 
     def __call__(self, request: HttpRequest) -> HttpResponse:
+        request.csp_nonce = secrets.token_urlsafe(32)
         response = self.get_response(request)
         if request.path.startswith("/messages/html/"):
             response["Content-Security-Policy"] = (
@@ -18,8 +20,12 @@ class SecurityHeadersMiddleware:
             )
             response["X-Frame-Options"] = "SAMEORIGIN"
         else:
+            style_policy = "'self' 'nonce-{}'".format(request.csp_nonce)
+            if request.path == "/system-update/":
+                style_policy += " 'unsafe-inline'"
             response["Content-Security-Policy"] = (
-                "default-src 'self'; img-src 'self' data:; style-src 'self'; script-src 'self'; "
+                f"default-src 'self'; img-src 'self' data:; style-src {style_policy}; "
+                f"script-src 'self' 'nonce-{request.csp_nonce}'; "
                 "font-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-src 'self'"
             )
         response["Permissions-Policy"] = "camera=(), microphone=(), geolocation=(), payment=()"

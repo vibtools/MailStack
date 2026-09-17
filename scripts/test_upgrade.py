@@ -163,6 +163,10 @@ def main() -> int:
     stable, stable_order = module.normalized_version("1.3.0")
     rc, rc_order = module.normalized_version("1.3.0-rc.5")
     require(stable == "1.3.0" and rc == "1.3.0-rc.5", "version normalization failed")
+    revision, revision_order = module.normalized_version("1.3.5.1")
+    previous, previous_order = module.normalized_version("1.3.5")
+    require(revision == "1.3.5.1", "revision version normalization failed")
+    require(revision_order > previous_order, "revision release must sort after its base release")
     require(stable_order > rc_order, "stable release must sort after RC of the same base version")
     added, removed, modified = module.compare_migrations(
         {"apps/core/migrations/0001.py": "a"},

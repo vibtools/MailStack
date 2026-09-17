@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block title %}System Update · MailStack{% endblock %}
 {% block content %}
-<style>
+<style nonce="{{ request.csp_nonce }}">
   .update-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
@@ -29,6 +29,7 @@
   }
   .update-metric strong {
     font-size: 13px;
+    font-weight: 500;
     color: var(--text-primary);
   }
   .update-box {
@@ -71,7 +72,7 @@
   .update-header-row h2 {
     margin: 0;
     font-size: 14px;
-    font-weight: 600;
+    font-weight: 500;
   }
   .update-badge {
     padding: 4px 8px;
@@ -123,7 +124,7 @@
         <h2>Latest Release</h2>
         <span class="update-badge" id="update-availability-badge">Check required</span>
       </div>
-      
+
       <div id="update-info-container">
         <div class="update-box" style="display: flex; justify-content: space-between; align-items: center;">
           <span style="color: var(--text-secondary);">Version</span>
@@ -131,7 +132,7 @@
         </div>
         <pre class="update-release-notes" id="release-notes">Click 'Check for Updates' to fetch release metadata.</pre>
       </div>
-      
+
       <div id="update-error" style="display: none;" class="update-error-box"></div>
 
       <div class="actions" style="margin-top: 16px; gap: 8px;">
@@ -148,11 +149,11 @@
       <h2>Installation State</h2>
       <span class="update-badge" id="preflight-summary">Idle</span>
     </div>
-    
+
     <div id="preflight-results" class="update-box" style="color: var(--text-secondary);">
       Updater logs will stream in the terminal window when started.
     </div>
-    
+
     <div id="active-job-panel" style="display:none;">
       <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
         <span style="font-size: 12px; color: var(--text-secondary);">Active Job</span>
@@ -184,11 +185,11 @@
         </div>
       </div>
     </header>
-    
+
     <div class="vib-log-viewport" id="update-log-viewport" tabindex="0" aria-label="Update terminal log stream">
       <div class="vib-log-empty" id="update-log-empty">Waiting for updater events...</div>
     </div>
-    
+
     <footer class="vib-log-footer">
       <span id="update-log-stage">Stage: idle</span>
       <span>Closing this window does not cancel the update</span>
@@ -199,7 +200,7 @@
 <!-- Update Available Modal -->
 <div class="vib-modal-backdrop" id="modal-update-available" role="dialog" aria-modal="true" hidden>
   <div class="vib-modal-dialog" style="max-width: 400px; padding: 24px; border-radius: var(--radius); background: var(--bg-primary); border: 1px solid var(--border-color); box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);">
-    <h3 style="margin-top: 0; font-size: 16px; font-weight: 600; color: var(--text-primary);">Update Available</h3>
+    <h3 style="margin-top: 0; font-size: 16px; font-weight: 500; color: var(--text-primary);">Update Available</h3>
     <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 24px;">
       Version <strong id="modal-latest-version" style="color: var(--text-primary);"></strong> is available. Would you like to install it now?
     </p>
@@ -217,7 +218,7 @@
       <div style="display: inline-flex; align-items: center; justify-content: center; width: 48px; height: 48px; border-radius: 50%; background: #eefaf3; color: #16a34a; margin-bottom: 16px;">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
       </div>
-      <h3 style="margin-top: 0; font-size: 16px; font-weight: 600; color: var(--text-primary);">System is Up to Date</h3>
+      <h3 style="margin-top: 0; font-size: 16px; font-weight: 500; color: var(--text-primary);">System is Up to Date</h3>
       <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 24px;">
         You are already running the latest version (<span id="modal-current-version"></span>).
       </p>
@@ -228,7 +229,7 @@
 
 <form style="display:none;" id="csrf-form">{% csrf_token %}</form>
 
-<script>
+<script nonce="{{ request.csp_nonce }}">
 document.addEventListener("DOMContentLoaded", function() {
   const btnCheck = document.getElementById("btn-check-update");
   const btnStart = document.getElementById("btn-start-update");
@@ -237,7 +238,7 @@ document.addEventListener("DOMContentLoaded", function() {
   const preflightResults = document.getElementById("preflight-results");
   const badgeAvailability = document.getElementById("update-availability-badge");
   const preflightSummary = document.getElementById("preflight-summary");
-  
+
   // Log Modal
   const logModal = document.getElementById("licora-update-log-modal");
   const logClose = document.getElementById("log-close");
@@ -253,21 +254,26 @@ document.addEventListener("DOMContentLoaded", function() {
     const input = document.querySelector('#csrf-form input[name="csrfmiddlewaretoken"]');
     return input ? input.value : '';
   }
-  
+
   function appendLog(level, message) {
     if (logEmpty) logEmpty.style.display = 'none';
-    
+
     const time = new Date().toLocaleTimeString('en-US', { hour12: false });
     const row = document.createElement('div');
     row.className = 'vib-log-row';
     row.setAttribute('data-level', level);
-    
-    row.innerHTML = `
-      <span class="vib-log-time">${time}</span>
-      <span class="vib-log-badge">${level}</span>
-      <span class="vib-log-message">${message}</span>
-    `;
-    
+
+    const timeEl = document.createElement('span');
+    timeEl.className = 'vib-log-time';
+    timeEl.textContent = time;
+    const levelEl = document.createElement('span');
+    levelEl.className = 'vib-log-badge';
+    levelEl.textContent = level;
+    const messageEl = document.createElement('span');
+    messageEl.className = 'vib-log-message';
+    messageEl.textContent = message;
+    row.append(timeEl, levelEl, messageEl);
+
     logViewport.appendChild(row);
     logViewport.scrollTop = logViewport.scrollHeight;
   }
@@ -280,37 +286,37 @@ document.addEventListener("DOMContentLoaded", function() {
     preflightResults.style.display = "none";
     activeJobPanel.style.display = "block";
     btnStart.disabled = true;
-    
+
     logModal.hidden = false;
     appendLog('info', 'Starting update process...');
-    
+
     pollInterval = setInterval(async () => {
       try {
         const res = await fetch("{% url 'dashboard:update_status' %}");
         const data = await res.json();
-        
+
         document.getElementById("active-job-stage").textContent = data.step;
         logStage.textContent = "Stage: " + data.step;
         preflightSummary.textContent = "Installing";
-        
+
         // Only append log if message changed (simple deduplication since backend doesn't stream array)
         if (window._lastLogMsg !== data.message) {
             appendLog(data.step === 'error' ? 'error' : 'info', data.message);
             window._lastLogMsg = data.message;
         }
-        
+
         if (data.progress >= 0) {
            document.getElementById("progress-bar").style.width = data.progress + "%";
            document.getElementById("active-job-percent").textContent = data.progress + "%";
         }
-        
+
         if (data.progress === 100) {
           clearInterval(pollInterval);
           document.getElementById("progress-bar").style.background = "#16a34a";
           preflightSummary.textContent = "Complete";
           preflightSummary.className = "update-badge success";
           appendLog('success', 'Update complete! Reloading page in 2 seconds...');
-          
+
           setTimeout(() => {
             window.location.reload();
           }, 2000);
@@ -349,30 +355,30 @@ document.addEventListener("DOMContentLoaded", function() {
 
     try {
       const res = await fetch("{% url 'dashboard:check_update' %}");
-      
+
       let data;
       try {
         data = await res.json();
       } catch (jsonErr) {
         throw new Error("Server returned an invalid response (500 Internal Error). Check server logs.");
       }
-      
+
       if (!res.ok) {
         throw new Error(data.error || "Failed to check for updates");
       }
-      
+
       document.getElementById("latest-version").textContent = data.latest_version;
       document.getElementById("release-notes").textContent = data.release_notes || "No release notes provided.";
       archiveUrl = data.archive_url;
       checksumUrl = data.checksum_url;
-      
+
       document.getElementById("last-checked").textContent = new Date().toLocaleTimeString();
-      
+
       if ("{{ current_version }}" !== data.latest_version && archiveUrl && checksumUrl) {
          badgeAvailability.textContent = "Update available";
          badgeAvailability.className = "update-badge success";
          btnStart.style.display = "inline-flex";
-         
+
          if (showPopup) {
             modalLatestVersion.textContent = data.latest_version;
             modalAvailable.hidden = false;
@@ -381,7 +387,7 @@ document.addEventListener("DOMContentLoaded", function() {
          if (archiveUrl && checksumUrl) {
             badgeAvailability.textContent = "Up to date";
             badgeAvailability.className = "update-badge";
-            
+
             if (showPopup) {
                modalCurrentVersion.textContent = "{{ current_version }}";
                modalUpToDate.hidden = false;
@@ -436,7 +442,7 @@ document.addEventListener("DOMContentLoaded", function() {
   async function triggerUpdate() {
     btnStart.disabled = true;
     modalAvailable.hidden = true; // close modal if open
-    
+
     try {
       const res = await fetch("{% url 'dashboard:start_update' %}", {
         method: "POST",
@@ -446,10 +452,11 @@ document.addEventListener("DOMContentLoaded", function() {
         },
         body: JSON.stringify({
           archive_url: archiveUrl,
-          checksum_url: checksumUrl
+          checksum_url: checksumUrl,
+          allow_migrations: false
         })
       });
-      
+
       if (res.ok) {
         startPolling();
       } else {

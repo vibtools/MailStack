@@ -18,7 +18,7 @@ EOF
   exit 2
 }
 
-STATUS_FILE="/tmp/vibmail_update_status.json"
+STATUS_FILE="/run/vibmail/update_status.json"
 report_progress() {
   local step="$1"
   local message="$2"
@@ -26,13 +26,15 @@ report_progress() {
   # Optional: escape quotes if message contains them, but typically it shouldn't here.
   printf '{"step": "%s", "message": "%s", "progress": %d}\n' "$step" "$message" "$progress" > "$STATUS_FILE" 2>/dev/null || true
   chmod 0644 "$STATUS_FILE" 2>/dev/null || true
+  chown vmail:vmail "$STATUS_FILE" 2>/dev/null || true
 }
 
-die() { 
-  printf 'UPGRADE_FINDING=%s\n' "$*" >&2; 
+die() {
+  printf 'UPGRADE_FINDING=%s\n' "$*" >&2;
   printf '{"step": "error", "message": "%s", "progress": -1}\n' "$*" > "$STATUS_FILE" 2>/dev/null || true
   chmod 0644 "$STATUS_FILE" 2>/dev/null || true
-  exit 1; 
+  chown vmail:vmail "$STATUS_FILE" 2>/dev/null || true
+  exit 1;
 }
 [[ ${EUID:-$(id -u)} -eq 0 ]] || die "run as root"
 
@@ -133,8 +135,8 @@ TARGET_VERSION=$(printf '%s\n' "$VERIFY_OUTPUT" | sed -n 's/^TARGET_VERSION=//p'
 TARGET_ROOT=$(printf '%s\n' "$VERIFY_OUTPUT" | sed -n 's/^TARGET_ROOT=//p')
 TARGET_SHA256=$(printf '%s\n' "$VERIFY_OUTPUT" | sed -n 's/^UPGRADE_ARCHIVE_SHA256=//p')
 NEW_MIGRATIONS=$(printf '%s\n' "$VERIFY_OUTPUT" | sed -n 's/^NEW_MIGRATIONS=//p')
-[[ "$CURRENT_VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-rc\.[0-9]+)?$ ]] || die "invalid current version returned by verifier"
-[[ "$TARGET_VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-rc\.[0-9]+)?$ ]] || die "invalid target version returned by verifier"
+[[ "$CURRENT_VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+(\.[0-9]+)?(-rc\.[0-9]+)?$ ]] || die "invalid current version returned by verifier"
+[[ "$TARGET_VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+(\.[0-9]+)?(-rc\.[0-9]+)?$ ]] || die "invalid target version returned by verifier"
 [[ "$TARGET_SHA256" =~ ^[0-9a-f]{64}$ ]] || die "invalid target checksum returned by verifier"
 [[ "$NEW_MIGRATIONS" =~ ^[0-9]+$ ]] || die "invalid migration count returned by verifier"
 [[ -d "$TARGET_ROOT/mailbox-app" && -d "$TARGET_ROOT/public-site" ]] || die "verified release staging is incomplete"

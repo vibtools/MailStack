@@ -23,7 +23,7 @@ from apps.mailboxes.models import Mailbox
 
 logger = logging.getLogger(__name__)
 GITHUB_REPO = "vibtools/MailStack"
-UPDATE_STATUS_PATH = Path("/tmp/vibmail_update_status.json")  # nosec B108 # noqa: S108
+UPDATE_STATUS_PATH = Path("/run/vibmail/update_status.json")
 
 
 def _database_ok() -> bool:
@@ -78,7 +78,7 @@ def system_update_page(request):
     current_version = "Unknown"
     pyproject_file = Path(settings.BASE_DIR) / "pyproject.toml"
     version_file = Path(settings.BASE_DIR).parent / "VERSION"
-    
+
     if pyproject_file.exists():
         import re
         content = pyproject_file.read_text(encoding="utf-8")
@@ -101,21 +101,23 @@ def check_update(request):
         return JsonResponse({"error": "Unauthorized"}, status=403)
 
     try:
-        url = f"https://api.github.com/repos/{GITHUB_REPO}/releases"
+        url = f"https://api.github.com/repos/{GITHUB_REPO}/releases/latest"
         req = urllib.request.Request(url, headers={"User-Agent": "MailStack-Updater"})  # nosec B310 # noqa: S310
-        with urllib.request.urlopen(req) as response:  # nosec B310 # noqa: S310
+        with urllib.request.urlopen(req, timeout=15) as response:  # nosec B310 # noqa: S310
             releases = json.loads(response.read().decode())
-            if not releases:
-                return JsonResponse({"error": "No releases found."}, status=404)
-            data = releases[0]
+            data = releases
+
+        if not data.get("tag_name") or data.get("draft") or data.get("prerelease"):
+            return JsonResponse({"error": "Latest stable release is unavailable."}, status=404)
 
         assets = data.get("assets", [])
         archive_url = None
         checksum_url = None
         for asset in assets:
-            if asset["name"].endswith(".zip"):
+            asset_name = asset.get("name", "")
+            if asset_name.endswith("-source.zip"):
                 archive_url = asset["browser_download_url"]
-            elif asset["name"].endswith(".zip.sha256"):
+            elif asset_name.endswith("-source.zip.sha256"):
                 checksum_url = asset["browser_download_url"]
 
         version = data.get("tag_name", "").lstrip("v")
@@ -157,6 +159,16 @@ def start_update(request):
                 status=400,
             )
 
+        if UPDATE_STATUS_PATH.exists():
+            try:
+                current_status = json.loads(UPDATE_STATUS_PATH.read_text(encoding="utf-8"))
+                if current_status.get("step") not in (None, "idle", "error") and current_status.get(
+                    "progress", 0
+                ) != 100:
+                    return JsonResponse({"error": "An update is already in progress."}, status=409)
+            except (OSError, ValueError):
+                pass
+
         UPDATE_STATUS_PATH.write_text(
             json.dumps({"step": "init", "message": "Downloading update archive...", "progress": 0}),
             encoding="utf-8",
@@ -197,7 +209,6 @@ def start_update(request):
                     "sudo", "-n", "/opt/vibmail/app/scripts/upgrade.sh",
                     "--archive", archive_path,
                     "--checksum", checksum_path,
-                    "--allow-migrations",
                     "--confirm-upgrade",
                 ]
                 result = subprocess.run(cmd, capture_output=True, text=True)  # nosec B603 # noqa: S603
