@@ -1,4 +1,4 @@
-﻿{
+{
     "files":  [
                   {
                       "kind":  "text",
@@ -866,10 +866,10 @@
                   },
                   {
                       "kind":  "text",
-                      "lines":  246,
+                      "lines":  245,
                       "path":  "documents/DOCUMENTATION_MANIFEST.json",
-                      "sha256":  "38a8c65625ede38c426a76aa68c5e51f22ab33548547734a45dd18cb0c13763e",
-                      "size_bytes":  9570
+                      "sha256":  "6ea34d47d3409556d474d9ec49e84f4ce53f1f5e2cb668a7e278f5454c109cb4",
+                      "size_bytes":  14626
                   },
                   {
                       "kind":  "text",
@@ -3961,9 +3961,9 @@
                   },
                   {
                       "kind":  "text",
-                      "lines":  85,
+                      "lines":  86,
                       "path":  "mailbox-app/pyproject.toml",
-                      "sha256":  "006d348d076d4a09043aea1bf5d993599480dbaa8bde030174c0a376771b24e7",
+                      "sha256":  "37b0b3ed350a633e95a1b034c90b2cd6ca0a4a1f1391ec649e279c695de06e49",
                       "size_bytes":  2548
                   },
                   {
