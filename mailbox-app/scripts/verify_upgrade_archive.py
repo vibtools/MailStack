@@ -54,7 +54,11 @@ def sha256(path: Path) -> str:
     return hasher.hexdigest()
 
 
-def normalized_version(value: str, *, package: bool = False) -> tuple[str, tuple[int, int, int, int, int, int]]:
+def normalized_version(
+    value: str,
+    *,
+    package: bool = False,
+) -> tuple[str, tuple[int, int, int, int, int, int]]:
     pattern = PACKAGE_PATTERN if package else VERSION_PATTERN
     match = pattern.fullmatch(value.strip())
     if not match:

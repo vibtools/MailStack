@@ -20,7 +20,7 @@ class SecurityHeadersMiddleware:
             )
             response["X-Frame-Options"] = "SAMEORIGIN"
         else:
-            style_policy = "'self' 'nonce-{}'".format(request.csp_nonce)
+            style_policy = f"'self' 'nonce-{request.csp_nonce}'"
             if request.path == "/system-update/":
                 style_policy += " 'unsafe-inline'"
             response["Content-Security-Policy"] = (

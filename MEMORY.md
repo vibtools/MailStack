@@ -213,3 +213,8 @@ This memory file should be treated as the canonical context snapshot for future 
 
 - GitHub Action run `35251723880` failed in `python scripts/forensic_audit.py --root .` because `documents/DOCUMENTATION_MANIFEST.json` was stale; the dependent forensic inventory was also stale, producing three blocking findings.
 - Added a mandatory post-update rule to `AGENTS.md`: synchronize and check managed documentation, regenerate and check the forensic inventory, run forensic audit and relevant tests, and block commit/push until all generated contracts pass.
+
+### [2026-09-17] CI Ruff lint correction
+
+- GitHub Action run `35255798358` failed in `ruff check .` with UP032 in `mailbox-app/apps/core/middleware.py` and E501 in `mailbox-app/scripts/verify_upgrade_archive.py`.
+- Replaced the CSP nonce `.format()` call with an f-string and wrapped the long `normalized_version` signature; the exact CI Ruff command now passes.
