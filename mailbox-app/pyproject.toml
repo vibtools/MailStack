@@ -33,7 +33,7 @@ dependencies = [
   "tinycss2==1.5.1",
   "filelock==3.20.3",
   "gunicorn==25.1.0",
-  "mysqlclient==2.2.7",
+  "mysqlclient==2.3.0",
   "python-dotenv==1.2.2",
   "whitenoise==6.11.0",
 ]
