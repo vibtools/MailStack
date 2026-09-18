@@ -59,7 +59,9 @@ class MailboxCreateForm(forms.Form):
             status=Domain.Status.ACTIVE, verification_status=Domain.VerificationStatus.VERIFIED
         ).order_by("name")
         self.fields["domain"].initial = Domain.objects.filter(
-            is_default=True, status=Domain.Status.ACTIVE, verification_status=Domain.VerificationStatus.VERIFIED
+            is_default=True,
+            status=Domain.Status.ACTIVE,
+            verification_status=Domain.VerificationStatus.VERIFIED,
         ).first() or Domain.objects.filter(
             name=settings.MAIL_DOMAIN.strip().lower()
         ).first()

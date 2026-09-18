@@ -97,7 +97,11 @@ def domain_list(request):
     query = request.GET.get("q", "").strip()
     domains = Domain.objects.annotate(mailbox_count=Count("mailboxes")).order_by("name")
     if query:
-        domains = domains.filter(Q(name__icontains=query) | Q(status__icontains=query) | Q(verification_status__icontains=query))
+        domains = domains.filter(
+            Q(name__icontains=query)
+            | Q(status__icontains=query)
+            | Q(verification_status__icontains=query)
+        )
     return render(request, "mailboxes/domains.html", {"domains": domains, "domain_query": query})
 
 
@@ -115,7 +119,10 @@ def domain_dns_status(request, domain_uuid):
 def domain_make_default(request, domain_uuid):
     require_admin(request.user)
     domain = get_object_or_404(Domain, uuid=domain_uuid)
-    if domain.status != Domain.Status.ACTIVE or domain.verification_status != Domain.VerificationStatus.VERIFIED:
+    if (
+        domain.status != Domain.Status.ACTIVE
+        or domain.verification_status != Domain.VerificationStatus.VERIFIED
+    ):
         messages.error(request, "Only an active, DNS-verified domain can be made default.")
         return redirect("mailboxes:domains")
     with transaction.atomic():

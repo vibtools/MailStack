@@ -1,10 +1,10 @@
 from __future__ import annotations
 
+import ipaddress
 import re
 import secrets
 import socket
 import struct
-import ipaddress
 from collections.abc import Callable
 from pathlib import Path
 
@@ -33,7 +33,10 @@ def build_dns_records(domain: str) -> list[dict[str, str | bool]]:
     dkim_value, dkim_copyable = _dkim_record(domain)
     address_type = "AAAA" if ipaddress.ip_address(settings.SERVER_IP).version == 6 else "A"
     return [
-        {"type": "MX", "host": domain, "cf_host": "@", "value": settings.MAIL_HOSTNAME, "priority": "10", "copyable": True},
+        {
+            "type": "MX", "host": domain, "cf_host": "@", "value": settings.MAIL_HOSTNAME,
+            "priority": "10", "copyable": True,
+        },
         {
             "type": address_type, "host": settings.MAIL_HOSTNAME, "cf_host": "mail",
             "value": settings.SERVER_IP, "priority": "-", "copyable": True,
@@ -218,5 +221,9 @@ def verify_dns_records(
     return {
         "verified": verified,
         "records": results,
-        "message": "All DNS records match." if verified else "One or more DNS records are missing or incorrect.",
+        "message": (
+            "All DNS records match."
+            if verified
+            else "One or more DNS records are missing or incorrect."
+        ),
     }

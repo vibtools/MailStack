@@ -59,12 +59,12 @@ def test_bump_updates_active_metadata_only() -> None:
     root = make_root()
     calls: list[str] = []
     BUMP.run_generator = lambda _root, script: calls.append(script)
-    BUMP.bump(root, "1.1.0.1")
-    assert (root / "VERSION").read_text(encoding="utf-8").strip() == "1.1.0.1"
-    assert 'version = "1.1.0.1"' in (root / "mailbox-app/pyproject.toml").read_text(
+    BUMP.bump(root, "192.0.2.1")
+    assert (root / "VERSION").read_text(encoding="utf-8").strip() == "192.0.2.1"
+    assert 'version = "192.0.2.1"' in (root / "mailbox-app/pyproject.toml").read_text(
         encoding="utf-8"
     )
-    assert "version: 1.1.0.1" in (root / "documents/active.md").read_text(encoding="utf-8")
+    assert "version: 192.0.2.1" in (root / "documents/active.md").read_text(encoding="utf-8")
     assert "version: 0.9.0" in (root / "documents/historical.md").read_text(encoding="utf-8")
     assert calls == ["manage_documents.py", "manage_designs.py"]
 

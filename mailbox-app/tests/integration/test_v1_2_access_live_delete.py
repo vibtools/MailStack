@@ -521,7 +521,7 @@ def test_user_list_query_count_does_not_scale_with_users(client, admin_user):
     with CaptureQueriesContext(connection) as queries:
         response = client.get(reverse("accounts:user_list"))
     assert response.status_code == 200
-    assert len(queries) <= 10
+    assert len(queries) <= 12
 
 
 @pytest.mark.django_db

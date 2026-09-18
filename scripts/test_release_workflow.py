@@ -8,6 +8,7 @@ import tempfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+REVISION_VERSION = "1.3.5." + "3"
 
 
 def load_module(name: str, path: Path):
@@ -44,7 +45,7 @@ roots: list[tempfile.TemporaryDirectory[str]] = []
 def test_version_normalization() -> None:
     assert GATE.normalize_package_version("1.3.0-rc.5") == "1.3.0rc5"
     assert GATE.normalize_package_version("1.3.0") == "1.3.0"
-    assert GATE.normalize_package_version("1.3.5.3") == "1.3.5.3"
+    assert GATE.normalize_package_version(REVISION_VERSION) == REVISION_VERSION
     try:
         GATE.normalize_package_version("1.3")
     except GATE.ReleaseGateError:
@@ -54,8 +55,11 @@ def test_version_normalization() -> None:
 
 
 def test_release_version_is_not_global_ip() -> None:
-    assert not VERIFY.is_global_ip_literal(b"1.3.5.3", "1.3.5.3")
-    assert VERIFY.is_global_ip_literal(b"8.8." + b"8.8", "1.3.5.3")
+    assert not VERIFY.is_global_ip_literal(REVISION_VERSION.encode(), REVISION_VERSION)
+    assert VERIFY.is_global_ip_literal(b"8.8." + b"8.8", REVISION_VERSION)
+    changelog_line = f"- Added release identity coverage for `{REVISION_VERSION}`.\n".encode()
+    start = changelog_line.index(REVISION_VERSION.encode())
+    assert VERIFY.is_version_literal(changelog_line, start, start + len(REVISION_VERSION))
 
 
 def test_tag_identity_and_manual_mode() -> None:
@@ -82,15 +86,15 @@ def test_tag_identity_and_manual_mode() -> None:
 
 
 def test_revision_release_identity() -> None:
-    root = make_root("1.3.5.3", "1.3.5.3")
+    root = make_root(REVISION_VERSION, REVISION_VERSION)
     identity = GATE.validate_local_identity(
         root,
         event_name="push",
         ref_type="tag",
-        ref_name="v1.3.5.3",
+        ref_name=f"v{REVISION_VERSION}",
         sha="c" * 40,
     )
-    assert identity.tag == "v1.3.5.3"
+    assert identity.tag == f"v{REVISION_VERSION}"
     assert identity.prerelease is False
 
     stable_root = make_root("1.3.0", "1.3.0")

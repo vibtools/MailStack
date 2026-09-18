@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from pathlib import Path
 
+import pytest
+
 from apps.mailboxes.forms import MailboxCreateForm
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -11,6 +13,7 @@ def read(relative: str) -> str:
     return (ROOT / relative).read_text(encoding="utf-8")
 
 
+@pytest.mark.django_db
 def test_ui_reserves_system_addresses():
     for local_part in ("postmaster", "abuse", "admin"):
         form = MailboxCreateForm({"local_part": local_part})

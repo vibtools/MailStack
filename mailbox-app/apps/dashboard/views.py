@@ -13,17 +13,16 @@ from contextlib import suppress
 from pathlib import Path
 
 from django.conf import settings
-from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.db import connection, models
 from django.http import JsonResponse
 from django.shortcuts import redirect, render
 from django.views.decorators.http import require_GET, require_http_methods, require_POST
 
 from apps.core.access import accessible_mailboxes, accessible_messages, is_admin
-from apps.core.models import ServiceHeartbeat
 from apps.core.forms import SiteSettingsForm
-from apps.core.models import SiteSettings
+from apps.core.models import ServiceHeartbeat, SiteSettings
 from apps.mailboxes.models import Mailbox
 
 logger = logging.getLogger(__name__)

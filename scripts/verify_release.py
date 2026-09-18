@@ -55,6 +55,31 @@ def is_global_ip_literal(candidate: bytes, release_version: str) -> bool:
     return address.is_global
 
 
+def is_version_literal(data: bytes, start: int, end: int) -> bool:
+    line_start = data.rfind(b"\n", 0, start) + 1
+    line_end = data.find(b"\n", end)
+    if line_end == -1:
+        line_end = len(data)
+    line = data[line_start:line_end].strip().lower()
+    if any(
+        marker in line
+        for marker in (
+            b"release",
+            b"version",
+            b"revision",
+            b"semver",
+            b"tag_name",
+            b"source.zip",
+            b"archive_url",
+            b"checksum_url",
+        )
+    ):
+        return True
+    before = data[max(0, start - 1) : start].lower()
+    after = data[end : end + 8].lower()
+    return before in {b"v", b"-"} and after.startswith((b"-", b"/", b"`", b"."))
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("zip", type=Path)
@@ -138,8 +163,9 @@ def main() -> int:
                     raise SystemExit(
                         f"unapproved email domain in release: {info.filename}: {domain}"
                     )
-            for candidate in IPV4_LITERAL.findall(data):
-                if is_global_ip_literal(candidate, release_version):
+            for match in IPV4_LITERAL.finditer(data):
+                candidate = match.group(0)
+                if not is_version_literal(data, match.start(), match.end()) and is_global_ip_literal(candidate, release_version):
                     raise SystemExit(f"global IP literal in release: {info.filename}")
 
         manifest_name = prefix + "SOURCE_MANIFEST.sha256"

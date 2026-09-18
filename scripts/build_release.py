@@ -14,6 +14,7 @@ from pathlib import Path
 
 EXCLUDED_PARTS = {".git", ".venv", ".audit-venv", "venv", ".tox", ".nox", "__pycache__", ".pytest_cache", ".ruff_cache", "dist", "artifacts", "reference"}
 EXCLUDED_SUFFIXES = {".pyc", ".pyo", ".zip", ".tar", ".gz", ".log", ".sqlite", ".sqlite3", ".db"}
+EXCLUDED_NAMES = {".coverage"}
 CANONICAL_ZIP_TIMESTAMP = (2026, 1, 1, 0, 0, 0)
 CANONICAL_ZIP_CREATE_SYSTEM = 3
 CANONICAL_ZIP_VERSION = 20
@@ -30,7 +31,11 @@ def canonical_path_key(path: Path, root: Path) -> str:
 
 def included(path: Path, root: Path) -> bool:
     relative = path.relative_to(root)
-    return not any(part in EXCLUDED_PARTS for part in relative.parts) and path.suffix.lower() not in EXCLUDED_SUFFIXES
+    return (
+        not any(part in EXCLUDED_PARTS for part in relative.parts)
+        and path.name not in EXCLUDED_NAMES
+        and path.suffix.lower() not in EXCLUDED_SUFFIXES
+    )
 
 
 def main() -> int:

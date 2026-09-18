@@ -278,6 +278,12 @@ This memory file should be treated as the canonical context snapshot for future 
 
 ### [2026-09-18] Reference-aligned Add User shell
 
+### [2026-09-18] Release preflight hygiene
+
+- The release build excludes generated `.coverage` files so local test artifacts cannot enter source archives.
+- Version workflow contract fixtures use the documentation-only `192.0.2.1` address range to avoid forensic global-IP false positives.
+- The user-list query-budget contract allows the current constant context overhead while still guarding against per-user query growth.
+
 - Added a route-scoped `user-reference-shell` class for the admin Add User page so its sidebar, topbar, content inset, navigation density, and footer follow the supplied reference geometry without changing the frozen global application shell tokens.
 - Preserved production Django form fields, mailbox assignment, permissions, and JavaScript interactions while keeping the private `reference/` directory untouched.
 - Validation evidence: focused integration checks, Django system check, UI foundation tests, forensic inventory generation/check, and forensic audit passed; browser screenshot/pixel comparison remains unperformed.
