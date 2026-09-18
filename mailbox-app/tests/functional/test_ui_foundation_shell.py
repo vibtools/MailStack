@@ -101,6 +101,16 @@ def test_create_mailbox_modal_contains_feature_controls(client, admin_user):
     assert 'data-default-domain="vibmail.my"' in content
 
 
+@pytest.mark.django_db
+def test_domain_routes_use_reference_shell_scope(client, admin_user):
+    client.force_login(admin_user)
+    for route_name in ("mailboxes:domains", "mailboxes:domain_create"):
+        response = client.get(reverse(route_name))
+
+        assert response.status_code == 200
+        assert 'domain-reference-shell' in response.content.decode()
+
+
 def test_foundation_static_assets_and_frozen_tokens_exist():
     root = Path(__file__).resolve().parents[2]
     foundation = root / "static/css/foundation.css"

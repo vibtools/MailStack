@@ -202,6 +202,7 @@ def verify_dns_records(
     lookup = resolver or _query
     records = build_dns_records(domain)
     results: list[dict[str, object]] = []
+    lookup_failed = False
     for record in records:
         expected = str(record["value"])
         record_type = str(record["type"])
@@ -209,19 +210,27 @@ def verify_dns_records(
             status = "missing"
         else:
             query_type = {"MX": 15, "A": 1, "AAAA": 28, "TXT": 16}[record_type]
-            answers = lookup(str(record["host"]), query_type)
-            if record_type == "MX":
-                status = "verified" if expected.rstrip(".").lower() in {
-                    answer.rstrip(".").lower() for answer in answers
-                } else "missing"
+            try:
+                answers = lookup(str(record["host"]), query_type)
+            except (DNSVerificationError, UnicodeError, ValueError):
+                lookup_failed = True
+                status = "missing"
             else:
-                status = "verified" if expected in answers else "missing"
+                if record_type == "MX":
+                    status = "verified" if expected.rstrip(".").lower() in {
+                        answer.rstrip(".").lower() for answer in answers
+                    } else "missing"
+                else:
+                    status = "verified" if expected in answers else "missing"
         results.append({**record, "status": status})
     verified = bool(results) and all(record["status"] == "verified" for record in results)
     return {
         "verified": verified,
         "records": results,
         "message": (
+            "DNS verification could not complete safely."
+            if lookup_failed
+            else
             "All DNS records match."
             if verified
             else "One or more DNS records are missing or incorrect."

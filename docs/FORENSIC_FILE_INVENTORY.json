@@ -135,10 +135,10 @@
     },
     {
       "kind": "text",
-      "lines": 233,
+      "lines": 249,
       "path": "CHANGELOG.md",
-      "sha256": "fd23e1d80797122e0740ada103bfefb020b022254eaf4b277371c1be96ffef59",
-      "size_bytes": 22331
+      "sha256": "1e8f83b79a5086e88d8b47b146f459588d2976a2f9f2c1ae73dde1f00f28d593",
+      "size_bytes": 23419
     },
     {
       "kind": "text",
@@ -170,10 +170,10 @@
     },
     {
       "kind": "text",
-      "lines": 418,
+      "lines": 448,
       "path": "MEMORY.md",
-      "sha256": "e60a012954a81b56e6d4289f413d26550f3b2dadac8e93955d8e40e4bf26e420",
-      "size_bytes": 31804
+      "sha256": "6d49d8a1dead7c5b9deeb5f9cd54115c0ba9b991f6e4ce0f79048866561a99b8",
+      "size_bytes": 33880
     },
     {
       "kind": "text",
@@ -910,7 +910,7 @@
       "kind": "text",
       "lines": 269,
       "path": "documents/DOCUMENTATION_MANIFEST.json",
-      "sha256": "40d816673fb3b4bb464bfcad4799e7e7b61fd18b22342e289add75c281709d4b",
+      "sha256": "b0b3375e0b2ca3492c2d8af6f464e50ca448b4910d13c92d3fe18ea1a9c908d9",
       "size_bytes": 10580
     },
     {
@@ -1050,14 +1050,14 @@
       "kind": "text",
       "lines": 104,
       "path": "documents/phases/PHASE-008-SYSTEM-UPDATE-PREFLIGHT-AND-PRIVILEGE-RELIABILITY.md",
-      "sha256": "58e9307eecef57ee73c479fc45f8863cf6c5ebfe4cda2f68f014c822dbdbfd5c",
-      "size_bytes": 5435
+      "sha256": "e539640faa82ced8959e110c00a5899a2132a98c5423a3119851b2caea6ab816",
+      "size_bytes": 5492
     },
     {
       "kind": "text",
-      "lines": 743,
+      "lines": 745,
       "path": "install.sh",
-      "sha256": "cb46e1622d591e78b32831644dd2fcf9021720de8b4f171d232c50f9a7b9294d",
+      "sha256": "6147970e72d3e7798f4009ed917392369ecd5abf2fe84bdcf627695c0b366339",
       "shell_functions": [
         "backup_file",
         "die",
@@ -1073,7 +1073,7 @@
         "valid_hostname",
         "write_initial_credentials"
       ],
-      "size_bytes": 29028
+      "size_bytes": 29150
     },
     {
       "kind": "text",
@@ -2430,7 +2430,7 @@
     },
     {
       "kind": "text",
-      "lines": 229,
+      "lines": 238,
       "path": "mailbox-app/apps/mailboxes/dns.py",
       "python": {
         "classes": [
@@ -2458,8 +2458,8 @@
         ],
         "methods": []
       },
-      "sha256": "3875c6b6626b75795eff8ff9481b5ddd85986637d9cc66a2fe1f1fcfd3da511b",
-      "size_bytes": 8993
+      "sha256": "4664e4bb14063348ba4dfa060df9d3ee3376fc9cfc37e8eac85dd3b851d41afd",
+      "size_bytes": 9327
     },
     {
       "kind": "text",
@@ -3863,14 +3863,14 @@
       "kind": "text",
       "lines": 159,
       "path": "mailbox-app/scripts/rollback_upgrade.sh",
-      "sha256": "ce43c49d90cbd70765075b8a0ccde9d1676cefeb134ba63df3f9e1eb817ea40d",
+      "sha256": "1b3bdff25edade3b78e5986b5709b7e2b6c250c056ca39ec13d9d7213a61fd10",
       "shell_functions": [
         "die",
         "run_app",
         "usage",
         "validate_tar_archive"
       ],
-      "size_bytes": 6050
+      "size_bytes": 6053
     },
     {
       "kind": "text",
@@ -3908,7 +3908,7 @@
       "kind": "text",
       "lines": 377,
       "path": "mailbox-app/scripts/upgrade.sh",
-      "sha256": "233b21eb46bfdbae197cdd21a905b28dffe6472b843a9d785de6513cd41a2794",
+      "sha256": "acc264b4b87e1154e63df24c6bec7622d4a99bb0203e8f4983def55c3dad2359",
       "shell_functions": [
         "cleanup_stage",
         "die",
@@ -3918,7 +3918,7 @@
         "run_app",
         "usage"
       ],
-      "size_bytes": 17048
+      "size_bytes": 17051
     },
     {
       "kind": "text",
@@ -4019,10 +4019,10 @@
     },
     {
       "kind": "text",
-      "lines": 1916,
+      "lines": 1962,
       "path": "mailbox-app/static/css/app.css",
-      "sha256": "155b4b1dd9c43ad2a71af34c8f695c6c5a1ab311e8840d033a4552efd6905e38",
-      "size_bytes": 63591
+      "sha256": "6b3bdb7208c958051eb55e30e4bc256c90d1849e9228ceab5986f94714b1d924",
+      "size_bytes": 66443
     },
     {
       "kind": "text",
@@ -4033,17 +4033,17 @@
     },
     {
       "kind": "text",
-      "lines": 71,
+      "lines": 80,
       "path": "mailbox-app/static/icons/mailstack-icons.svg",
-      "sha256": "fb414530b6456d404ea5aca300701cc7c282137e2a27474843ae61ff8f66951d",
-      "size_bytes": 5709
+      "sha256": "2ee3a0453bd2b6255af224d40fafac303fb605c56f03f1c96342c48f2acedde2",
+      "size_bytes": 6269
     },
     {
       "kind": "text",
-      "lines": 1157,
+      "lines": 1230,
       "path": "mailbox-app/static/js/app.js",
-      "sha256": "a47609b14a3822827eea67c9237713e9a3650d7ef367d27e6eb21ddb1f9daf41",
-      "size_bytes": 39585
+      "sha256": "23b187fdd41d61bbc4d5a6c4a37fcd5ec23908df84f41efac66547eafc2d62c4",
+      "size_bytes": 42479
     },
     {
       "kind": "text",
@@ -4077,8 +4077,8 @@
       "kind": "text",
       "lines": 209,
       "path": "mailbox-app/templates/base.html",
-      "sha256": "053afc3f73b760179427c3fed9003f6cf34e2a2cb4efd462258b93036f2e79c5",
-      "size_bytes": 12259
+      "sha256": "7f2a471c12e6cc8a79e7aad0a5b9622665284209814fa5ad28f235a02403605d",
+      "size_bytes": 12493
     },
     {
       "kind": "text",
@@ -4145,17 +4145,17 @@
     },
     {
       "kind": "text",
-      "lines": 16,
+      "lines": 17,
       "path": "mailbox-app/templates/mailboxes/domain_form.html",
-      "sha256": "e46dd7a559296f2e8b9820ce276ead70ae44998b1357a1688cc24e8f9848f123",
-      "size_bytes": 2686
+      "sha256": "e9f40ab2e774761df3f375feaee45197c9ad427ace4e5d989a2d11804e1c2aa9",
+      "size_bytes": 2963
     },
     {
       "kind": "text",
       "lines": 13,
       "path": "mailbox-app/templates/mailboxes/domains.html",
-      "sha256": "077f48afa7cca7d3e285a9b7f80fd9078360914ef84bfef4f13228d90f9112b8",
-      "size_bytes": 4961
+      "sha256": "e8b29146850e57d05bbd063b2c73926a70898dae9509ea5fbb988d94c0aeb749",
+      "size_bytes": 5409
     },
     {
       "kind": "text",
@@ -4597,7 +4597,7 @@
     },
     {
       "kind": "text",
-      "lines": 138,
+      "lines": 148,
       "path": "mailbox-app/tests/functional/test_ui_foundation_shell.py",
       "python": {
         "classes": [],
@@ -4606,6 +4606,7 @@
           "test_base_shell_does_not_activate_planned_features",
           "test_create_mailbox_modal_contains_feature_controls",
           "test_create_mailbox_route_marks_create_navigation_current",
+          "test_domain_routes_use_reference_shell_scope",
           "test_foundation_static_assets_and_frozen_tokens_exist",
           "test_login_uses_unauthenticated_shell_without_private_navigation",
           "test_mailbox_and_message_routes_mark_mailboxes_current",
@@ -4620,8 +4621,8 @@
         ],
         "methods": []
       },
-      "sha256": "e120de5dcc8c42313564e58deb64d9595704f19e3f06663d34c985a864501255",
-      "size_bytes": 4668
+      "sha256": "e9ea63439a8499608d525d8706687f276b116248253e965336ee7cbf8acb3def",
+      "size_bytes": 5034
     },
     {
       "kind": "text",
@@ -4990,16 +4991,18 @@
     },
     {
       "kind": "text",
-      "lines": 214,
+      "lines": 238,
       "path": "mailbox-app/tests/unit/test_domains.py",
       "python": {
         "classes": [],
         "functions": [
           "resolver",
+          "resolver",
           "test_default_domain_cannot_be_removed",
           "test_disabled_or_unverified_domains_cannot_provision",
           "test_dns_compressed_name_decodes_without_pointer_offset_bug",
           "test_dns_record_verification_reports_each_record",
+          "test_dns_record_verification_returns_safe_status_on_lookup_failure",
           "test_dns_verification_normalizes_records",
           "test_domain_create_propagates_disabled_status_to_mailserver",
           "test_domain_create_requires_dns_confirmation",
@@ -5032,8 +5035,8 @@
         ],
         "methods": []
       },
-      "sha256": "0321dfc219af1acd74fe9e68e4db4cd943f40025839a3e1ffad6d4d017820a2e",
-      "size_bytes": 8365
+      "sha256": "5444b0860ed5b8474915c0e85654011a62f14469d0b438977a1159e58954740c",
+      "size_bytes": 9360
     },
     {
       "kind": "text",
@@ -6016,7 +6019,7 @@
     },
     {
       "kind": "text",
-      "lines": 153,
+      "lines": 155,
       "path": "scripts/test_installer.py",
       "python": {
         "classes": [],
@@ -6033,8 +6036,8 @@
         ],
         "methods": []
       },
-      "sha256": "9e5d4fe960b57ded16295514a2e451862a4f90ce84ea6a159d2d442a2857f141",
-      "size_bytes": 7354
+      "sha256": "f2bdeb9dfbf42fcc01e50df5f7bcbe68e44f89ba53c20b3f1679799f7a77b1d7",
+      "size_bytes": 7498
     },
     {
       "kind": "text",
@@ -6124,7 +6127,7 @@
     },
     {
       "kind": "text",
-      "lines": 233,
+      "lines": 237,
       "path": "scripts/test_upgrade.py",
       "python": {
         "classes": [],
@@ -6149,8 +6152,8 @@
         ],
         "methods": []
       },
-      "sha256": "e78ef63f71db0ef45a3d4d6372dcc24a0de3d0de0f35dbfbfb4b875c0a0b82fa",
-      "size_bytes": 9973
+      "sha256": "6e02850e35938d13dec2486dbe07e89a9f9a3153b6e251d98be412b0f1d1767b",
+      "size_bytes": 10181
     },
     {
       "kind": "text",
@@ -6242,12 +6245,12 @@
     "files": 475,
     "python_classes": 104,
     "python_files": 168,
-    "python_functions": 585,
+    "python_functions": 588,
     "python_methods": 87,
     "shell_files": 15,
     "shell_functions": 42,
     "text_files": 450,
-    "total_bytes": 32252363,
-    "total_text_lines": 40806
+    "total_bytes": 32265024,
+    "total_text_lines": 41032
   }
 }

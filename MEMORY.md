@@ -212,6 +212,9 @@ This memory file should be treated as the canonical context snapshot for future 
 
 - Added PHASE-008 documentation for read-only preflight, fail-closed installation gating, and
   safe privilege separation.
+- Moved the upgrade and rollback default lock file from `/run/lock/vibmail-upgrade.lock` to
+  `/run/vibmail/vibmail-upgrade.lock`; the latter is already writable in the hardened updater
+  systemd namespace, so `ProtectSystem=strict` remains enabled without mutating `/run/lock`.
 - Added the admin-only `update_preflight` endpoint and UI state that blocks installation until
   the root worker, runtime paths, required commands, upgrade script, and disk-space checks pass.
 - Replaced the Gunicorn-thread `sudo -n upgrade.sh` invocation with a validated request file
@@ -220,6 +223,28 @@ This memory file should be treated as the canonical context snapshot for future 
   escalation rule. Existing upgrade archive/checksum/backup/migration/rollback logic is unchanged.
 - Focused System Update regression coverage is 6 passing tests; full repository validation remains
   pending after the final implementation edits.
+
+### [2026-09-18] Domain reference UI parity
+
+- Scoped the Domains and Add Domain routes to the supplied reference shell dimensions, palette,
+  Geist typography, spacing, and icon controls without changing the shared shell for other pages.
+- Added current DNS status to the Domains modal, client-side domain validation, and one-record-at-a-time
+  DNS check progression while preserving the existing preview/status APIs and server-side validation.
+- Focused shell/domain validation passes: 30 tests and JavaScript syntax validation.
+
+### [2026-09-18] Domain parity forensic corrections
+
+- Corrected both Cloudflare/BIND exports to use backend-provided `cf_host` labels, quote TXT values,
+  and omit records that have no configured copyable value.
+- Made per-record DNS resolver failures return safe missing statuses instead of breaking the modal API
+  with an unhandled error; added regression coverage.
+- Kept DNS rows pending until the live per-record check completes, rather than presenting an aggregate
+  domain verification result as proof for every record.
+- Restored the reference current-default star as a disabled state indicator and made unavailable DNS
+  records visibly non-copyable; no reference sample data or fake server actions were introduced.
+- Corrected generated toggle labels to name the domain and aligned the verified DNS status class with
+  its green visual treatment.
+- Focused validation: 22 domain tests passed and JavaScript syntax validation passed.
 
 ### [2026-09-18] Site Settings forensic fixes
 
@@ -283,6 +308,11 @@ This memory file should be treated as the canonical context snapshot for future 
 - The release build excludes generated `.coverage` files so local test artifacts cannot enter source archives.
 - Version workflow contract fixtures use the documentation-only `192.0.2.1` address range to avoid forensic global-IP false positives.
 - The user-list query-budget contract allows the current constant context overhead while still guarding against per-user query growth.
+
+### [2026-09-18] Updater worker namespace prerequisite
+
+- The installer creates `/opt/vibmail-upgrades` and `/var/backups/vibmail/upgrades` before enabling `vibmail-updater.service`.
+- This prevents systemd `226/NAMESPACE` startup failures caused by missing `ReadWritePaths` targets in the hardened root updater unit.
 
 - Added a route-scoped `user-reference-shell` class for the admin Add User page so its sidebar, topbar, content inset, navigation density, and footer follow the supplied reference geometry without changing the frozen global application shell tokens.
 - Preserved production Django form fields, mailbox assignment, permissions, and JavaScript interactions while keeping the private `reference/` directory untouched.

@@ -97,6 +97,30 @@ const VibMail = (() => {
     }
   }
 
+  function buildCloudflareZone(records, domain, header) {
+    const quoteTxt = (value) =>
+      `"${String(value).replaceAll("\\", "\\\\").replaceAll('"', '\\"')}"`;
+    const lines = [
+      `;; ${header} ${domain}`,
+      `$ORIGIN ${domain}.`,
+      "$TTL 1",
+      "",
+    ];
+    records
+      .filter((record) => record.copyable !== false)
+      .forEach((record) => {
+        const type = String(record.type).split(" ")[0];
+        let value = String(record.value);
+        if (type === "MX") {
+          value = `${record.priority}\t${value.replace(/\.$/, "")}.`;
+        } else if (type === "TXT") {
+          value = quoteTxt(value);
+        }
+        lines.push(`${record.cf_host || "@"}\tIN\t${type}\t${value}`);
+      });
+    return `${lines.join("\n")}\n`;
+  }
+
   function formatDate(value, fallback = "—") {
     if (!value) return fallback;
     const date = new Date(value);
@@ -796,6 +820,9 @@ const VibMail = (() => {
     const exportButton = page.querySelector("[data-export-dns]");
     const confirmation = page.querySelector("[data-dns-confirm]");
     const submit = page.querySelector("[data-domain-submit]");
+    const getDnsLabel = getDns?.querySelector("span");
+    const validDomainPattern =
+      /^(?=.{1,253}$)(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,}$/;
     let records = [];
 
     function showError(message) {
@@ -828,7 +855,7 @@ const VibMail = (() => {
         copy.textContent = record.copyable ? "Copy" : "Unavailable";
         copy.disabled = !record.copyable;
         copy.addEventListener("click", async () => {
-          await navigator.clipboard.writeText(record.value);
+          await copyText(record.value);
           copy.textContent = "Copied!";
           window.setTimeout(() => {
             copy.textContent = "Copy";
@@ -842,14 +869,14 @@ const VibMail = (() => {
 
     getDns?.addEventListener("click", async () => {
       const domain = input.value.trim();
-      if (!domain)
+      if (!validDomainPattern.test(domain))
         return showError(
           "Enter a valid domain name before getting DNS records.",
         );
       error.hidden = true;
       input.classList.remove("is-invalid");
       getDns.disabled = true;
-      getDns.textContent = "Resolving...";
+      if (getDnsLabel) getDnsLabel.textContent = "Resolving...";
       try {
         const response = await fetch(
           `${page.dataset.previewUrl}?domain=${encodeURIComponent(domain)}`,
@@ -870,7 +897,7 @@ const VibMail = (() => {
         showError(requestError.message);
       } finally {
         getDns.disabled = false;
-        getDns.textContent = "Get DNS";
+        if (getDnsLabel) getDnsLabel.textContent = "Get DNS";
       }
     });
 
@@ -879,26 +906,19 @@ const VibMail = (() => {
     });
     exportButton?.addEventListener("click", () => {
       const domain = input.value.trim().toLowerCase();
-      const zone = [
-        `;; BIND Zone File for Cloudflare DNS Import`,
-        `;; Domain: ${domain}`,
-        `$ORIGIN ${domain}.`,
-        "$TTL 1",
-        "",
-      ];
-      records.forEach((record) => {
-        const host =
-          record.type === "MX" ? "@" : record.host.replace(`.${domain}`, "");
-        const value =
-          record.type === "MX"
-            ? `${record.priority}\t${record.value}.`
-            : record.value;
-        zone.push(`${host || "@"}\tIN\t${record.type.split(" ")[0]}\t${value}`);
-      });
       const url = URL.createObjectURL(
-        new Blob([`${zone.join("\n")}\n`], {
-          type: "text/plain;charset=utf-8",
-        }),
+        new Blob(
+          [
+            buildCloudflareZone(
+              records,
+              domain,
+              "BIND Zone File for Cloudflare DNS Import",
+            ),
+          ],
+          {
+            type: "text/plain;charset=utf-8",
+          },
+        ),
       );
       const link = document.createElement("a");
       link.href = url;
@@ -944,7 +964,7 @@ const VibMail = (() => {
       button.title = `${active ? "Disable" : "Enable"} domain`;
       button.setAttribute(
         "aria-label",
-        `${active ? "Disable" : "Enable"} ${uuid}`,
+        `${active ? "Disable" : "Enable"} ${row.querySelector("[data-dns-open]")?.dataset.domainName || "domain"}`,
       );
       const iconHref = row
         .querySelector("[data-dns-open] use")
@@ -960,6 +980,34 @@ const VibMail = (() => {
       button.append(icon);
       form.append(token, button);
       actions.prepend(form);
+      if (
+        row.querySelector(".domain-default") &&
+        !actions.querySelector("[data-domain-default]")
+      ) {
+        const defaultButton = document.createElement("button");
+        defaultButton.type = "button";
+        defaultButton.className = "domain-icon-action domain-default-action";
+        defaultButton.dataset.domainDefault = "true";
+        defaultButton.disabled = true;
+        defaultButton.title = "Current default domain";
+        defaultButton.setAttribute(
+          "aria-label",
+          `${row.querySelector("[data-dns-open]")?.dataset.domainName || "Domain"} is the current default domain`,
+        );
+        const svgNamespace = row.querySelector("svg")?.namespaceURI;
+        const icon = document.createElementNS(svgNamespace, "svg");
+        icon.classList.add("ui-icon");
+        icon.setAttribute("aria-hidden", "true");
+        const iconUse = document.createElementNS(svgNamespace, "use");
+        const iconHref = row
+          .querySelector("[data-dns-open] use")
+          ?.getAttribute("href")
+          ?.replace("#icon-globe", "#icon-star");
+        if (iconHref) iconUse.setAttribute("href", iconHref);
+        icon.append(iconUse);
+        defaultButton.append(icon);
+        actions.insertBefore(defaultButton, actions.firstElementChild);
+      }
     });
     const modal = document.querySelector("[data-dns-modal]");
     if (!modal) return;
@@ -988,22 +1036,30 @@ const VibMail = (() => {
           row.append(cell);
         });
         const status = document.createElement("td");
-        status.textContent = record.status || "Not checked";
-        status.className =
-          record.status === "verified" ? "domain-dns-ok" : "domain-dns-missing";
+        const statusLabels = {
+          checking: "Testing",
+          missing: "Missing",
+          pending: "Pending",
+          verified: "OK",
+        };
+        status.textContent = statusLabels[record.status] || "Pending";
+        status.className = `domain-dns-${record.status || "pending"}`;
         row.append(status);
         const action = document.createElement("td");
         const copy = document.createElement("button");
         copy.type = "button";
         copy.className = "domain-copy";
-        copy.textContent = "Copy";
-        copy.addEventListener("click", () => copyText(record.value));
+        copy.textContent = record.copyable === false ? "Unavailable" : "Copy";
+        copy.disabled = record.copyable === false;
+        if (record.copyable !== false) {
+          copy.addEventListener("click", () => copyText(record.value));
+        }
         action.append(copy);
         row.append(action);
         body.append(row);
       });
     };
-    const loadRecords = async (uuid, name) => {
+    const loadRecords = async (uuid, name, verificationStatus) => {
       domain = name;
       title.textContent = name;
       setTag("Loading", "loading");
@@ -1020,7 +1076,12 @@ const VibMail = (() => {
       }));
       render(records);
       exportButton.disabled = false;
-      setTag("Ready", "ready");
+      setTag(
+        verificationStatus === "verified"
+          ? "Last check passed"
+          : "Ready to check",
+        verificationStatus === "verified" ? "success" : "warning",
+      );
       progress.style.width = "0%";
       modal.dataset.domainUuid = uuid;
     };
@@ -1031,6 +1092,7 @@ const VibMail = (() => {
           await loadRecords(
             button.dataset.domainUuid,
             button.dataset.domainName,
+            button.dataset.domainStatus,
           );
         } catch (error) {
           setTag(error.message, "error");
@@ -1057,40 +1119,51 @@ const VibMail = (() => {
         if (!response.ok) throw new Error("DNS check failed.");
         const result = await response.json();
         const verified = Boolean(result.verified);
-        records =
+        const checkedRecords =
           result.records ||
           records.map((record) => ({
             ...record,
             status: verified ? "verified" : "missing",
           }));
-        render(records);
-        progress.style.width = verified ? "100%" : "60%";
-        setTag(
-          verified ? "All verified" : "Records missing",
-          verified ? "success" : "warning",
-        );
+        let step = 0;
+        const renderNextRecord = () => {
+          records = checkedRecords.map((record, index) => ({
+            ...record,
+            status:
+              index < step
+                ? record.status
+                : index === step
+                  ? "checking"
+                  : "pending",
+          }));
+          render(records);
+          progress.style.width = `${Math.round((step / checkedRecords.length) * 100)}%`;
+          if (step < checkedRecords.length) {
+            step += 1;
+            window.setTimeout(renderNextRecord, 350);
+            return;
+          }
+          progress.style.width = verified ? "100%" : "60%";
+          setTag(
+            verified ? "All verified" : "Records missing",
+            verified ? "success" : "warning",
+          );
+          check.disabled = false;
+        };
+        renderNextRecord();
       } catch (error) {
         setTag(error.message, "error");
-      } finally {
         check.disabled = false;
       }
     });
     exportButton.addEventListener("click", () => {
-      const zone = [
-        `;; Cloudflare Zone File for ${domain}`,
-        `$ORIGIN ${domain}.`,
-        "$TTL 1",
-        "",
-      ];
-      records.forEach((record) =>
-        zone.push(
-          `${record.cf_host || "@"}\tIN\t${record.type}\t${record.type === "MX" ? `${record.priority}\t${record.value}.` : record.value}`,
-        ),
-      );
       const url = URL.createObjectURL(
-        new Blob([`${zone.join("\n")}\n`], {
-          type: "text/plain;charset=utf-8",
-        }),
+        new Blob(
+          [buildCloudflareZone(records, domain, "Cloudflare Zone File for")],
+          {
+            type: "text/plain;charset=utf-8",
+          },
+        ),
       );
       const link = document.createElement("a");
       link.href = url;

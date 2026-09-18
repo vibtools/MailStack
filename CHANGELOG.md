@@ -16,6 +16,18 @@ All notable repository-level changes are recorded here. Application history befo
 
 - Preserved receive-only mail flow, Maildir source data, existing mailbox authorization, and Postfix/Dovecot contracts.
 
+## Unreleased - Domain reference UI parity
+
+### Changed
+
+- Matched Domains and Add Domain routes to the supplied compact reference shell, including the
+  reference typography, spacing, palette, icon controls, current DNS status, and progressive DNS check display.
+- Corrected Cloudflare/BIND export labels and TXT quoting, protected the DNS status endpoint from resolver
+  failures, and stopped the modal from presenting aggregate verification as per-record proof before a live check.
+- Preserved the reference current-default action as a disabled state indicator and kept unconfigured DNS values
+  non-copyable and out of exported zone files.
+- Corrected generated toggle accessibility labels and the verified DNS status color class.
+
 ## Unreleased - PHASE-008 System Update preflight and privilege reliability
 
 ### Added
@@ -25,6 +37,10 @@ All notable repository-level changes are recorded here. Application history befo
 - Replaced Gunicorn `sudo` escalation with a fixed-command root-owned systemd updater worker while
   preserving `NoNewPrivileges=true` and the existing archive, checksum, backup, migration, and
   rollback contracts.
+- Provisioned the updater staging and upgrade-backup directories before enabling the hardened
+  worker so systemd writable-path sandboxing cannot fail at startup.
+- Moved the default upgrade and rollback lock file into `/run/vibmail`, the updater worker's
+  writable runtime directory, so `ProtectSystem=strict` does not make lock initialization fail.
 
 ## Unreleased - PHASE-007 multi-domain mailbox and DNS
 

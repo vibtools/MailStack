@@ -106,6 +106,10 @@ def main() -> int:
     for name, text in {"upgrade.sh": upgrade, "rollback_upgrade.sh": rollback}.items():
         require("set -Eeuo pipefail" in text, f"{name} is not fail-closed")
         require("flock -n" in text, f"{name} does not use a non-blocking runtime lock")
+        require(
+            "LOCK_FILE=${UPGRADE_LOCK_FILE:-/run/vibmail/vibmail-upgrade.lock}" in text,
+            f"{name} must use the updater writable runtime directory for its default lock",
+        )
 
     for fragment in (
         "--archive",

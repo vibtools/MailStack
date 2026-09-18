@@ -410,6 +410,8 @@ runuser -u vmail -- test -w /run/vibmail/mailbox-provision-locks \
   || die "The vmail runtime cannot write to the mailbox provisioning lock directory"
 install -d -o root -g www-data -m 0755 /var/www/letsencrypt/.well-known/acme-challenge
 install -d -o root -g root -m 0755 /opt/vibmail-public-site/releases
+install -d -o root -g root -m 0700 /opt/vibmail-upgrades
+install -d -o root -g root -m 0700 /var/backups/vibmail/upgrades
 install -d -o root -g www-data -m 0755 "/var/www/$PUBLIC_HOSTNAME"
 install -d -o root -g root -m 0750 /etc/vibmail-public-contact
 

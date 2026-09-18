@@ -78,8 +78,8 @@ origins, concurrent jobs, and any command other than the fixed upgrade script in
 ## Implementation sequence
 
 1. Define reusable preflight checks and expose an admin-only `preflight` endpoint.
-2. Add the root updater worker and systemd unit, then render/install its runtime directories
-   and enable it alongside the existing MailStack services.
+2. Add the root updater worker and systemd unit, then render/install its runtime, staging, and
+   upgrade-backup directories before enabling it alongside the existing MailStack services.
 3. Change `start_update` to require a successful preflight and enqueue a validated request
    rather than invoking `sudo`.
 4. Add the preflight result panel and install gating to the existing System Update page.
@@ -101,4 +101,4 @@ repository forensic audits, and `git diff --check`. The required forensic result
 
 This phase updates the administrator guidance for preflight results, blocked installations,
 worker installation, and manual recovery. It does not claim that a deployment is upgradeable
-until the root updater unit and its runtime permissions are present.
+until the root updater unit and its runtime, staging, and upgrade-backup paths are present.

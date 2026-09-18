@@ -249,7 +249,7 @@
       "last_reviewed": "2026-09-18",
       "path": "documents/phases/PHASE-008-SYSTEM-UPDATE-PREFLIGHT-AND-PRIVILEGE-RELIABILITY.md",
       "phase_id": "PHASE-008",
-      "sha256": "58e9307eecef57ee73c479fc45f8863cf6c5ebfe4cda2f68f014c822dbdbfd5c",
+      "sha256": "5df38ccfb2172454f7d0fd644cd8cbb5328cf7ee2708bab4ab01ae5877efa419",
       "status": "active",
       "title": "System Update Preflight and Privilege Reliability",
       "version": "1.3.5.4"

@@ -106,6 +106,8 @@ def main() -> int:
         'postconf -M "${service}/inet="',
         "manage.py check --deploy",
         "/etc/logrotate.d/vibmail",
+        "install -d -o root -g root -m 0700 /opt/vibmail-upgrades",
+        "install -d -o root -g root -m 0700 /var/backups/vibmail/upgrades",
         "systemctl is-active --quiet",
         "VIBMAIL_INSTALL=PASS",
     )

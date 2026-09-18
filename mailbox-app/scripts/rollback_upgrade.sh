@@ -59,7 +59,7 @@ PUBLIC_ROOT=${PUBLIC_ROOT:-/opt/vibmail-public-site}
 STATIC_ROOT=${STATIC_ROOT:-/var/lib/vibmail/static}
 ENV_FILE=${VIBMAIL_ENV_FILE:-/etc/vibmail/vibmail.env}
 MARKER_FILE=${MARKER_FILE:-/etc/vibmail/installation.json}
-LOCK_FILE=${UPGRADE_LOCK_FILE:-/run/lock/vibmail-upgrade.lock}
+LOCK_FILE=${UPGRADE_LOCK_FILE:-/run/vibmail/vibmail-upgrade.lock}
 STAGING_ROOT=${STAGING_ROOT:-/opt/vibmail-upgrades}
 for command_name in python3 flock rsync tar sha256sum systemctl realpath postfix doveconf nginx; do
   command -v "$command_name" >/dev/null 2>&1 || die "required command is missing: $command_name"

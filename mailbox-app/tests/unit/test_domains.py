@@ -51,6 +51,25 @@ def test_dns_record_verification_reports_each_record(settings):
     assert [record["status"] for record in verified_records] == ["verified", "missing"]
 
 
+def test_dns_record_verification_returns_safe_status_on_lookup_failure(settings):
+    records = [
+        {"type": "A", "host": "mail.example.test", "value": "192.0.2.10", "copyable": True},
+    ]
+
+    def resolver(_name, _record_type):
+        from apps.mailboxes.dns import DNSVerificationError
+
+        raise DNSVerificationError("resolver unavailable")
+
+    with patch("apps.mailboxes.dns.build_dns_records", return_value=records):
+        result = verify_dns_records("example.test", resolver=resolver)
+
+    assert result["verified"] is False
+    assert result["message"] == "DNS verification could not complete safely."
+    failed_records = cast(list[dict[str, object]], result["records"])
+    assert failed_records[0]["status"] == "missing"
+
+
 def test_dns_compressed_name_decodes_without_pointer_offset_bug():
     packet = b"\x04mail\x04test\x00\xc0\x00"
     assert _decode_name(packet, 11) == "mail.test."
@@ -92,6 +111,9 @@ def test_domain_list_requires_admin(client, admin_user):
     response = client.get(reverse("mailboxes:domains"))
     assert response.status_code == 200
     assert b"Domains" in response.content
+    assert b"domain-reference-shell" in response.content
+    assert b"data-domain-status=" in response.content
+    assert b"icon-plus" in response.content
 
 
 @pytest.mark.django_db
@@ -100,6 +122,8 @@ def test_domain_create_starts_with_empty_dns_table(client, admin_user):
     response = client.get(reverse("mailboxes:domain_create"))
     assert response.status_code == 200
     assert b"No DNS records generated yet" in response.content
+    assert b"icon-zap" in response.content
+    assert b"icon-download" in response.content
 
 
 @pytest.mark.django_db
