@@ -10,6 +10,7 @@ All notable repository-level changes are recorded here. Application history befo
 - Added validated logo/favicon media handling with deployment, backup, and restore coverage.
 - Added multi-domain mailbox management, DNS verification, default-domain selection, and mail-server reconciliation safeguards.
 - Added a canonical version bump workflow and active metadata consistency checker.
+- Hardened release preflight coverage for database-backed security contracts, deterministic source archives, and four-component version verification.
 
 ### Compatibility
 
