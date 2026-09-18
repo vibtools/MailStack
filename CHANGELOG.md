@@ -2,6 +2,19 @@
 
 All notable repository-level changes are recorded here. Application history before the open-source conversion remains in `mailbox-app/CHANGELOG.md`.
 
+## 1.3.5.4 - Site settings and domain reliability
+
+### Added
+
+- Added admin-managed site branding and settings with runtime propagation to the application shell and public site.
+- Added validated logo/favicon media handling with deployment, backup, and restore coverage.
+- Added multi-domain mailbox management, DNS verification, default-domain selection, and mail-server reconciliation safeguards.
+- Added a canonical version bump workflow and active metadata consistency checker.
+
+### Compatibility
+
+- Preserved receive-only mail flow, Maildir source data, existing mailbox authorization, and Postfix/Dovecot contracts.
+
 ## Unreleased - PHASE-008 System Update preflight and privilege reliability
 
 ### Added
