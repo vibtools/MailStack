@@ -11,7 +11,7 @@ import sys
 from pathlib import Path
 
 EXCLUDED_PARTS = {
-    ".git", ".venv", ".audit-venv", "venv", ".tox", ".nox", "__pycache__",
+    ".git", ".vscode", ".venv", ".audit-venv", "venv", ".tox", ".nox", "__pycache__",
     ".pytest_cache", ".ruff_cache", ".runtime", "dist", "artifacts", "reference",
 }
 SELF_PATH = "docs/FORENSIC_FILE_INVENTORY.json"

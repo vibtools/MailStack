@@ -121,13 +121,6 @@
     },
     {
       "kind": "text",
-      "lines": 12,
-      "path": ".vscode/settings.json",
-      "sha256": "67a0719c13f84c2dd86e485310aaea81d1abbe63a2b550a0204484eafefc0faf",
-      "size_bytes": 382
-    },
-    {
-      "kind": "text",
       "lines": 17,
       "path": "AGENTS.md",
       "sha256": "ea90552aeed705921ab17f3d80490c7df5f6b2eb5a323bec68737498c3ac934a",
@@ -5757,8 +5750,8 @@
           "Visitor.visit_ImportFrom"
         ]
       },
-      "sha256": "603696ccefde83e403b30f06458bf0147380a496642a0f863a42c0a9000fcdda",
-      "size_bytes": 6528
+      "sha256": "1d490a3be51a8362e87e7b1b030748d8b205d36e3209ceec69b12a4b2ed6b9a0",
+      "size_bytes": 6539
     },
     {
       "kind": "text",
@@ -6244,15 +6237,15 @@
   },
   "summary": {
     "binary_files": 25,
-    "files": 476,
+    "files": 475,
     "python_classes": 104,
     "python_files": 168,
     "python_functions": 584,
     "python_methods": 87,
     "shell_files": 15,
     "shell_functions": 42,
-    "text_files": 451,
-    "total_bytes": 32250428,
-    "total_text_lines": 40750
+    "text_files": 450,
+    "total_bytes": 32250057,
+    "total_text_lines": 40738
   }
 }
