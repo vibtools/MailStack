@@ -218,6 +218,14 @@ This memory file should be treated as the canonical context snapshot for future 
   repository metadata changes made the generated inventory stale.
 - Validation: `generate_inventory.py --check` passed with 475 maintained files and 41,057 text lines.
 
+### [2026-09-18] Documentation contracts inventory refresh
+
+- The `documentation-contracts` workflow failed at the inventory freshness gate because
+  `documents/DOCUMENTATION_MANIFEST.json` changed without a matching refresh of
+  `docs/FORENSIC_FILE_INVENTORY.json`.
+- Regenerating the forensic inventory restored the documentation workflow and the repository
+  forensic audit to a passing state.
+
 ### [2026-09-17] System Update production-readiness scope
 
 - Fixed the System Update page CSP mismatch by adding a per-response nonce to the page's inline script and existing inline styles.
