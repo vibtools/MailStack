@@ -60,6 +60,11 @@ def test_release_version_is_not_global_ip() -> None:
     changelog_line = f"- Added release identity coverage for `{REVISION_VERSION}`.\n".encode()
     start = changelog_line.index(REVISION_VERSION.encode())
     assert VERIFY.is_version_literal(changelog_line, start, start + len(REVISION_VERSION))
+    changelog_heading = f"## {REVISION_VERSION} - Release hardening\n".encode()
+    heading_start = changelog_heading.index(REVISION_VERSION.encode())
+    assert VERIFY.is_version_literal(
+        changelog_heading, heading_start, heading_start + len(REVISION_VERSION)
+    )
 
 
 def test_tag_identity_and_manual_mode() -> None:

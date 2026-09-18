@@ -424,6 +424,10 @@ This memory file should be treated as the canonical context snapshot for future 
 
 ### [2026-09-18] CI release verification false-positive correction
 
+- GitHub Actions release run `35318392855` failed in `build-verified-source` because `scripts/verify_release.py` treated the changelog heading `## 1.3.5.4 - ...` as a global IPv4 literal.
+- Updated `is_version_literal` to treat markdown changelog headings of the form `## <version> - ...` as version literals, preserving global-IP blocking elsewhere.
+- Extended `scripts/test_release_workflow.py` with a regression assertion for changelog heading version detection; targeted release workflow tests pass (8).
+
 ### [2026-09-18] Permanent release-version IP-scan rule
 
 - Added a durable `AGENTS.md` contract: semantic release versions, including four-component values such as `1.3.5.3`, must never be treated as IP literals by forensic or release verification. Real global IP addresses must remain blocked and the exemption must stay regression-tested.
