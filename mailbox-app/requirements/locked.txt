@@ -15,4 +15,4 @@ tinycss2==1.5.1
 webencodings==0.5.1
 whitenoise==6.11.0
 
-mysqlclient==2.2.7
+mysqlclient==2.3.0
