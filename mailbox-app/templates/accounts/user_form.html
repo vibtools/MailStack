@@ -1,6 +1,63 @@
 {% extends "base.html" %}
+{% load static %}
 {% block title %}{% if creating %}Add user{% else %}Edit {{ managed_user.username }}{% endif %} · MailStack{% endblock %}
 {% block content %}
-<div class="page-header"><h1>{% if creating %}Add user{% else %}Edit {{ managed_user.username }}{% endif %}</h1></div>
-<div class="card"><div class="card-body"><form method="post" novalidate>{% csrf_token %}{% if form.non_field_errors %}<div class="form-errors" role="alert">{{ form.non_field_errors }}</div>{% endif %}<div class="form-grid">{% for field in form %}<div class="form-group"><label for="{{ field.id_for_label }}">{{ field.label }}</label>{{ field }}{% if field.errors %}<div class="field-error" role="alert">{{ field.errors|striptags }}</div>{% endif %}</div>{% endfor %}</div><div class="actions" style="margin-top: 8px;"><button class="btn btn-primary" type="submit">{% if creating %}Create user{% else %}Save changes{% endif %}</button><a class="btn" href="{% url 'accounts:user_list' %}">Cancel</a></div></form></div></div>
+<div class="user-form-page">
+	<div class="user-form-heading">
+		<span class="eyebrow">User management</span>
+		<h1>{% if creating %}Add user{% else %}Edit {{ managed_user.username }}{% endif %}</h1>
+		<p>Create a team user with custom permissions and mailbox access.</p>
+	</div>
+	<div class="user-form-card">
+		<form method="post" novalidate data-user-form>
+			{% csrf_token %}
+			{% if form.non_field_errors %}<div class="form-errors" role="alert">{{ form.non_field_errors }}</div>{% endif %}
+			<div class="user-field-block">
+				<div class="user-field-label-row">
+					<label for="{{ form.username.id_for_label }}">Username</label>
+					<div class="user-status-control">
+						<span class="user-status-dot" aria-hidden="true"></span>
+						<span>Active</span>
+						{{ form.is_active }}
+					</div>
+				</div>
+				<div class="user-input-with-action">
+					{{ form.username }}
+					{% if creating %}<button class="user-icon-action" type="button" title="Generate random username" aria-label="Generate random username" data-user-random><svg class="ui-icon" aria-hidden="true"><use href="{% static 'icons/mailstack-icons.svg' %}#icon-refresh-cw"></use></svg></button>{% endif %}
+				</div>
+				{% if form.username.errors %}<div class="field-error" role="alert">{{ form.username.errors|striptags }}</div>{% endif %}
+			</div>
+			{% if creating %}
+			<div class="user-password-grid">
+				<div class="user-field-block">
+					<div class="user-field-label-row"><label for="{{ form.password1.id_for_label }}">Password</label><button class="user-text-action" type="button" data-user-generate-password>Auto-generate</button></div>
+					<div class="user-input-with-action">{{ form.password1 }}<button class="user-icon-action" type="button" title="Show password" aria-label="Show password" data-user-toggle-password><svg class="ui-icon" aria-hidden="true"><use href="{% static 'icons/mailstack-icons.svg' %}#icon-eye"></use></svg></button></div>
+					{% if form.password1.errors %}<div class="field-error" role="alert">{{ form.password1.errors|striptags }}</div>{% endif %}
+				</div>
+				<div class="user-field-block"><label for="{{ form.password2.id_for_label }}">Password confirmation</label>{{ form.password2 }}{% if form.password2.errors %}<div class="field-error" role="alert">{{ form.password2.errors|striptags }}</div>{% endif %}</div>
+			</div>
+			{% endif %}
+			<div class="user-field-block">
+				<div class="user-field-label-row"><label>Assigned mailboxes</label><span class="user-selection-count" data-user-mailbox-count>0 selected</span></div>
+				<div class="user-mailbox-picker">
+					<label class="user-mailbox-search"><svg class="ui-icon" aria-hidden="true"><use href="{% static 'icons/mailstack-icons.svg' %}#icon-search"></use></svg><input type="search" placeholder="Search mailboxes to assign..." aria-label="Search mailboxes" data-user-mailbox-filter></label>
+					<div class="user-mailbox-list" data-user-mailbox-list>{% for checkbox in form.assigned_mailboxes %}<label class="user-mailbox-item" data-mailbox-item><span>{{ checkbox.tag }}</span><span>{{ checkbox.choice_label }}</span></label>{% empty %}<span class="muted">No mailboxes available.</span>{% endfor %}</div>
+				</div>
+				{% if form.assigned_mailboxes.errors %}<div class="field-error" role="alert">{{ form.assigned_mailboxes.errors|striptags }}</div>{% endif %}
+			</div>
+			<div class="user-permissions">
+				<span class="user-permissions-title">Permissions</span>
+				<div class="user-permissions-grid">
+					<label><span>{{ form.can_delete_messages }}</span><span>Can delete messages</span></label>
+					<label><span>{{ form.can_delete_mailboxes }}</span><span>Can delete mailboxes</span></label>
+				</div>
+			</div>
+			<div class="user-form-actions">
+				<button class="btn btn-primary" type="submit">{% if creating %}Create user{% else %}Save changes{% endif %}</button>
+				{% if creating %}<button class="btn user-copy-submit" type="submit" data-user-create-copy><svg class="ui-icon" aria-hidden="true"><use href="{% static 'icons/mailstack-icons.svg' %}#icon-copy"></use></svg><span data-user-copy-label>Create &amp; copy</span></button>{% endif %}
+				<a class="btn user-cancel-action" href="{% url 'accounts:user_list' %}">Cancel</a>
+			</div>
+		</form>
+	</div>
+</div>
 {% endblock %}

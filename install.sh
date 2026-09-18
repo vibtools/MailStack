@@ -412,11 +412,6 @@ install -d -o root -g root -m 0755 /opt/vibmail-public-site/releases
 install -d -o root -g www-data -m 0755 "/var/www/$PUBLIC_HOSTNAME"
 install -d -o root -g root -m 0750 /etc/vibmail-public-contact
 
-cat > /etc/sudoers.d/vibmail-upgrade <<'EOF'
-vmail ALL=(root) NOPASSWD: /opt/vibmail/app/scripts/upgrade.sh
-EOF
-chmod 0440 /etc/sudoers.d/vibmail-upgrade
-
 CURRENT_PHASE="secret-provisioning"
 if [[ $REPAIR -eq 1 ]]; then
   # shellcheck disable=SC1090
@@ -503,6 +498,7 @@ log "Installing systemd services"
 render systemd/vibmail-gunicorn.service.tpl /etc/systemd/system/vibmail-gunicorn.service 0644
 render systemd/vibmail-ingestion.service.tpl /etc/systemd/system/vibmail-ingestion.service 0644
 render systemd/vibmail-public-contact.service.tpl /etc/systemd/system/vibmail-public-contact.service 0644
+render systemd/vibmail-updater.service.tpl /etc/systemd/system/vibmail-updater.service 0644
 systemctl daemon-reload
 
 CURRENT_PHASE="django-migrations"
@@ -693,7 +689,7 @@ chmod 0755 /etc/letsencrypt/renewal-hooks/deploy/vibmail-reload.sh
 
 CURRENT_PHASE="service-start"
 log "Starting and enabling services"
-systemctl enable --now postfix dovecot vibmail-gunicorn vibmail-ingestion vibmail-public-contact opendkim
+systemctl enable --now postfix dovecot vibmail-gunicorn vibmail-ingestion vibmail-public-contact vibmail-updater opendkim
 systemctl reload nginx
 
 CURRENT_PHASE="acceptance-checks"
@@ -703,7 +699,7 @@ postmap -q "postmaster@$MAIL_DOMAIN" mysql:/etc/postfix/mysql-virtual-mailboxes.
   | grep -Fx "$MAIL_DOMAIN/postmaster/Maildir/" >/dev/null
 run_as_vmail /opt/vibmail/venv/bin/python /opt/vibmail/app/manage.py verify_postfix_contract
 run_as_vmail /opt/vibmail/venv/bin/python /opt/vibmail/app/manage.py check --deploy
-for service in mariadb postfix dovecot nginx vibmail-gunicorn vibmail-ingestion vibmail-public-contact; do
+for service in mariadb postfix dovecot nginx vibmail-gunicorn vibmail-ingestion vibmail-public-contact vibmail-updater; do
   systemctl is-active --quiet "$service" || die "Service is not active: $service"
 done
 curl --fail --silent --show-error --max-time 20 \

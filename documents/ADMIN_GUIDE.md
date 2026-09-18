@@ -4,7 +4,7 @@ title: MailStack Administrator Guide
 document_type: admin-guide
 audience: mailstack-administrators
 status: active
-version: 1.3.5.2
+version: 1.3.5.3
 last_reviewed: 2026-08-18
 ---
 
@@ -95,11 +95,14 @@ creation before onboarding users.
 
 Open **System Update** from the management sidebar. The page displays the currently installed
 version (read from `pyproject.toml`) and automatically checks GitHub Releases for the latest
-published version on load. If a newer release is available, click **Install Update** to download
-the signed deterministic archive and apply it. Update progress streams in the on-screen terminal
-log. If an update fails, a fatal-error message is displayed and the log can be used for diagnosis.
-Closing the log window does not cancel a running update. After a successful update the page
-reloads automatically.
+published version on load. Before installation, the page runs a read-only preflight and enables
+**Install Update** only when the root updater worker, runtime paths, required commands, and disk
+space checks pass. If preflight is blocked, resolve the reported deployment condition and run the
+check again; the web process never disables its systemd hardening or attempts `sudo` escalation.
+When ready, click **Install Update** to download the signed deterministic archive and enqueue it
+for the root-owned worker. Update progress streams in the on-screen terminal log. If an update
+fails, a fatal-error message is displayed and the log can be used for diagnosis. Closing the log
+window does not cancel a running update. After a successful update the page reloads automatically.
 
 ## Security boundaries
 

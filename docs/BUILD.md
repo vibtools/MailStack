@@ -12,7 +12,7 @@ pip install -r mailbox-app/requirements/development.txt
 
 ```bash
 python scripts/check_docs.py
-python scripts/forensic_audit.py --root . --full
+python scripts/forensic_audit.py --root . --profile essential --full
 ```
 
 ## Deterministic release build

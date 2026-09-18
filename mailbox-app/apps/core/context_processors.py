@@ -14,6 +14,7 @@ def application_context(request):
         "app_name": "MailStack",
         "mail_domain": settings.MAIL_DOMAIN,
         "mail_hostname": settings.MAIL_HOSTNAME,
+        "server_ip": settings.SERVER_IP,
         "app_hostname": settings.APP_HOSTNAME,
         "source_code_url": settings.SOURCE_CODE_URL,
         "company_url": settings.COMPANY_URL,

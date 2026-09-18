@@ -58,7 +58,7 @@ REQUIRED = {
     "docs/RELEASE_NOTES_1.3.3.md",
     "docs/RELEASE_NOTES_1.3.4.md",
     "docs/RELEASE_NOTES_1.3.5.md",
-    "docs/RELEASE_NOTES_1.3.5.2.md",
+    "docs/RELEASE_NOTES_1.3.5.3.md",
     "documents/README.md",
     "documents/USER_MANUAL.md",
     "documents/HOW_TO_USE.md",
@@ -184,6 +184,12 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--root", type=Path, default=Path(__file__).resolve().parents[1])
     parser.add_argument("--full", action="store_true", help="also run tests, lint, Bandit, and Django checks")
+    parser.add_argument(
+        "--profile",
+        choices=("essential", "repository"),
+        default="repository",
+        help="run release-essential checks or the full repository hygiene checks",
+    )
     args = parser.parse_args()
     root = args.root.resolve()
     findings: list[str] = []
@@ -323,7 +329,14 @@ def main() -> int:
         if code or "PLAN_VALIDATION=PASS" not in output:
             findings.append(f"INSTALLER_PLAN:{output}")
 
-    for command, label in (
+    essential_checks = (
+        ([sys.executable, str(root / "scripts/validate_templates.py")], "TEMPLATE_VALIDATION"),
+        ([sys.executable, str(root / "scripts/test_installer.py")], "INSTALLER_CONTRACT"),
+        ([sys.executable, str(root / "scripts/test_operations.py")], "OPERATIONS_CONTRACT"),
+        ([sys.executable, str(root / "scripts/test_release_workflow.py")], "RELEASE_WORKFLOW_CONTRACT"),
+        ([sys.executable, str(root / "scripts/test_upgrade.py")], "UPGRADE_ROLLBACK_CONTRACT"),
+    )
+    repository_checks = (
         ([sys.executable, str(root / "scripts/manage_documents.py"), "--root", str(root), "check"], "USER_DOCUMENTATION_GATE"),
         ([sys.executable, str(root / "scripts/test_documents.py")], "DOCUMENTATION_TESTS"),
         ([sys.executable, str(root / "scripts/manage_designs.py"), "--root", str(root), "check"], "DESIGN_INTAKE_GATE"),
@@ -331,12 +344,8 @@ def main() -> int:
         ([sys.executable, str(root / "scripts/test_ui_foundation.py")], "UI_FOUNDATION_TESTS"),
         ([sys.executable, str(root / "scripts/check_docs.py")], "DOCUMENTATION_GATE"),
         ([sys.executable, str(root / "scripts/generate_inventory.py"), "--root", str(root), "--check"], "INVENTORY_GATE"),
-        ([sys.executable, str(root / "scripts/validate_templates.py")], "TEMPLATE_VALIDATION"),
-        ([sys.executable, str(root / "scripts/test_installer.py")], "INSTALLER_CONTRACT"),
-        ([sys.executable, str(root / "scripts/test_operations.py")], "OPERATIONS_CONTRACT"),
-        ([sys.executable, str(root / "scripts/test_release_workflow.py")], "RELEASE_WORKFLOW_CONTRACT"),
-        ([sys.executable, str(root / "scripts/test_upgrade.py")], "UPGRADE_ROLLBACK_CONTRACT"),
-    ):
+    )
+    for command, label in essential_checks + (repository_checks if args.profile == "repository" else ()):
         code, output = run(command, root)
         if code:
             findings.append(f"{label}:{output}")
@@ -380,7 +389,6 @@ def main() -> int:
                 ([sys.executable, "manage.py", "makemigrations", "--check", "--dry-run", "--settings=config.settings.test"], app, "MIGRATION_DRIFT", True),
                 ([sys.executable, "manage.py", "check", "--settings=config.settings.test"], app, "DJANGO_CHECK", True),
                 ([sys.executable, "test_contact_app.py"], root / "public-site/contact_service", "CONTACT_TESTS", False),
-                ([sys.executable, "-m", "pip", "check"], root, "PIP_CHECK", False),
             ]
             for command, cwd, label, django_environment in commands:
                 env = os.environ.copy()

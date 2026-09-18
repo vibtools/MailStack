@@ -18,7 +18,7 @@ from apps.core.access import (
     user_can_delete_mailbox,
 )
 
-from .dns import verify_domain
+from .dns import build_dns_records, verify_domain
 from .forms import DomainForm, MailboxCreateForm
 from .mailserver import (
     MailServerContractError,
@@ -118,9 +118,20 @@ def domain_create(request):
                 delete_mailserver_domain(domain_name=domain.name)
             form.add_error(None, "The domain could not be reconciled with the mail server.")
         else:
-            messages.success(request, f"Domain {domain.name} added. Publish DNS records, then check DNS.")
-            return redirect("mailboxes:domains")
-    return render(request, "mailboxes/domain_form.html", {"form": form, "creating": True})
+            messages.success(
+                request, f"Domain {domain.name} added. DNS records are ready to publish."
+            )
+            return redirect("mailboxes:domain_edit", domain_uuid=domain.uuid)
+    dns_domain = (
+        form.data.get("name", settings.MAIL_DOMAIN)
+        if form.is_bound
+        else settings.MAIL_DOMAIN
+    )
+    return render(
+        request,
+        "mailboxes/domain_form.html",
+        {"form": form, "creating": True, "dns_records": build_dns_records(dns_domain)},
+    )
 
 
 @login_required
@@ -146,7 +157,11 @@ def domain_edit(request, domain_uuid):
         else:
             messages.success(request, f"Domain {domain.name} updated.")
             return redirect("mailboxes:domains")
-    return render(request, "mailboxes/domain_form.html", {"form": form, "domain": domain, "creating": False})
+    return render(
+        request,
+        "mailboxes/domain_form.html",
+        {"form": form, "domain": domain, "creating": False, "dns_records": build_dns_records(domain.name)},
+    )
 
 
 @login_required

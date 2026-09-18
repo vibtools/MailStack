@@ -526,6 +526,9 @@ const VibMail = (() => {
     if (!modal) return;
     const localPart = modal.querySelector("[name='local_part']");
     const suggestions = modal.querySelector("[data-mailbox-suggestions]");
+    const selectedCounter = modal.querySelector(
+      "[data-mailbox-selected-counter]",
+    );
     const firstNames = [
       "james",
       "olivia",
@@ -581,6 +584,15 @@ const VibMail = (() => {
       items[Math.floor(Math.random() * items.length)];
     const randomName = () =>
       `${randomItem(firstNames)}.${randomItem(lastNames)}`;
+    const getFinalAddress = () => {
+      const value = localPart?.value.trim() || randomName();
+      if (localPart && !localPart.value.trim()) localPart.value = value;
+      const domain =
+        modal.querySelector("[name='domain']")?.value ||
+        modal.dataset.defaultDomain ||
+        "";
+      return `${value}@${domain}`;
+    };
     const renderSuggestions = () => {
       if (!suggestions) return;
       suggestions.replaceChildren();
@@ -597,6 +609,13 @@ const VibMail = (() => {
         });
         suggestions.append(button);
       });
+    };
+    const updateSelectedCounter = () => {
+      if (!selectedCounter) return;
+      const count = modal.querySelectorAll(
+        "[name='assigned_users']:checked",
+      ).length;
+      selectedCounter.textContent = `${count} selected`;
     };
     let returnFocus = null;
     const open = (trigger) => {
@@ -635,6 +654,11 @@ const VibMail = (() => {
     modal
       .querySelector("[data-mailbox-refresh]")
       ?.addEventListener("click", renderSuggestions);
+    modal
+      .querySelectorAll("[name='assigned_users']")
+      .forEach((checkbox) =>
+        checkbox.addEventListener("change", updateSelectedCounter),
+      );
     localPart?.addEventListener("input", () => {
       localPart.value = localPart.value
         .toLowerCase()
@@ -643,13 +667,10 @@ const VibMail = (() => {
     modal.querySelector("form")?.addEventListener("submit", async (event) => {
       if (!event.submitter?.matches("[data-mailbox-create-copy]")) return;
       event.preventDefault();
-      const domain =
-        modal.querySelector("[name='domain']")?.value ||
-        modal.dataset.defaultDomain ||
-        "";
-      await copyText(`${localPart.value.trim()}@${domain}`);
+      await copyText(getFinalAddress());
       HTMLFormElement.prototype.submit.call(event.currentTarget);
     });
+    updateSelectedCounter();
     if (modal.hasAttribute("data-open-on-load")) open();
   }
 
@@ -682,6 +703,89 @@ const VibMail = (() => {
     });
   }
 
+  function setupUserForm() {
+    const form = document.querySelector("[data-user-form]");
+    if (!form) return;
+    const username = form.querySelector("[name='username']");
+    const password = form.querySelector("[name='password1']");
+    const confirmation = form.querySelector("[name='password2']");
+    const mailboxes = Array.from(
+      form.querySelectorAll("[name='assigned_mailboxes']"),
+    );
+    const count = form.querySelector("[data-user-mailbox-count]");
+    const firstNames = [
+      "james",
+      "ethan",
+      "olivia",
+      "chloe",
+      "liam",
+      "emma",
+      "noah",
+      "abigail",
+    ];
+    const lastNames = ["smith", "miller", "davis", "clark", "wilson", "jones"];
+    const updateCount = () => {
+      if (count)
+        count.textContent = `${mailboxes.filter((item) => item.checked).length} selected`;
+    };
+    form.querySelector("[data-user-random]")?.addEventListener("click", () => {
+      const first = firstNames[Math.floor(Math.random() * firstNames.length)];
+      const last = lastNames[Math.floor(Math.random() * lastNames.length)];
+      if (username)
+        username.value = `${first}.${last}${Math.floor(10 + Math.random() * 90)}`;
+      username?.focus();
+    });
+    form
+      .querySelector("[data-user-generate-password]")
+      ?.addEventListener("click", () => {
+        const chars =
+          "abcdefghjkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789!@#$%^&*";
+        const value = Array.from(
+          { length: 14 },
+          () => chars[Math.floor(Math.random() * chars.length)],
+        ).join("");
+        if (password) password.value = value;
+        if (confirmation) confirmation.value = value;
+        if (password) password.type = "text";
+        if (confirmation) confirmation.type = "text";
+      });
+    form
+      .querySelector("[data-user-toggle-password]")
+      ?.addEventListener("click", (event) => {
+        const visible = password?.type === "text";
+        if (password) password.type = visible ? "password" : "text";
+        if (confirmation) confirmation.type = visible ? "password" : "text";
+        event.currentTarget.setAttribute(
+          "aria-label",
+          visible ? "Show password" : "Hide password",
+        );
+      });
+    mailboxes.forEach((item) => item.addEventListener("change", updateCount));
+    form
+      .querySelector("[data-user-mailbox-filter]")
+      ?.addEventListener("input", (event) => {
+        const query = event.currentTarget.value.toLowerCase();
+        form.querySelectorAll("[data-mailbox-item]").forEach((item) => {
+          item.hidden = !item.textContent.toLowerCase().includes(query);
+        });
+      });
+    form.addEventListener("submit", (event) => {
+      if (!event.submitter?.matches("[data-user-create-copy]")) return;
+      const credentials = `MailStack Credentials:\nUsername: ${username?.value.trim() || ""}\nPassword: ${password?.value || ""}`;
+      const button = event.submitter;
+      const label = button.querySelector("[data-user-copy-label]");
+      event.preventDefault();
+      copyText(credentials).finally(() => {
+        if (label) label.textContent = "Copied!";
+        button.classList.add("user-copy-complete");
+        window.setTimeout(() => {
+          HTMLFormElement.prototype.submit.call(form);
+        }, 150);
+      });
+    });
+    updateCount();
+  }
+
   function init() {
     loadNotified();
     if ("BroadcastChannel" in window) {
@@ -695,6 +799,7 @@ const VibMail = (() => {
     setupAppShell();
     setupUserMenu();
     setupMailboxCreateModal();
+    setupUserForm();
 
     document.querySelectorAll(".status-form").forEach((form) => {
       form.addEventListener("submit", (event) => {
@@ -709,6 +814,8 @@ const VibMail = (() => {
     document.addEventListener("click", (event) => {
       const target = event.target.closest("[data-copy-email]");
       if (target) copyText(target.dataset.copyEmail || "");
+      const dnsTarget = event.target.closest("[data-copy-dns]");
+      if (dnsTarget) copyText(dnsTarget.dataset.copyDns || "");
     });
 
     setupNotifications();

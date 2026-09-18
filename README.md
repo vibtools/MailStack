@@ -203,7 +203,7 @@ Run the complete repository gate from the project root:
 python scripts/manage_designs.py --root . check
 python scripts/test_designs.py
 python scripts/test_ui_foundation.py
-python scripts/forensic_audit.py --root . --full
+python scripts/forensic_audit.py --root . --profile essential --full
 ```
 
 Build and verify a deterministic source release:
@@ -211,8 +211,8 @@ Build and verify a deterministic source release:
 ```bash
 python scripts/build_release.py --root .
 python scripts/verify_release.py \
-  dist/mailstack-1.3.3-source.zip \
-  --checksum dist/mailstack-1.3.3-source.zip.sha256
+  dist/mailstack-1.3.5.3-source.zip \
+  --checksum dist/mailstack-1.3.5.3-source.zip.sha256
 ```
 
 ## Security
@@ -242,32 +242,32 @@ See [docs/SCREENSHOTS.md](docs/SCREENSHOTS.md) for the approved screenshot set a
 
 ## Documentation
 
-| Area | Document |
-|---|---|
-| User documentation | [documents/README.md](documents/README.md) |
-| User manual | [documents/USER_MANUAL.md](documents/USER_MANUAL.md) |
-| How to use | [documents/HOW_TO_USE.md](documents/HOW_TO_USE.md) |
-| Administrator guide | [documents/ADMIN_GUIDE.md](documents/ADMIN_GUIDE.md) |
-| Quick start | [docs/QUICKSTART.md](docs/QUICKSTART.md) |
-| Installation | [docs/INSTALLATION.md](docs/INSTALLATION.md) |
-| Configuration | [docs/CONFIGURATION.md](docs/CONFIGURATION.md) |
-| Architecture | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) |
-| Operations | [docs/OPERATIONS.md](docs/OPERATIONS.md) |
-| Backup and restore | [docs/BACKUP_RESTORE.md](docs/BACKUP_RESTORE.md) |
-| DNS and deliverability | [docs/DNS_AND_DELIVERABILITY.md](docs/DNS_AND_DELIVERABILITY.md) |
-| Security review | [docs/SECURITY_REVIEW.md](docs/SECURITY_REVIEW.md) |
-| Threat model | [docs/THREAT_MODEL.md](docs/THREAT_MODEL.md) |
-| API and routes | [docs/API_REFERENCE.md](docs/API_REFERENCE.md) |
-| Troubleshooting | [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md) |
-| Release process | [docs/RELEASE_PROCESS.md](docs/RELEASE_PROCESS.md) |
-| Branding | [docs/BRANDING.md](docs/BRANDING.md) |
-| Rebrand compatibility | [docs/REBRAND_COMPATIBILITY.md](docs/REBRAND_COMPATIBILITY.md) |
-| Bootstrap audit | [docs/MAILSTACK_BOOTSTRAP_AUDIT.md](docs/MAILSTACK_BOOTSTRAP_AUDIT.md) |
-| GitHub metadata | [docs/GITHUB_REPOSITORY_METADATA.md](docs/GITHUB_REPOSITORY_METADATA.md) |
-| First commit from Windows | [docs/FIRST_COMMIT_WINDOWS.md](docs/FIRST_COMMIT_WINDOWS.md) |
-| UI design intake | [design/README.md](design/README.md) |
-| UI foundation | [documents/design/UI_FOUNDATION.md](documents/design/UI_FOUNDATION.md) |
-| UI screen catalog | [documents/design/SCREEN_CATALOG.md](documents/design/SCREEN_CATALOG.md) |
+| Area                      | Document                                                                 |
+| ------------------------- | ------------------------------------------------------------------------ |
+| User documentation        | [documents/README.md](documents/README.md)                               |
+| User manual               | [documents/USER_MANUAL.md](documents/USER_MANUAL.md)                     |
+| How to use                | [documents/HOW_TO_USE.md](documents/HOW_TO_USE.md)                       |
+| Administrator guide       | [documents/ADMIN_GUIDE.md](documents/ADMIN_GUIDE.md)                     |
+| Quick start               | [docs/QUICKSTART.md](docs/QUICKSTART.md)                                 |
+| Installation              | [docs/INSTALLATION.md](docs/INSTALLATION.md)                             |
+| Configuration             | [docs/CONFIGURATION.md](docs/CONFIGURATION.md)                           |
+| Architecture              | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)                             |
+| Operations                | [docs/OPERATIONS.md](docs/OPERATIONS.md)                                 |
+| Backup and restore        | [docs/BACKUP_RESTORE.md](docs/BACKUP_RESTORE.md)                         |
+| DNS and deliverability    | [docs/DNS_AND_DELIVERABILITY.md](docs/DNS_AND_DELIVERABILITY.md)         |
+| Security review           | [docs/SECURITY_REVIEW.md](docs/SECURITY_REVIEW.md)                       |
+| Threat model              | [docs/THREAT_MODEL.md](docs/THREAT_MODEL.md)                             |
+| API and routes            | [docs/API_REFERENCE.md](docs/API_REFERENCE.md)                           |
+| Troubleshooting           | [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md)                       |
+| Release process           | [docs/RELEASE_PROCESS.md](docs/RELEASE_PROCESS.md)                       |
+| Branding                  | [docs/BRANDING.md](docs/BRANDING.md)                                     |
+| Rebrand compatibility     | [docs/REBRAND_COMPATIBILITY.md](docs/REBRAND_COMPATIBILITY.md)           |
+| Bootstrap audit           | [docs/MAILSTACK_BOOTSTRAP_AUDIT.md](docs/MAILSTACK_BOOTSTRAP_AUDIT.md)   |
+| GitHub metadata           | [docs/GITHUB_REPOSITORY_METADATA.md](docs/GITHUB_REPOSITORY_METADATA.md) |
+| First commit from Windows | [docs/FIRST_COMMIT_WINDOWS.md](docs/FIRST_COMMIT_WINDOWS.md)             |
+| UI design intake          | [design/README.md](design/README.md)                                     |
+| UI foundation             | [documents/design/UI_FOUNDATION.md](documents/design/UI_FOUNDATION.md)   |
+| UI screen catalog         | [documents/design/SCREEN_CATALOG.md](documents/design/SCREEN_CATALOG.md) |
 
 ## Roadmap
 

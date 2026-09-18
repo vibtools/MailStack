@@ -1,6 +1,14 @@
 from django.contrib import admin
 
-from .models import Mailbox, MailboxMembership
+from .models import Domain, Mailbox, MailboxMembership
+
+
+@admin.register(Domain)
+class DomainAdmin(admin.ModelAdmin):
+    list_display = ("name", "status", "verification_status", "created_at", "updated_at")
+    list_filter = ("status", "verification_status")
+    search_fields = ("name",)
+    readonly_fields = ("uuid", "created_at", "updated_at")
 
 
 @admin.register(Mailbox)

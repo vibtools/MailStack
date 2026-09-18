@@ -4,7 +4,7 @@ title: Documentation Policy
 document_type: documentation-policy
 audience: contributors-and-maintainers
 status: active
-version: 1.3.5.2
+version: 1.3.5.3
 last_reviewed: 2026-08-18
 ---
 
@@ -72,5 +72,5 @@ python scripts/test_documents.py
 python scripts/manage_designs.py --root . check
 python scripts/test_designs.py
 python scripts/test_ui_foundation.py
-python scripts/forensic_audit.py --root . --full
+python scripts/forensic_audit.py --root . --profile essential --full
 ```

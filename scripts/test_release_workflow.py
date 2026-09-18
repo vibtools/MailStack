@@ -44,7 +44,7 @@ roots: list[tempfile.TemporaryDirectory[str]] = []
 def test_version_normalization() -> None:
     assert GATE.normalize_package_version("1.3.0-rc.5") == "1.3.0rc5"
     assert GATE.normalize_package_version("1.3.0") == "1.3.0"
-    assert GATE.normalize_package_version("1.3.5.2") == "1.3.5.2"
+    assert GATE.normalize_package_version("1.3.5.3") == "1.3.5.3"
     try:
         GATE.normalize_package_version("1.3")
     except GATE.ReleaseGateError:
@@ -54,8 +54,8 @@ def test_version_normalization() -> None:
 
 
 def test_release_version_is_not_global_ip() -> None:
-    assert not VERIFY.is_global_ip_literal(b"1.3.5.2", "1.3.5.2")
-    assert VERIFY.is_global_ip_literal(b"8.8." + b"8.8", "1.3.5.2")
+    assert not VERIFY.is_global_ip_literal(b"1.3.5.3", "1.3.5.3")
+    assert VERIFY.is_global_ip_literal(b"8.8." + b"8.8", "1.3.5.3")
 
 
 def test_tag_identity_and_manual_mode() -> None:
@@ -82,15 +82,15 @@ def test_tag_identity_and_manual_mode() -> None:
 
 
 def test_revision_release_identity() -> None:
-    root = make_root("1.3.5.2", "1.3.5.2")
+    root = make_root("1.3.5.3", "1.3.5.3")
     identity = GATE.validate_local_identity(
         root,
         event_name="push",
         ref_type="tag",
-        ref_name="v1.3.5.2",
+        ref_name="v1.3.5.3",
         sha="c" * 40,
     )
-    assert identity.tag == "v1.3.5.2"
+    assert identity.tag == "v1.3.5.3"
     assert identity.prerelease is False
 
     stable_root = make_root("1.3.0", "1.3.0")
@@ -188,6 +188,8 @@ def test_exact_main_head_guard() -> None:
 
 def test_workflow_contract() -> None:
     text = (ROOT / ".github/workflows/release.yml").read_text(encoding="utf-8")
+    ci_text = (ROOT / ".github/workflows/ci.yml").read_text(encoding="utf-8")
+    hygiene_text = (ROOT / ".github/workflows/repository-hygiene.yml").read_text(encoding="utf-8")
     required = (
         'workflow_dispatch:',
         'tags:',
@@ -208,7 +210,8 @@ def test_workflow_contract() -> None:
         "--latest",
         'dist/*.zip',
         'dist/*.sha256',
-        'docs/RELEASE_NOTES_1.3.5.2.md',
+        'docs/RELEASE_NOTES_${{ steps.identity.outputs.version }}.md',
+        '--notes-file "docs/RELEASE_NOTES_${RELEASE_VERSION}.md"',
     )
     for marker in required:
         assert marker in text, marker
@@ -216,6 +219,13 @@ def test_workflow_contract() -> None:
     assert "gh release edit" not in text
     assert "github.event_name == 'push'" in text
     assert "github.ref_type == 'tag'" in text
+    assert "--profile repository --full" in text
+    assert "--profile repository --full" in ci_text
+    assert "build_release.py" not in ci_text
+    assert "verify_release.py" not in ci_text
+    assert "pytest --cov=apps" not in ci_text
+    assert "--profile repository" in hygiene_text
+    assert not (ROOT / ".github/workflows/auto_release.yml").exists()
 
 
 def main() -> int:

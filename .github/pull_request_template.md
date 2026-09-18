@@ -25,7 +25,7 @@ Describe the change and the operational problem it solves.
 ## Verification
 
 - [ ] Tests added or updated
-- [ ] `python scripts/forensic_audit.py --root . --full`
+- [ ] `python scripts/forensic_audit.py --root . --profile essential --full`
 - [ ] `python scripts/validate_templates.py`
 - [ ] `python scripts/test_installer.py`
 - [ ] Dependency audit reviewed

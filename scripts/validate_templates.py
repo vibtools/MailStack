@@ -152,6 +152,7 @@ def main() -> int:
         "systemd/vibmail-gunicorn.service",
         "systemd/vibmail-ingestion.service",
         "systemd/vibmail-public-contact.service",
+        "systemd/vibmail-updater.service",
     ):
         unit = rendered[unit_name]
         require("NoNewPrivileges=true" in unit, f"{unit_name} lacks NoNewPrivileges")

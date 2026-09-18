@@ -1,15 +1,56 @@
 from __future__ import annotations
 
+import re
 import secrets
 import socket
 import struct
 from collections.abc import Callable
+from pathlib import Path
 
 from django.conf import settings
 
 
 class DNSVerificationError(RuntimeError):
     pass
+
+
+def _dkim_record(domain: str) -> tuple[str, bool]:
+    key_file = Path(f"/etc/opendkim/keys/{domain}/mail.txt")
+    try:
+        content = key_file.read_text(encoding="ascii")
+    except (OSError, UnicodeError):
+        return "DKIM signing key is not configured for this domain.", False
+    fragments = re.findall(r'"([^"]*)"', content)
+    public_key = "".join(fragments).split("p=", 1)
+    if len(public_key) != 2 or not public_key[1].split(";", 1)[0].strip():
+        return "DKIM signing key is not configured for this domain.", False
+    value = public_key[1].split(";", 1)[0].strip()
+    return f"v=DKIM1; k=rsa; p={value}", True
+
+
+def build_dns_records(domain: str) -> list[dict[str, str | bool]]:
+    dkim_value, dkim_copyable = _dkim_record(domain)
+    return [
+        {"type": "MX", "host": domain, "value": settings.MAIL_HOSTNAME, "priority": "10", "copyable": True},
+        {
+            "type": "A / AAAA", "host": settings.MAIL_HOSTNAME,
+            "value": settings.SERVER_IP, "priority": "-", "copyable": True,
+        },
+        {
+            "type": "TXT (SPF)", "host": domain,
+            "value": f"v=spf1 a:{settings.MAIL_HOSTNAME} -all",
+            "priority": "-", "copyable": True,
+        },
+        {
+            "type": "TXT (DKIM)", "host": f"mail._domainkey.{domain}",
+            "value": dkim_value, "priority": "-", "copyable": dkim_copyable,
+        },
+        {
+            "type": "TXT (DMARC)", "host": f"_dmarc.{domain}",
+            "value": f"v=DMARC1; p=none; rua=mailto:postmaster@{domain}",
+            "priority": "-", "copyable": True,
+        },
+    ]
 
 
 def _query(name: str, record_type: int, *, timeout: float = 2.0) -> list[str]:

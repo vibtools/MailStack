@@ -49,7 +49,7 @@ class MailboxCreateForm(forms.Form):
         queryset=get_user_model().objects.none(),
         required=False,
         label="Assign to users",
-        widget=forms.SelectMultiple(attrs={"size": 8}),
+        widget=forms.CheckboxSelectMultiple,
     )
 
     def __init__(self, *args, user=None, **kwargs) -> None:
@@ -68,8 +68,13 @@ class MailboxCreateForm(forms.Form):
         else:
             self.fields.pop("assigned_users")
         for field in self.fields.values():
+            if isinstance(field.widget, forms.CheckboxSelectMultiple):
+                continue
             css = field.widget.attrs.get("class", "")
             field.widget.attrs["class"] = f"{css} form-control".strip()
+        self.fields["local_part"].widget.attrs.update(
+            {"autocomplete": "off", "placeholder": "e.g. logan.rodriguez", "spellcheck": "false"}
+        )
 
     def clean_local_part(self):
         value = validate_local_part(self.cleaned_data["local_part"])

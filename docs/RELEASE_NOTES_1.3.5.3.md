@@ -1,16 +1,16 @@
-# MailStack 1.3.5.2 - Revision Release
+# MailStack 1.3.5.3 - Revision Release
 
 ## Purpose
 
-`1.3.5.2` is a revision release that extends the release and upgrade tooling to
+`1.3.5.3` is a revision release that extends the release and upgrade tooling to
 support four-component MailStack versions while preserving existing application
 and System Update behavior.
 
 ## Included changes
 
 - release identity, source archive, and upgrade validation now accept and order
-  four-component versions such as `1.3.5.2`;
-- release metadata and package version are synchronized to `1.3.5.2`.
+  four-component versions such as `1.3.5.3`;
+- release metadata and package version are synchronized to `1.3.5.3`.
 - inventory generation, forensic auditing, and source packaging consistently exclude
   local-only private reference material from CI comparisons and public archives.
 

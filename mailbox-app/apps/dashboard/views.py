@@ -3,11 +3,13 @@ from __future__ import annotations
 import json
 import logging
 import os
+import shutil
 import subprocess  # nosec B404 # noqa: S404
 import tempfile
-import threading
 import urllib.error
+import urllib.parse
 import urllib.request
+from contextlib import suppress
 from pathlib import Path
 
 from django.conf import settings
@@ -24,6 +26,10 @@ from apps.mailboxes.models import Mailbox
 logger = logging.getLogger(__name__)
 GITHUB_REPO = "vibtools/MailStack"
 UPDATE_STATUS_PATH = Path("/run/vibmail/update_status.json")
+UPDATE_REQUEST_PATH = Path("/run/vibmail/update_request.json")
+UPDATE_PROCESSING_PATH = Path("/run/vibmail/update_request.processing.json")
+UPDATER_UNIT_PATH = Path("/etc/systemd/system/vibmail-updater.service")
+UPGRADE_SCRIPT_PATH = Path("/opt/vibmail/app/scripts/upgrade.sh")
 
 
 def _database_ok() -> bool:
@@ -41,6 +47,109 @@ def _storage_ok(path) -> bool:
         return path.is_dir() and os.access(path, os.R_OK | os.W_OK | os.X_OK)
     except OSError:
         return False
+
+
+def _is_official_release_url(value: object) -> bool:
+    if not isinstance(value, str):
+        return False
+    parsed = urllib.parse.urlsplit(value)
+    return (
+        parsed.scheme == "https"
+        and parsed.netloc == "github.com"
+        and parsed.path.startswith(f"/{GITHUB_REPO}/releases/download/")
+        and not parsed.query
+        and not parsed.fragment
+    )
+
+
+def _update_preflight() -> dict:
+    checks = []
+
+    def check(name, passed, detail):
+        checks.append({"name": name, "passed": passed, "detail": detail})
+
+    check("runtime directory", UPDATE_STATUS_PATH.parent.is_dir(), str(UPDATE_STATUS_PATH.parent))
+    check("status path writable", os.access(UPDATE_STATUS_PATH.parent, os.W_OK), str(UPDATE_STATUS_PATH))
+    check("request queue available", not UPDATE_REQUEST_PATH.exists(), str(UPDATE_REQUEST_PATH))
+    check("request processing clear", not UPDATE_PROCESSING_PATH.exists(), str(UPDATE_PROCESSING_PATH))
+    check("updater worker installed", UPDATER_UNIT_PATH.is_file(), str(UPDATER_UNIT_PATH))
+    check("upgrade script executable", os.access(UPGRADE_SCRIPT_PATH, os.X_OK), str(UPGRADE_SCRIPT_PATH))
+    required_paths = (
+        ("application root", Path("/opt/vibmail/app"), "directory", False),
+        ("virtualenv python", Path("/opt/vibmail/venv/bin/python"), "file", True),
+        ("virtualenv pip", Path("/opt/vibmail/venv/bin/pip"), "file", True),
+        ("runtime environment", Path("/etc/vibmail/vibmail.env"), "file", False),
+    )
+    for name, path, path_type, executable in required_paths:
+        exists = path.is_dir() if path_type == "directory" else path.is_file()
+        check(name, exists and (not executable or os.access(path, os.X_OK)), str(path))
+
+    required_commands = (
+        "python3", "python3.12", "flock", "rsync", "tar", "sha256sum", "systemctl",
+        "curl", "nginx", "postfix", "realpath", "readlink", "doveconf",
+    )
+    command_paths = {name: shutil.which(name) for name in required_commands}
+    for name, path in command_paths.items():
+        check(f"command: {name}", path is not None, name)
+
+    systemctl_path = shutil.which("systemctl")
+    if systemctl_path:
+        service_result = subprocess.run(  # nosec B603 # noqa: S603
+            [systemctl_path, "is-active", "--quiet", "vibmail-updater.service"],
+            check=False,
+        )
+        check("updater worker active", service_result.returncode == 0, "vibmail-updater.service")
+        for service_name in (
+            "mariadb", "postfix", "dovecot", "nginx", "vibmail-gunicorn",
+            "vibmail-ingestion", "vibmail-public-contact",
+        ):
+            service_result = subprocess.run(  # nosec B603 # noqa: S603
+                [systemctl_path, "is-active", "--quiet", f"{service_name}.service"],
+                check=False,
+            )
+            check(f"service: {service_name}", service_result.returncode == 0, service_name)
+    id_path = shutil.which("id")
+    if id_path:
+        user_result = subprocess.run(  # nosec B603 # noqa: S603
+            [id_path, "-u", "vmail"],
+            check=False,
+            capture_output=True,
+        )
+        check("vmail user", user_result.returncode == 0, "vmail")
+    else:
+        check("vmail user", False, "id")
+    try:
+        free_bytes = shutil.disk_usage(UPDATE_STATUS_PATH.parent).free
+        check("runtime disk space", free_bytes >= 100 * 1024 * 1024, f"{free_bytes} bytes free")
+    except OSError as exc:
+        check("runtime disk space", False, str(exc))
+
+    failed = [item for item in checks if not item["passed"]]
+    return {
+        "status": "ready" if not failed else "blocked",
+        "checks": checks,
+        "message": "Updater is ready." if not failed else failed[0]["detail"],
+    }
+
+
+def _queue_update_request(payload: dict) -> None:
+    temp_path = None
+    try:
+        with tempfile.NamedTemporaryFile(
+            mode="w",
+            encoding="utf-8",
+            dir=UPDATE_REQUEST_PATH.parent,
+            prefix=".update-request-",
+            delete=False,
+        ) as request_file:
+            temp_path = Path(request_file.name)
+            json.dump(payload, request_file)
+        os.chmod(temp_path, 0o640)
+        os.link(temp_path, UPDATE_REQUEST_PATH)
+    finally:
+        if temp_path is not None:
+            with suppress(OSError):
+                temp_path.unlink()
 
 
 @login_required
@@ -139,6 +248,14 @@ def check_update(request):
 
 
 @login_required
+@require_GET
+def update_preflight(request):
+    if not is_admin(request.user):
+        return JsonResponse({"error": "Unauthorized"}, status=403)
+    return JsonResponse(_update_preflight())
+
+
+@login_required
 @require_POST
 def start_update(request):
     if not is_admin(request.user):
@@ -152,8 +269,7 @@ def start_update(request):
         if not archive_url or not checksum_url:
             return JsonResponse({"error": "Missing URLs"}, status=400)
 
-        allowed_prefix = f"https://github.com/{GITHUB_REPO}/releases/download/"
-        if not archive_url.startswith(allowed_prefix) or not checksum_url.startswith(allowed_prefix):
+        if not _is_official_release_url(archive_url) or not _is_official_release_url(checksum_url):
             return JsonResponse(
                 {"error": "Invalid update URL origin. Must be from official repository."},
                 status=400,
@@ -169,89 +285,22 @@ def start_update(request):
             except (OSError, ValueError):
                 pass
 
-        UPDATE_STATUS_PATH.write_text(
-            json.dumps({"step": "init", "message": "Downloading update archive...", "progress": 0}),
-            encoding="utf-8",
-        )
+        preflight = _update_preflight()
+        if preflight["status"] != "ready":
+            return JsonResponse(
+                {"error": "Update preflight is blocked.", "preflight": preflight},
+                status=503,
+            )
 
-        def _run_update(a_url, c_url):
-            try:
-                with tempfile.NamedTemporaryFile(delete=False, suffix=".zip") as tf_arch:
-                    archive_path = tf_arch.name
-                with tempfile.NamedTemporaryFile(delete=False, suffix=".zip.sha256") as tf_check:
-                    checksum_path = tf_check.name
-
-                urllib.request.urlretrieve(a_url, archive_path)  # nosec B310 # noqa: S310
-                UPDATE_STATUS_PATH.write_text(
-                    json.dumps({
-                        "step": "download",
-                        "message": "Downloading checksum...",
-                        "progress": 5,
-                    }),
-                    encoding="utf-8",
-                )
-                urllib.request.urlretrieve(c_url, checksum_path)  # nosec B310 # noqa: S310
-
-                # Make them readable by root (they are created by vmail)
-                os.chmod(archive_path, 0o644)
-                os.chmod(checksum_path, 0o644)
-
-                UPDATE_STATUS_PATH.write_text(
-                    json.dumps({
-                        "step": "execute",
-                        "message": "Starting upgrade script...",
-                        "progress": 8,
-                    }),
-                    encoding="utf-8",
-                )
-
-                cmd = [
-                    "sudo", "-n", "/opt/vibmail/app/scripts/upgrade.sh",
-                    "--archive", archive_path,
-                    "--checksum", checksum_path,
-                    "--confirm-upgrade",
-                ]
-                result = subprocess.run(cmd, capture_output=True, text=True)  # nosec B603 # noqa: S603
-
-                # Cleanup temp files after script finishes
-                try:
-                    os.remove(archive_path)
-                    os.remove(checksum_path)
-                except OSError:
-                    pass
-
-                if result.returncode != 0:
-                    # Check if the script itself wrote an error status
-                    try:
-                        current_status = json.loads(UPDATE_STATUS_PATH.read_text(encoding="utf-8"))
-                        if current_status.get("step") != "error":
-                            error_msg = result.stderr.strip() or "Upgrade script failed to start or crashed."
-                            UPDATE_STATUS_PATH.write_text(
-                                json.dumps({"step": "error", "message": error_msg, "progress": -1}),
-                                encoding="utf-8",
-                            )
-                    except Exception:
-                        UPDATE_STATUS_PATH.write_text(
-                            json.dumps({
-                                "step": "error",
-                                "message": "Upgrade script failed unexpectedly.",
-                                "progress": -1,
-                            }),
-                            encoding="utf-8",
-                        )
-            except Exception as exc:
-                UPDATE_STATUS_PATH.write_text(
-                    json.dumps({
-                        "step": "error",
-                        "message": f"Update failed to start: {str(exc)}",
-                        "progress": -1,
-                    }),
-                    encoding="utf-8",
-                )
-
-        t = threading.Thread(target=_run_update, args=(archive_url, checksum_url))
-        t.daemon = True
-        t.start()
+        request_payload = {
+            "archive_url": archive_url,
+            "checksum_url": checksum_url,
+            "confirm_upgrade": True,
+        }
+        try:
+            _queue_update_request(request_payload)
+        except FileExistsError:
+            return JsonResponse({"error": "An update is already queued or in progress."}, status=409)
 
         return JsonResponse({"status": "started"})
     except Exception as e:

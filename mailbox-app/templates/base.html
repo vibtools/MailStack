@@ -17,7 +17,7 @@
   <script src="{% static 'js/app.js' %}" defer></script>
 </head>
 
-<body class="{% if request.user.is_authenticated %}app-authenticated{% else %}auth-page{% endif %}"{% if request.user.is_authenticated %} data-live-url="{% url 'messages:live_updates' %}"{% endif %}>
+<body class="{% if request.user.is_authenticated %}app-authenticated{% if request.resolver_match and request.resolver_match.namespace == 'accounts' and request.resolver_match.url_name == 'user_create' %} user-reference-shell{% endif %}{% else %}auth-page{% endif %}"{% if request.user.is_authenticated %} data-live-url="{% url 'messages:live_updates' %}"{% endif %}>
   <a class="skip-link" href="#main-content">Skip to content</a>
   {% if request.user.is_authenticated %}
   <div class="app-shell" data-app-shell>
@@ -75,6 +75,9 @@
         <div class="nav-section">
           <div class="nav-section-label">Management</div>
           <a class="nav-item{% if request.resolver_match and request.resolver_match.namespace == 'mailboxes' and 'domain' in request.resolver_match.url_name %} is-active{% endif %}" href="{% url 'mailboxes:domains' %}">
+            <svg class="ui-icon" aria-hidden="true">
+              <use href="{% static 'icons/mailstack-icons.svg' %}#icon-globe"></use>
+            </svg>
             <span class="nav-label">Domains</span>
           </a>
           <a class="nav-item{% if request.resolver_match and request.resolver_match.namespace == 'accounts' and request.resolver_match.url_name != 'login' and request.resolver_match.url_name != 'logout' %} is-active{% endif %}"

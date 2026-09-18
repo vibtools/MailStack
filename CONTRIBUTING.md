@@ -33,7 +33,7 @@ python scripts/check_docs.py
 python scripts/validate_templates.py
 python scripts/test_installer.py
 python scripts/test_operations.py
-python scripts/forensic_audit.py --root . --full
+python scripts/forensic_audit.py --root . --profile essential --full
 ```
 
 The full gate runs tests, coverage, Ruff, Bandit, Django checks, contact-service tests and source-safety checks.

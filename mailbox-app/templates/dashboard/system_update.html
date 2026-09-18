@@ -156,7 +156,7 @@
 
       <div class="actions" style="margin-top: 16px; gap: 8px;">
         <button class="btn" type="button" id="btn-check-update">Check for Updates</button>
-        <button class="btn btn-primary" type="button" id="btn-start-update" style="display:none;">Install Update</button>
+        <button class="btn btn-primary" type="button" id="btn-start-update" style="display:none;" disabled>Install Update</button>
       </div>
     </div>
   </div>
@@ -170,8 +170,9 @@
     </div>
 
     <div id="preflight-results" class="update-box" style="color: var(--text-secondary);">
-      Updater logs will stream in the terminal window when started.
+      Checking updater readiness...
     </div>
+    <ul id="preflight-checks" style="margin: 8px 0 0; padding-left: 20px; color: var(--text-secondary); font-size: 12px;"></ul>
 
     <div id="active-job-panel" style="display:none;">
       <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
@@ -261,6 +262,7 @@ document.addEventListener("DOMContentLoaded", function() {
   const errorEl = document.getElementById("update-error");
   const activeJobPanel = document.getElementById("active-job-panel");
   const preflightResults = document.getElementById("preflight-results");
+  const preflightChecks = document.getElementById("preflight-checks");
   const badgeAvailability = document.getElementById("update-availability-badge");
   const preflightSummary = document.getElementById("preflight-summary");
 
@@ -274,6 +276,7 @@ document.addEventListener("DOMContentLoaded", function() {
   let archiveUrl = "";
   let checksumUrl = "";
   let pollInterval = null;
+  let preflightReady = false;
 
   function getCSRFToken() {
     const input = document.querySelector('#csrf-form input[name="csrfmiddlewaretoken"]');
@@ -301,6 +304,34 @@ document.addEventListener("DOMContentLoaded", function() {
 
     logViewport.appendChild(row);
     logViewport.scrollTop = logViewport.scrollHeight;
+  }
+
+  async function performPreflight() {
+    preflightReady = false;
+    btnStart.disabled = true;
+    preflightSummary.textContent = "Checking";
+    preflightSummary.className = "update-badge";
+    try {
+      const res = await fetch("{% url 'dashboard:update_preflight' %}");
+      const data = await res.json();
+      preflightChecks.replaceChildren();
+      (data.checks || []).forEach((item) => {
+        const row = document.createElement("li");
+        row.textContent = `${item.passed ? "Pass" : "Blocked"}: ${item.name} (${item.detail})`;
+        preflightChecks.appendChild(row);
+      });
+      preflightResults.textContent = data.status === "ready"
+        ? "Ready: the root updater worker and required runtime checks passed."
+        : "Blocked: " + (data.message || "Manual action is required before installation.");
+      preflightSummary.textContent = data.status === "ready" ? "Ready" : "Blocked";
+      preflightSummary.className = data.status === "ready" ? "update-badge success" : "update-badge danger";
+      preflightReady = data.status === "ready";
+      btnStart.disabled = !preflightReady;
+    } catch (err) {
+      preflightResults.textContent = "Manual action required: updater readiness could not be checked.";
+      preflightSummary.textContent = "Blocked";
+      preflightSummary.className = "update-badge danger";
+    }
   }
 
   logClose.addEventListener("click", () => {
@@ -402,6 +433,7 @@ document.addEventListener("DOMContentLoaded", function() {
       if ("{{ current_version }}" !== data.latest_version && archiveUrl && checksumUrl) {
          badgeAvailability.textContent = "Update available";
          badgeAvailability.className = "update-badge success";
+        await performPreflight();
          btnStart.style.display = "inline-flex";
 
          if (showPopup) {
@@ -409,6 +441,7 @@ document.addEventListener("DOMContentLoaded", function() {
             modalAvailable.hidden = false;
          }
       } else {
+        await performPreflight();
          if (archiveUrl && checksumUrl) {
             badgeAvailability.textContent = "Up to date";
             badgeAvailability.className = "update-badge";
@@ -467,6 +500,12 @@ document.addEventListener("DOMContentLoaded", function() {
   async function triggerUpdate() {
     btnStart.disabled = true;
     modalAvailable.hidden = true; // close modal if open
+
+    if (!preflightReady) {
+      alert("Update preflight is blocked. Resolve the reported condition and try again.");
+      btnStart.disabled = false;
+      return;
+    }
 
     try {
       const res = await fetch("{% url 'dashboard:start_update' %}", {

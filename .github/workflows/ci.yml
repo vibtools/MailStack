@@ -23,7 +23,7 @@ jobs:
 
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
+          python-version: "3.12"
           cache: pip
           cache-dependency-path: mailbox-app/requirements/*.txt
 
@@ -41,96 +41,13 @@ jobs:
             -r mailbox-app/requirements/development.txt
           python -m pip check
 
-      - name: Source safety audit
-        run: python scripts/forensic_audit.py --root .
-
-      - name: Documentation and metadata validation
-        run: python scripts/check_docs.py
-
-      - name: User documentation synchronization
-        run: python scripts/manage_documents.py --root . check
-
-      - name: Documentation system tests
-        run: python scripts/test_documents.py
-
-      - name: UI design intake integrity
-        run: python scripts/manage_designs.py --root . check
-
-      - name: UI design system tests
-        run: python scripts/test_designs.py
-
-      - name: Shared UI foundation contract tests
-        run: python scripts/test_ui_foundation.py
-
       - name: Feature documentation policy
         env:
           DOCUMENTATION_BASE_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event.before }}
         run: python scripts/check_documentation_policy.py --head "$GITHUB_SHA"
 
-      - name: Forensic file inventory
-        run: python scripts/generate_inventory.py --root . --check
-
-      - name: Deployment template validation
-        run: python scripts/validate_templates.py
-
-      - name: Installer contract tests
-        run: python scripts/test_installer.py
-
-      - name: Backup and operations contract tests
-        run: python scripts/test_operations.py
-
-      - name: Release workflow contract tests
-        run: python scripts/test_release_workflow.py
-
-      - name: Upgrade and rollback contract tests
-        run: python scripts/test_upgrade.py
-
       - name: Dependency vulnerability audit
         run: python -m pip_audit --no-deps -r mailbox-app/requirements/locked.txt --progress-spinner off
 
-      - name: Ruff
-        working-directory: mailbox-app
-        run: ruff check .
-
-      - name: Bandit
-        working-directory: mailbox-app
-        run: bandit -c .bandit -q -r apps config
-
-      - name: Tests and coverage
-        working-directory: mailbox-app
-        env:
-          DJANGO_SETTINGS_MODULE: config.settings.test
-          COVERAGE_FILE: ${{ runner.temp }}/mailstack-standalone.coverage
-        run: pytest --cov=apps --cov-report=term-missing --cov-fail-under=85
-
-      - name: Contact service tests
-        working-directory: public-site/contact_service
-        run: python test_contact_app.py
-
-      - name: Contact service Ruff
-        run: python -m ruff check --config mailbox-app/pyproject.toml public-site/contact_service/contact_app.py
-
-      - name: Contact service Bandit
-        run: python -m bandit -c mailbox-app/.bandit -q public-site/contact_service/contact_app.py
-
-      - name: Django checks
-        working-directory: mailbox-app
-        run: |
-          python manage.py check --settings=config.settings.test
-          python manage.py makemigrations --check --dry-run --settings=config.settings.test
-
-      - name: Shell syntax
-        run: find . -type f -name '*.sh' -print0 | xargs -0 -r -n1 bash -n
-
-      - name: Full forensic gate
-        run: python scripts/forensic_audit.py --root . --full
-
-      - name: Deterministic release build
-        run: python scripts/build_release.py --root .
-
-      - name: Release verification
-        run: |
-          VERSION=$(cat VERSION)
-          python scripts/verify_release.py \
-            "dist/mailstack-${VERSION}-source.zip" \
-            --checksum "dist/mailstack-${VERSION}-source.zip.sha256"
+      - name: Full repository forensic gate
+        run: python scripts/forensic_audit.py --root . --profile repository --full
