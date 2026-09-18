@@ -122,6 +122,8 @@ def test_change_policy() -> None:
         ]
     )
     assert findings == []
+    assert policy.evaluate_policy(["scripts/forensic_audit.py"]) == []
+    assert policy.evaluate_policy([".github/workflows/documentation.yml"]) == []
     assert policy.evaluate_policy(["mailbox-app/requirements/locked.txt"]) == []
     assert policy.evaluate_policy(["public-site/requirements.txt"]) == []
     assert policy.evaluate_policy([".github/workflows/ci.yml"]) == []

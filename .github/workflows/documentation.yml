@@ -1,0 +1,57 @@
+name: Documentation Contracts
+
+"on":
+  workflow_dispatch:
+  push:
+    paths:
+      - "documents/**"
+      - "docs/**"
+      - "scripts/check_docs.py"
+      - "scripts/check_documentation_policy.py"
+      - "scripts/generate_inventory.py"
+      - "scripts/manage_documents.py"
+      - "scripts/test_documents.py"
+      - "CHANGELOG.md"
+  pull_request:
+    paths:
+      - "documents/**"
+      - "docs/**"
+      - "scripts/check_docs.py"
+      - "scripts/check_documentation_policy.py"
+      - "scripts/generate_inventory.py"
+      - "scripts/manage_documents.py"
+      - "scripts/test_documents.py"
+      - "CHANGELOG.md"
+
+permissions:
+  contents: read
+
+jobs:
+  documentation-contracts:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Managed documentation gate
+        run: python scripts/manage_documents.py --root . check
+
+      - name: Documentation contract tests
+        run: python scripts/test_documents.py
+
+      - name: Markdown and link gate
+        run: python scripts/check_docs.py
+
+      - name: Documentation change policy
+        env:
+          DOCUMENTATION_BASE_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event.before }}
+        run: python scripts/check_documentation_policy.py --root . --head "$GITHUB_SHA"
+
+      - name: Inventory freshness gate
+        run: python scripts/generate_inventory.py --root . --check

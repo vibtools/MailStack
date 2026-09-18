@@ -344,7 +344,6 @@ def main() -> int:
     )
     repository_checks = (
         ([sys.executable, str(root / "scripts/manage_documents.py"), "--root", str(root), "check"], "USER_DOCUMENTATION_GATE"),
-        ([sys.executable, str(root / "scripts/test_documents.py")], "DOCUMENTATION_TESTS"),
         ([sys.executable, str(root / "scripts/manage_designs.py"), "--root", str(root), "check"], "DESIGN_INTAKE_GATE"),
         ([sys.executable, str(root / "scripts/test_designs.py")], "DESIGN_TESTS"),
         ([sys.executable, str(root / "scripts/test_ui_foundation.py")], "UI_FOUNDATION_TESTS"),

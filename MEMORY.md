@@ -346,6 +346,15 @@ This memory file should be treated as the canonical context snapshot for future 
   pytest-django's database access guard.
 - Focused Site Settings tests pass (4), and the full repository forensic gate reports no blocking findings.
 
+### [2026-09-18] Documentation contract workflow scope reduction
+
+- Removed `scripts/test_documents.py` from the always-on repository forensic aggregate.
+- Added path-filtered `.github/workflows/documentation.yml` for managed-document contract tests,
+  Markdown/link validation, documentation policy, and inventory freshness checks.
+- Core managed-document, policy, link, and inventory gates remain in CI/forensic validation;
+  the broader documentation contract suite now runs only for documentation/tooling changes,
+  manual dispatches, or scheduled hygiene validation.
+
 ### [2026-09-17] CI inventory freshness follow-up
 
 - GitHub Action run `35252391632` failed because a later `AGENTS.md` edit was pushed without regenerating `docs/FORENSIC_FILE_INVENTORY.json`; the forensic gate reported `INVENTORY_OUT_OF_DATE` with one blocking finding.

@@ -22,8 +22,10 @@ inventory.
 
 ## Mandatory feature workflow
 
-Every maintained runtime, deployment, or repository-tooling phase must update a
-`documents/phases/PHASE-NNN-*.md` record and `CHANGELOG.md`. A change to user-visible application or
+Every maintained runtime, deployment, or product-facing tooling phase must update a
+`documents/phases/PHASE-NNN-*.md` record and `CHANGELOG.md`. Repository-governance tooling and
+workflow-only changes are validated by their focused contracts but do not require a product phase.
+A change to user-visible application or
 public-site behavior must also update at least one canonical guide: `USER_MANUAL.md`,
 `HOW_TO_USE.md`, or `ADMIN_GUIDE.md`. Phase records must describe scope, user changes, usage,
 compatibility, verification, and documentation impact.

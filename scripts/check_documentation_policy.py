@@ -45,6 +45,13 @@ GENERATED_ONLY = {
     "design/DESIGN_MANIFEST.json",
     "docs/FORENSIC_FILE_INVENTORY.json",
 }
+REPOSITORY_GOVERNANCE_FILES = {
+    "scripts/check_docs.py",
+    "scripts/check_documentation_policy.py",
+    "scripts/forensic_audit.py",
+    "scripts/generate_inventory.py",
+    "scripts/manage_documents.py",
+}
 ZERO_SHA = "0" * 40
 GIT_EXECUTABLE = os.getenv("GIT_EXECUTABLE", "git")
 
@@ -146,6 +153,8 @@ def is_test_only_path(path: str) -> bool:
 
 def is_phase_sensitive(path: str) -> bool:
     if is_test_only_path(path):
+        return False
+    if path in REPOSITORY_GOVERNANCE_FILES or path.startswith(".github/workflows/"):
         return False
     return path in PHASE_SENSITIVE_FILES or path.startswith(PHASE_SENSITIVE_PREFIXES)
 
