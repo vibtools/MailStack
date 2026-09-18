@@ -61,6 +61,9 @@ def is_version_literal(data: bytes, start: int, end: int) -> bool:
     if line_end == -1:
         line_end = len(data)
     line = data[line_start:line_end].strip().lower()
+    candidate = data[start:end].lower()
+    if line.startswith(b"## ") and line[3:].split(b" - ", 1)[0] == candidate:
+        return True
     if any(
         marker in line
         for marker in (

@@ -203,11 +203,28 @@ This memory file should be treated as the canonical context snapshot for future 
 - Regenerated `documents/DOCUMENTATION_MANIFEST.json` after the Admin Guide workflow update so the
   repository forensic documentation gate sees current hashes and metadata.
 
+### [2026-09-18] Documentation policy gate repair for release verification maintenance
+
+- CI `quality-and-security` failed because `scripts/verify_release.py` and its focused test changed
+  without the required maintained-document updates.
+- Added synchronized maintenance entries in `CHANGELOG.md` and
+  `documents/phases/PHASE-004-RELEASE-UPGRADE-AND-OPERATIONAL-RELIABILITY.md` so the
+  documentation-policy gate records the changelog-heading false-positive correction in release
+  verification.
+
 ### [2026-09-18] Forensic inventory CI synchronization
 
 - Regenerated `docs/FORENSIC_FILE_INVENTORY.json` with `scripts/generate_inventory.py` after the
   repository metadata changes made the generated inventory stale.
 - Validation: `generate_inventory.py --check` passed with 475 maintained files and 41,057 text lines.
+
+### [2026-09-18] Documentation contracts inventory refresh
+
+- The `documentation-contracts` workflow failed at the inventory freshness gate because
+  `documents/DOCUMENTATION_MANIFEST.json` changed without a matching refresh of
+  `docs/FORENSIC_FILE_INVENTORY.json`.
+- Regenerating the forensic inventory restored the documentation workflow and the repository
+  forensic audit to a passing state.
 
 ### [2026-09-17] System Update production-readiness scope
 
@@ -423,6 +440,10 @@ This memory file should be treated as the canonical context snapshot for future 
 - Replaced the CSP nonce `.format()` call with an f-string and wrapped the long `normalized_version` signature; the exact CI Ruff command now passes.
 
 ### [2026-09-18] CI release verification false-positive correction
+
+- GitHub Actions release run `35318392855` failed in `build-verified-source` because `scripts/verify_release.py` treated the changelog heading `## 1.3.5.4 - ...` as a global IPv4 literal.
+- Updated `is_version_literal` to treat markdown changelog headings of the form `## <version> - ...` as version literals, preserving global-IP blocking elsewhere.
+- Extended `scripts/test_release_workflow.py` with a regression assertion for changelog heading version detection; targeted release workflow tests pass (8).
 
 ### [2026-09-18] Permanent release-version IP-scan rule
 

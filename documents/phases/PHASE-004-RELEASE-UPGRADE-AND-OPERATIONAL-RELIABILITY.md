@@ -5,7 +5,7 @@ document_type: phase
 audience: users-operators-and-maintainers
 status: active
 version: 1.3.5.5
-last_reviewed: 2026-08-18
+last_reviewed: 2026-09-18
 phase_id: PHASE-004
 ---
 
@@ -139,6 +139,13 @@ the deterministic source ZIP/checksum. The resulting immutable official baseline
 `9437ba2ebac2033a229accd190268b8711d5b26e` and source SHA-256
 `517778967ca491974f315d231dfd43b3dba85fe86b47dcfc63e4c7051d1010bd`. Existing-VPS execution was
 intentionally deferred so PHASE-005A can be qualified first.
+
+## 2026-09-18 release verification maintenance correction
+
+The release verification global-IPv4 guard now ignores changelog markdown heading prefixes such as
+`## 1.3.5.5 - ...` and validates the extracted version token instead. This preserves the fail-closed
+rule against real global IPv4 literals while preventing false positives from maintained changelog
+section headings.
 
 ## Documentation impact
 
