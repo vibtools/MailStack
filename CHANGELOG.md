@@ -2,6 +2,14 @@
 
 All notable repository-level changes are recorded here. Application history before the open-source conversion remains in `mailbox-app/CHANGELOG.md`.
 
+## 1.3.5.5 - Documentation manifest and domain workflow correction
+
+### Corrected
+
+- Synchronized the maintained documentation and design manifests with the current source content.
+- Documented the live Domains and Add Domain administration workflow, including DNS record generation,
+  copy/export, verification, default-domain selection, editing, and safe disable/delete behavior.
+
 ## 1.3.5.4 - Site settings and domain reliability
 
 ### Added

@@ -4,7 +4,7 @@ title: Multi-domain Mailboxes and DNS Verification
 document_type: phase
 audience: administrators-users-and-maintainers
 status: active
-version: 1.3.5.4
+version: 1.3.5.5
 last_reviewed: 2026-09-18
 phase_id: PHASE-007
 ---

@@ -196,6 +196,13 @@ This repository expects AI agents to maintain durable context across sessions ra
 
 This memory file should be treated as the canonical context snapshot for future AI-assisted work in this repository. If the project direction, deployment architecture, or feature set materially changes, update this document immediately.
 
+### [2026-09-18] Release 1.3.5.5 documentation synchronization
+
+- Bumped the canonical release revision from `1.3.5.4` to `1.3.5.5` across `VERSION`, Django package
+  metadata, active maintained documents, and design/documentation manifests.
+- Regenerated `documents/DOCUMENTATION_MANIFEST.json` after the Admin Guide workflow update so the
+  repository forensic documentation gate sees current hashes and metadata.
+
 ### [2026-09-17] System Update production-readiness scope
 
 - Fixed the System Update page CSP mismatch by adding a per-response nonce to the page's inline script and existing inline styles.
