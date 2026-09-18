@@ -77,12 +77,20 @@ gzip -dc "$BACKUP/databases.sql.gz" | mariadb "${DB_OPTIONS[@]}" --binary-mode
 
 tar --numeric-owner -C /var -xzf "$BACKUP/maildir.tar.gz"
 tar --numeric-owner -C /var/lib -xzf "$BACKUP/attachments.tar.gz"
+if [[ -f "$BACKUP/media.tar.gz" ]]; then
+  tar --numeric-owner -C /var/lib -xzf "$BACKUP/media.tar.gz"
+fi
 if [[ -f "$BACKUP/contact-state.tar.gz" ]]; then
   tar --numeric-owner -C /var/lib -xzf "$BACKUP/contact-state.tar.gz"
 fi
 tar --numeric-owner -C / -xzf "$BACKUP/configuration.tar.gz"
 
 chown -R vmail:vmail /var/vmail /var/lib/vibmail/attachments
+if [[ -d /var/lib/vibmail/media ]]; then
+  chown -R vmail:www-data /var/lib/vibmail/media
+  find /var/lib/vibmail/media -type d -exec chmod 0755 {} +
+  find /var/lib/vibmail/media -type f -exec chmod 0644 {} +
+fi
 if [[ -d /var/lib/vibmail-public-contact ]]; then
   chown -R vibmail-contact:www-data /var/lib/vibmail-public-contact
   chmod 0700 /var/lib/vibmail-public-contact

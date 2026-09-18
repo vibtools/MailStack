@@ -38,6 +38,7 @@ install -d -o root -g vmail -m 0750 "$APP_ROOT" /etc/vibmail
 install -d -o root -g root -m 0700 "$BACKUP_ROOT"
 install -d -o vmail -g vmail -m 0750 /var/vmail /var/vmail/vibmail.my
 install -d -o vmail -g vmail -m 0700 /var/lib/vibmail/attachments
+install -d -o vmail -g www-data -m 0755 /var/lib/vibmail/media
 install -d -o vmail -g adm -m 0750 /var/log/vibmail
 install -d -o root -g www-data -m 0755 "$STATIC_ROOT"
 install -o vmail -g adm -m 0640 /dev/null /var/log/vibmail/application.log

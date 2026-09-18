@@ -135,6 +135,7 @@ h3 { font-size: 1.25rem; }
 }
 
 .brand-mark { width: 37px; height: 37px; }
+.brand-mark-image { width: 100%; height: 100%; object-fit: contain; display: block; }
 .brand-mark svg path:first-child { fill: url("#brand-gradient"); fill: var(--teal); }
 .brand-mark-line { fill: none !important; stroke: var(--ink-900); stroke-width: 3.4; stroke-linecap: round; stroke-linejoin: round; }
 

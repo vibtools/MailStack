@@ -1,6 +1,71 @@
 (() => {
   "use strict";
 
+  const settingsEndpoint = window.MAILSTACK_SETTINGS_ENDPOINT;
+  if (settingsEndpoint) {
+    fetch(settingsEndpoint, { credentials: "omit" })
+      .then((response) => (response.ok ? response.json() : null))
+      .then((siteSettings) => {
+        if (!siteSettings) return;
+        if (siteSettings.site_name && siteSettings.site_tagline) {
+          document.title = `${siteSettings.site_name} — ${siteSettings.site_tagline}`;
+        }
+        document
+          .querySelectorAll('meta[name="description"]')
+          .forEach((node) => {
+            if (siteSettings.site_tagline)
+              node.content = siteSettings.site_tagline;
+          });
+        document
+          .querySelectorAll(".brand > span:last-child")
+          .forEach((node) => {
+            node.textContent = siteSettings.site_name;
+          });
+        document
+          .querySelectorAll("[data-footer-description]")
+          .forEach((node) => {
+            if (siteSettings.footer_description)
+              node.textContent = siteSettings.footer_description;
+          });
+        document.querySelectorAll("[data-footer-copyright]").forEach((node) => {
+          if (siteSettings.copyright_text)
+            node.textContent = siteSettings.copyright_text;
+        });
+        document.querySelectorAll("[data-support-email]").forEach((node) => {
+          if (siteSettings.support_email) {
+            node.textContent = siteSettings.support_email;
+            node.href = `mailto:${siteSettings.support_email}`;
+          }
+        });
+        document.querySelectorAll("[data-contact-phone]").forEach((node) => {
+          node.textContent = siteSettings.contact_phone;
+        });
+        document.querySelectorAll("[data-office-address]").forEach((node) => {
+          node.textContent = siteSettings.office_address;
+        });
+        document.querySelectorAll("[data-source-code-url]").forEach((node) => {
+          if (siteSettings.source_code_url)
+            node.href = siteSettings.source_code_url;
+        });
+        document.querySelectorAll("[data-privacy-url]").forEach((node) => {
+          if (siteSettings.privacy_url) node.href = siteSettings.privacy_url;
+        });
+        if (siteSettings.logo_url)
+          document.querySelectorAll(".brand-mark").forEach((node) => {
+            const image = document.createElement("img");
+            image.src = siteSettings.logo_url;
+            image.alt = "";
+            image.className = "brand-mark-image";
+            node.replaceChildren(image);
+          });
+        if (siteSettings.favicon_url)
+          document.querySelectorAll('link[rel="icon"]').forEach((node) => {
+            node.href = siteSettings.favicon_url;
+          });
+      })
+      .catch(() => {});
+  }
+
   document.documentElement.classList.remove("no-js");
 
   const header = document.querySelector("[data-header]");
@@ -22,7 +87,9 @@
       document.body.classList.toggle("nav-open", !open);
     });
 
-    nav.querySelectorAll("a").forEach((link) => link.addEventListener("click", closeNav));
+    nav
+      .querySelectorAll("a")
+      .forEach((link) => link.addEventListener("click", closeNav));
     window.addEventListener("resize", () => {
       if (window.innerWidth > 860) closeNav();
     });
@@ -39,18 +106,23 @@
   });
 
   const revealItems = document.querySelectorAll("[data-reveal]");
-  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const reducedMotion = window.matchMedia(
+    "(prefers-reduced-motion: reduce)",
+  ).matches;
 
   if (reducedMotion || !("IntersectionObserver" in window)) {
     revealItems.forEach((item) => item.classList.add("is-visible"));
   } else {
-    const observer = new IntersectionObserver((entries, currentObserver) => {
-      entries.forEach((entry) => {
-        if (!entry.isIntersecting) return;
-        entry.target.classList.add("is-visible");
-        currentObserver.unobserve(entry.target);
-      });
-    }, { threshold: 0.12, rootMargin: "0px 0px -40px" });
+    const observer = new IntersectionObserver(
+      (entries, currentObserver) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          entry.target.classList.add("is-visible");
+          currentObserver.unobserve(entry.target);
+        });
+      },
+      { threshold: 0.12, rootMargin: "0px 0px -40px" },
+    );
 
     revealItems.forEach((item) => observer.observe(item));
   }
@@ -112,23 +184,29 @@
       csrfPromise = fetch("/api/contact/csrf/", {
         method: "GET",
         credentials: "same-origin",
-        headers: { "Accept": "application/json" },
-        cache: "no-store"
-      }).then(async (response) => {
-        if (!response.ok) throw new Error("Unable to initialize secure form.");
-        const data = await response.json();
-        if (!data.token) throw new Error("Invalid form security response.");
-        csrfToken = data.token;
-        return csrfToken;
-      }).finally(() => {
-        csrfPromise = null;
-      });
+        headers: { Accept: "application/json" },
+        cache: "no-store",
+      })
+        .then(async (response) => {
+          if (!response.ok)
+            throw new Error("Unable to initialize secure form.");
+          const data = await response.json();
+          if (!data.token) throw new Error("Invalid form security response.");
+          csrfToken = data.token;
+          return csrfToken;
+        })
+        .finally(() => {
+          csrfPromise = null;
+        });
     }
     return csrfPromise;
   };
 
   loadCsrf().catch(() => {
-    setStatus("error", "The secure contact form is temporarily unavailable. Please reload the page and try again.");
+    setStatus(
+      "error",
+      "The secure contact form is temporarily unavailable. Please reload the page and try again.",
+    );
   });
 
   if (messageField && messageCount) {
@@ -139,8 +217,13 @@
     updateCount();
   }
 
-  const queryService = new URLSearchParams(window.location.search).get("service");
-  if (queryService && ["personal", "team", "business", "other"].includes(queryService)) {
+  const queryService = new URLSearchParams(window.location.search).get(
+    "service",
+  );
+  if (
+    queryService &&
+    ["personal", "team", "business", "other"].includes(queryService)
+  ) {
     contactForm.elements.service_type.value = queryService;
   }
 
@@ -151,7 +234,10 @@
 
     if (!contactForm.checkValidity()) {
       contactForm.reportValidity();
-      setStatus("error", "Please complete all required fields before submitting.");
+      setStatus(
+        "error",
+        "Please complete all required fields before submitting.",
+      );
       return;
     }
 
@@ -167,11 +253,11 @@
         method: "POST",
         credentials: "same-origin",
         headers: {
-          "Accept": "application/json",
+          Accept: "application/json",
           "Content-Type": "application/json",
-          "X-VibMail-CSRF": token
+          "X-VibMail-CSRF": token,
         },
-        body: JSON.stringify(payload)
+        body: JSON.stringify(payload),
       });
 
       const data = await response.json().catch(() => ({}));
@@ -181,13 +267,22 @@
         throw new Error(data.message || "Your inquiry could not be submitted.");
       }
 
-      setStatus("success", "Thank you. Your inquiry has been sent to the MailStack administration team.");
+      setStatus(
+        "success",
+        "Thank you. Your inquiry has been sent to the MailStack administration team.",
+      );
       contactForm.reset();
       startedField.value = String(Date.now());
       if (messageCount) messageCount.textContent = "0";
-      statusNode.scrollIntoView({ behavior: reducedMotion ? "auto" : "smooth", block: "center" });
+      statusNode.scrollIntoView({
+        behavior: reducedMotion ? "auto" : "smooth",
+        block: "center",
+      });
     } catch (error) {
-      setStatus("error", error.message || "Something went wrong. Please try again.");
+      setStatus(
+        "error",
+        error.message || "Something went wrong. Please try again.",
+      );
     } finally {
       csrfToken = "";
       loadCsrf().catch(() => {});

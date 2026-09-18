@@ -126,6 +126,8 @@ USE_TZ = True
 STATIC_URL = "/static/"
 STATIC_ROOT = Path(os.getenv("STATIC_ROOT", str(BASE_DIR / "staticfiles")))
 STATICFILES_DIRS = [BASE_DIR / "static"]
+MEDIA_URL = "/media/"
+MEDIA_ROOT = Path(os.getenv("MEDIA_ROOT", str(BASE_DIR / ".runtime" / "media")))
 STORAGES = {
     "staticfiles": {"BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage"},
 }
@@ -137,6 +139,7 @@ LOGOUT_REDIRECT_URL = "accounts:login"
 MAIL_DOMAIN = os.getenv("MAIL_DOMAIN", "vibmail.my")
 MAIL_HOSTNAME = os.getenv("MAIL_HOSTNAME", "mail.vibmail.my")
 APP_HOSTNAME = os.getenv("APP_HOSTNAME", "app.vibmail.my")
+PUBLIC_SITE_ORIGIN = os.getenv("PUBLIC_SITE_ORIGIN", "https://vibmail.my")
 SOURCE_CODE_URL = os.getenv("SOURCE_CODE_URL", "https://github.com/vibtools/MailStack")
 COMPANY_URL = os.getenv("COMPANY_URL", "https://vib.tools/")
 OPEN_SOURCE_HUB_URL = os.getenv("OPEN_SOURCE_HUB_URL", "https://dev.vib.tools/")

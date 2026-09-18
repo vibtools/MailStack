@@ -211,8 +211,8 @@ Build and verify a deterministic source release:
 ```bash
 python scripts/build_release.py --root .
 python scripts/verify_release.py \
-  dist/mailstack-1.3.5.3-source.zip \
-  --checksum dist/mailstack-1.3.5.3-source.zip.sha256
+  dist/mailstack-1.3.5.4-source.zip \
+  --checksum dist/mailstack-1.3.5.4-source.zip.sha256
 ```
 
 ## Security

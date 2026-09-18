@@ -63,6 +63,13 @@ server {
         add_header Cache-Control "public, max-age=604800, immutable";
     }
 
+    location /media/ {
+        alias /var/lib/vibmail/media/;
+        access_log off;
+        add_header Cache-Control "public, max-age=3600";
+        add_header X-Content-Type-Options nosniff always;
+    }
+
     location /_protected_attachments/ {
         internal;
         alias /var/lib/vibmail/attachments/;

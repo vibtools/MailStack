@@ -3,12 +3,15 @@ from __future__ import annotations
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import ValidationError
 from django.core.paginator import Paginator
 from django.db import DatabaseError, transaction
 from django.db.models import Count, Q
+from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse
 from django.utils import timezone
-from django.views.decorators.http import require_http_methods, require_POST
+from django.views.decorators.http import require_GET, require_http_methods, require_POST
 
 from apps.audit.services import record_audit
 from apps.core.access import (
@@ -18,7 +21,7 @@ from apps.core.access import (
     user_can_delete_mailbox,
 )
 
-from .dns import build_dns_records, verify_domain
+from .dns import build_dns_records, verify_dns_records, verify_domain
 from .forms import DomainForm, MailboxCreateForm
 from .mailserver import (
     MailServerContractError,
@@ -91,8 +94,49 @@ def mailbox_create(request):
 @login_required
 def domain_list(request):
     require_admin(request.user)
+    query = request.GET.get("q", "").strip()
     domains = Domain.objects.annotate(mailbox_count=Count("mailboxes")).order_by("name")
-    return render(request, "mailboxes/domains.html", {"domains": domains})
+    if query:
+        domains = domains.filter(Q(name__icontains=query) | Q(status__icontains=query) | Q(verification_status__icontains=query))
+    return render(request, "mailboxes/domains.html", {"domains": domains, "domain_query": query})
+
+
+@login_required
+@require_GET
+def domain_dns_status(request, domain_uuid):
+    require_admin(request.user)
+    domain = get_object_or_404(Domain, uuid=domain_uuid)
+    result = verify_dns_records(domain.name)
+    return JsonResponse(result)
+
+
+@login_required
+@require_POST
+def domain_make_default(request, domain_uuid):
+    require_admin(request.user)
+    domain = get_object_or_404(Domain, uuid=domain_uuid)
+    if domain.status != Domain.Status.ACTIVE or domain.verification_status != Domain.VerificationStatus.VERIFIED:
+        messages.error(request, "Only an active, DNS-verified domain can be made default.")
+        return redirect("mailboxes:domains")
+    with transaction.atomic():
+        Domain.objects.filter(is_default=True).update(is_default=False)
+        domain.is_default = True
+        domain.save(update_fields=["is_default", "updated_at"])
+    messages.success(request, f"{domain.name} is now the default domain.")
+    return redirect("mailboxes:domains")
+
+
+@login_required
+@require_GET
+def domain_dns_preview(request):
+    require_admin(request.user)
+    from .validators import validate_domain
+
+    try:
+        domain = validate_domain(request.GET.get("domain", ""))
+    except ValidationError:
+        return JsonResponse({"error": "Enter a valid domain name before getting DNS records."}, status=400)
+    return JsonResponse({"records": build_dns_records(domain)})
 
 
 @login_required
@@ -100,6 +144,8 @@ def domain_list(request):
 def domain_create(request):
     require_admin(request.user)
     form = DomainForm(request.POST or None)
+    if request.method == "POST" and not request.POST.get("dns_confirmed"):
+        form.add_error(None, "Confirm that all DNS records have been added before saving the domain.")
     if request.method == "POST" and form.is_valid():
         domain = form.save(commit=False)
         created_external = False
@@ -122,15 +168,15 @@ def domain_create(request):
                 request, f"Domain {domain.name} added. DNS records are ready to publish."
             )
             return redirect("mailboxes:domain_edit", domain_uuid=domain.uuid)
-    dns_domain = (
-        form.data.get("name", settings.MAIL_DOMAIN)
-        if form.is_bound
-        else settings.MAIL_DOMAIN
-    )
     return render(
         request,
         "mailboxes/domain_form.html",
-        {"form": form, "creating": True, "dns_records": build_dns_records(dns_domain)},
+        {
+            "form": form,
+            "creating": True,
+            "dns_records": [],
+            "dns_preview_url": reverse("mailboxes:domain_dns_preview"),
+        },
     )
 
 
@@ -160,7 +206,13 @@ def domain_edit(request, domain_uuid):
     return render(
         request,
         "mailboxes/domain_form.html",
-        {"form": form, "domain": domain, "creating": False, "dns_records": build_dns_records(domain.name)},
+        {
+            "form": form,
+            "domain": domain,
+            "creating": False,
+            "dns_records": [],
+            "dns_preview_url": reverse("mailboxes:domain_dns_preview"),
+        },
     )
 
 
@@ -218,7 +270,7 @@ def domain_toggle(request, domain_uuid):
 def domain_delete(request, domain_uuid):
     require_admin(request.user)
     domain = get_object_or_404(Domain, uuid=domain_uuid)
-    if domain.name == settings.MAIL_DOMAIN.strip().lower():
+    if domain.is_default or domain.name == settings.MAIL_DOMAIN.strip().lower():
         messages.error(request, "The configured default domain cannot be removed.")
         return redirect("mailboxes:domains")
     if Mailbox.objects.filter(domain=domain).exists():

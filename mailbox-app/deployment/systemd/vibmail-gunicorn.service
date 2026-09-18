@@ -2,7 +2,7 @@
 Description=MailStack Gunicorn application
 After=network-online.target mariadb.service
 Wants=network-online.target
-RequiresMountsFor=/opt/vibmail/app /var/log/vibmail /var/vmail /var/lib/vibmail/attachments
+RequiresMountsFor=/opt/vibmail/app /var/log/vibmail /var/vmail /var/lib/vibmail/attachments /var/lib/vibmail/media
 
 [Service]
 Type=simple
@@ -23,7 +23,7 @@ RestartSec=3
 PrivateTmp=true
 ProtectSystem=strict
 ProtectHome=true
-ReadWritePaths=/run/vibmail /var/log/vibmail /var/lib/vibmail/attachments /var/vmail
+ReadWritePaths=/run/vibmail /var/log/vibmail /var/lib/vibmail/attachments /var/lib/vibmail/media /var/vmail
 NoNewPrivileges=true
 CapabilityBoundingSet=
 LockPersonality=true

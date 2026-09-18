@@ -58,6 +58,11 @@ class MailboxCreateForm(forms.Form):
         cast(forms.ModelChoiceField, self.fields["domain"]).queryset = Domain.objects.filter(
             status=Domain.Status.ACTIVE, verification_status=Domain.VerificationStatus.VERIFIED
         ).order_by("name")
+        self.fields["domain"].initial = Domain.objects.filter(
+            is_default=True, status=Domain.Status.ACTIVE, verification_status=Domain.VerificationStatus.VERIFIED
+        ).first() or Domain.objects.filter(
+            name=settings.MAIL_DOMAIN.strip().lower()
+        ).first()
         if is_admin(user):
             assigned_users_field = cast(
                 forms.ModelMultipleChoiceField, self.fields["assigned_users"]

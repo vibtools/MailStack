@@ -1,20 +1,17 @@
-# MailStack Global Agent Rules
+# MailStack Agent Guidance
 
-**CRITICAL MANDATE FOR ALL AI AGENTS:**
+`AI_INSTRUCTIONS.md` is the sole authoritative instruction set for AI agents
+working in this repository.
 
-1. **STRICT COMPLIANCE WITH `AI_INSTRUCTIONS.md`:**
-   You must read and unconditionally follow every rule, instruction, and protocol defined in `AI_INSTRUCTIONS.md`. It is the core operational guideline for this project. Failure to adhere to those rules is unacceptable.
+All rules in `AI_INSTRUCTIONS.md` must be read and followed in full. If any
+other repository document conflicts with `AI_INSTRUCTIONS.md`, follow
+`AI_INSTRUCTIONS.md` and ignore the conflicting instruction.
 
-2. **MANDATORY REAL-TIME MEMORY UPDATES:**
-   Whenever any code change, bug fix, architectural decision, or new feature is implemented during your session, you **MUST** automatically update the `MEMORY.md` file in real-time. The project context in `MEMORY.md` must be kept completely synchronized with the actual codebase at all times. Do not wait for the user to prompt you to update it.
+No rule may be added to this file if it conflicts with, overwrites, duplicates,
+or changes the meaning of `AI_INSTRUCTIONS.md`. No rule may be added here that
+can confuse an agent, expand task scope without authorization, or create a
+repeating workflow loop.
 
-3. **MANDATORY CI WORKFLOW & FORENSIC INVENTORY VALIDATION:**
-   Whenever any code change, template edit, design token update, or file modification is made, you **MUST** proactively validate and synchronize all GitHub Actions workflow requirements before concluding:
-    - **Regenerate Forensic Inventory:** Whenever ANY file in the repository is modified, created, or deleted, you **MUST** run `python scripts/generate_inventory.py --root .` to synchronize `docs/FORENSIC_FILE_INVENTORY.json`. The CI `INVENTORY_GATE` fails closed if this file is out of date.
-    - **Verify Workflow Contracts & Forensic Audit:** You **MUST** run `python scripts/forensic_audit.py --root .` (and relevant test suites like `scripts/test_ui_foundation.py`) and ensure `BLOCKING_FINDINGS=0` and `FORENSIC_AUDIT=PASS` so that any push immediately succeeds in GitHub Actions without CI errors.
-    - **Preserve Critical Contracts:** Respect established contracts (e.g., in `base.html`, `app.css` MUST precede `foundation.css`, and frozen design tokens in `test_ui_foundation.py` must match `foundation.css`).
-    - **Release Version Is Not an IP Literal:** Never scan, verify, or reject the canonical `VERSION`, package version, release tag version, or archive top-level version directory as a global IP literal. Version strings such as `1.3.5.3` are semantic release identifiers, not network addresses. IP scanning must continue to reject actual global IP addresses everywhere else, and this exemption must remain covered by regression tests.
-
-4. **MANDATORY POST-UPDATE GENERATED-CONTRACT CHECK:**
-   After the final file edit, regenerate the forensic inventory, run `python scripts/generate_inventory.py --root . --check`, and do not edit any tracked file afterward. A commit or push is forbidden until this check, documentation checks, forensic audit, and relevant tests all pass.
-   After every update, before commit or push, do not skip any generated or dependent validation step that can make GitHub Actions fail. If documentation or managed-document metadata changes, run `python scripts/manage_documents.py sync` and then `python scripts/manage_documents.py check`; next run `python scripts/generate_inventory.py --root .` and verify it with `python scripts/generate_inventory.py --root . --check`; finally run `python scripts/forensic_audit.py --root .` and all relevant focused tests. A commit/push is not permitted until documentation manifests, forensic inventory, workflow contracts, and required tests are synchronized and passing. When a CI failure identifies a missing, stale, mismatched, or skipped contract, update this rule or the relevant validation test so the same failure cannot be silently skipped in a later update.
+This file intentionally does not duplicate or override rules from
+`AI_INSTRUCTIONS.md`. It contains no independent repository-wide workflow
+requirements.

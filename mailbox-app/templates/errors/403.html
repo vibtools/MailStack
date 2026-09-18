@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% block title %}Access denied - {{ app_name }}{% endblock %}
+
+{% block content %}
+<section class="empty-state" aria-labelledby="access-denied-title">
+  <h1 id="access-denied-title">Access denied</h1>
+  <p>You do not have permission to view this page.</p>
+</section>
+{% endblock %}

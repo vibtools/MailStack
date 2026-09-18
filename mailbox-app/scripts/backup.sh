@@ -31,6 +31,7 @@ esac
   || { printf 'Unsafe database identifier.\n' >&2; exit 1; }
 [[ -d /var/vmail ]] || { printf 'Maildir root is missing.\n' >&2; exit 1; }
 [[ -d /var/lib/vibmail/attachments ]] || { printf 'Attachment root is missing.\n' >&2; exit 1; }
+[[ -d /var/lib/vibmail/media ]] || { printf 'Media root is missing.\n' >&2; exit 1; }
 for command_name in mariadb-dump gzip tar sha256sum systemctl python3; do
   command -v "$command_name" >/dev/null 2>&1 \
     || { printf 'Required command is missing: %s\n' "$command_name" >&2; exit 1; }
@@ -127,6 +128,8 @@ tar --acls --xattrs --numeric-owner --one-file-system \
   -C /var -czf "$DEST/maildir.tar.gz" vmail
 tar --acls --xattrs --numeric-owner --one-file-system \
   -C /var/lib -czf "$DEST/attachments.tar.gz" vibmail/attachments
+tar --acls --xattrs --numeric-owner --one-file-system \
+  -C /var/lib -czf "$DEST/media.tar.gz" vibmail/media
 if [[ -d /var/lib/vibmail-public-contact ]]; then
   tar --acls --xattrs --numeric-owner --one-file-system \
     -C /var/lib -czf "$DEST/contact-state.tar.gz" vibmail-public-contact

@@ -786,6 +786,330 @@ const VibMail = (() => {
     updateCount();
   }
 
+  function setupDomainForm() {
+    const page = document.querySelector("[data-domain-form]");
+    if (!page) return;
+    const input = page.querySelector("#id_name");
+    const getDns = page.querySelector("[data-get-dns]");
+    const error = page.querySelector("[data-domain-error]");
+    const body = page.querySelector("[data-dns-body]");
+    const exportButton = page.querySelector("[data-export-dns]");
+    const confirmation = page.querySelector("[data-dns-confirm]");
+    const submit = page.querySelector("[data-domain-submit]");
+    let records = [];
+
+    function showError(message) {
+      error.textContent = message;
+      error.hidden = false;
+      input.classList.add("is-invalid");
+      input.focus();
+    }
+
+    function renderRows() {
+      body.replaceChildren();
+      records.forEach((record) => {
+        const row = document.createElement("tr");
+        const values = [
+          record.type,
+          record.host,
+          record.value,
+          record.priority || "-",
+        ];
+        values.forEach((value, index) => {
+          const cell = document.createElement("td");
+          cell.textContent = value;
+          if (index === 1 || index === 2) cell.title = value;
+          row.appendChild(cell);
+        });
+        const action = document.createElement("td");
+        const copy = document.createElement("button");
+        copy.type = "button";
+        copy.className = "domain-copy";
+        copy.textContent = record.copyable ? "Copy" : "Unavailable";
+        copy.disabled = !record.copyable;
+        copy.addEventListener("click", async () => {
+          await navigator.clipboard.writeText(record.value);
+          copy.textContent = "Copied!";
+          window.setTimeout(() => {
+            copy.textContent = "Copy";
+          }, 1200);
+        });
+        action.appendChild(copy);
+        row.appendChild(action);
+        body.appendChild(row);
+      });
+    }
+
+    getDns?.addEventListener("click", async () => {
+      const domain = input.value.trim();
+      if (!domain)
+        return showError(
+          "Enter a valid domain name before getting DNS records.",
+        );
+      error.hidden = true;
+      input.classList.remove("is-invalid");
+      getDns.disabled = true;
+      getDns.textContent = "Resolving...";
+      try {
+        const response = await fetch(
+          `${page.dataset.previewUrl}?domain=${encodeURIComponent(domain)}`,
+          {
+            headers: { Accept: "application/json" },
+          },
+        );
+        const result = await response.json();
+        if (!response.ok)
+          throw new Error(
+            result.error || "DNS records could not be generated.",
+          );
+        records = result.records;
+        renderRows();
+        exportButton.disabled = false;
+        if (confirmation) confirmation.disabled = false;
+      } catch (requestError) {
+        showError(requestError.message);
+      } finally {
+        getDns.disabled = false;
+        getDns.textContent = "Get DNS";
+      }
+    });
+
+    confirmation?.addEventListener("change", () => {
+      submit.disabled = !confirmation.checked;
+    });
+    exportButton?.addEventListener("click", () => {
+      const domain = input.value.trim().toLowerCase();
+      const zone = [
+        `;; BIND Zone File for Cloudflare DNS Import`,
+        `;; Domain: ${domain}`,
+        `$ORIGIN ${domain}.`,
+        "$TTL 1",
+        "",
+      ];
+      records.forEach((record) => {
+        const host =
+          record.type === "MX" ? "@" : record.host.replace(`.${domain}`, "");
+        const value =
+          record.type === "MX"
+            ? `${record.priority}\t${record.value}.`
+            : record.value;
+        zone.push(`${host || "@"}\tIN\t${record.type.split(" ")[0]}\t${value}`);
+      });
+      const url = URL.createObjectURL(
+        new Blob([`${zone.join("\n")}\n`], {
+          type: "text/plain;charset=utf-8",
+        }),
+      );
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `${domain}-cloudflare-dns.txt`;
+      link.click();
+      URL.revokeObjectURL(url);
+    });
+  }
+
+  function setupDomainsPage() {
+    const page = document.querySelector("[data-domains-page]");
+    if (!page) return;
+    const rows = [...page.querySelectorAll("[data-domain-row]")];
+    const search = page.querySelector("[data-domain-search]");
+    const count = page.querySelector("[data-domain-count]");
+    const toggleTemplate = page.dataset.dnsToggleTemplate;
+    const csrfToken = document.cookie.match(/(?:^|; )csrftoken=([^;]+)/)?.[1];
+    rows.forEach((row) => {
+      const actions = row.querySelector(".domain-row-actions");
+      const uuid = row.querySelector("[data-domain-uuid]")?.dataset.domainUuid;
+      if (
+        !actions ||
+        !uuid ||
+        !toggleTemplate ||
+        actions.querySelector("[data-domain-toggle]")
+      )
+        return;
+      const form = document.createElement("form");
+      form.method = "post";
+      form.action = toggleTemplate.replace(
+        "00000000-0000-0000-0000-000000000000",
+        uuid,
+      );
+      const token = document.createElement("input");
+      token.type = "hidden";
+      token.name = "csrfmiddlewaretoken";
+      token.value = csrfToken || "";
+      const button = document.createElement("button");
+      button.type = "submit";
+      button.className = "domain-icon-action";
+      button.dataset.domainToggle = "true";
+      const active = row.querySelector(".domain-status-active");
+      button.title = `${active ? "Disable" : "Enable"} domain`;
+      button.setAttribute(
+        "aria-label",
+        `${active ? "Disable" : "Enable"} ${uuid}`,
+      );
+      const iconHref = row
+        .querySelector("[data-dns-open] use")
+        ?.getAttribute("href")
+        ?.replace("#icon-globe", "#icon-refresh-cw");
+      const svgNamespace = row.querySelector("svg")?.namespaceURI;
+      const icon = document.createElementNS(svgNamespace, "svg");
+      icon.classList.add("ui-icon");
+      icon.setAttribute("aria-hidden", "true");
+      const iconUse = document.createElementNS(svgNamespace, "use");
+      if (iconHref) iconUse.setAttribute("href", iconHref);
+      icon.append(iconUse);
+      button.append(icon);
+      form.append(token, button);
+      actions.prepend(form);
+    });
+    const modal = document.querySelector("[data-dns-modal]");
+    if (!modal) return;
+    const title = modal.querySelector("[data-dns-title]");
+    const body = modal.querySelector("[data-dns-modal-rows]");
+    const statusTemplate = page.dataset.dnsStatusTemplate;
+    const progress = modal.querySelector("[data-dns-progress]");
+    const tag = modal.querySelector("[data-dns-tag]");
+    const check = modal.querySelector("[data-dns-check]");
+    const exportButton = modal.querySelector("[data-dns-export]");
+    let records = [];
+    let domain = "";
+
+    const setTag = (text, tone) => {
+      tag.textContent = text;
+      tag.className = `domain-dns-tag domain-dns-tag-${tone}`;
+    };
+    const render = (results = []) => {
+      body.replaceChildren();
+      results.forEach((record) => {
+        const row = document.createElement("tr");
+        [record.type, record.host, record.value].forEach((value) => {
+          const cell = document.createElement("td");
+          cell.textContent = value;
+          cell.title = value;
+          row.append(cell);
+        });
+        const status = document.createElement("td");
+        status.textContent = record.status || "Not checked";
+        status.className =
+          record.status === "verified" ? "domain-dns-ok" : "domain-dns-missing";
+        row.append(status);
+        const action = document.createElement("td");
+        const copy = document.createElement("button");
+        copy.type = "button";
+        copy.className = "domain-copy";
+        copy.textContent = "Copy";
+        copy.addEventListener("click", () => copyText(record.value));
+        action.append(copy);
+        row.append(action);
+        body.append(row);
+      });
+    };
+    const loadRecords = async (uuid, name) => {
+      domain = name;
+      title.textContent = name;
+      setTag("Loading", "loading");
+      progress.style.width = "20%";
+      const response = await fetch(
+        `${page.dataset.dnsPreviewUrl}?domain=${encodeURIComponent(name)}`,
+        { headers: { Accept: "application/json" } },
+      );
+      if (!response.ok) throw new Error("DNS records could not be loaded.");
+      const result = await response.json();
+      records = result.records.map((record) => ({
+        ...record,
+        status: "pending",
+      }));
+      render(records);
+      exportButton.disabled = false;
+      setTag("Ready", "ready");
+      progress.style.width = "0%";
+      modal.dataset.domainUuid = uuid;
+    };
+    page.querySelectorAll("[data-dns-open]").forEach((button) =>
+      button.addEventListener("click", async () => {
+        modal.showModal();
+        try {
+          await loadRecords(
+            button.dataset.domainUuid,
+            button.dataset.domainName,
+          );
+        } catch (error) {
+          setTag(error.message, "error");
+        }
+      }),
+    );
+    modal
+      .querySelectorAll("[data-dns-close]")
+      .forEach((button) =>
+        button.addEventListener("click", () => modal.close()),
+      );
+    check.addEventListener("click", async () => {
+      check.disabled = true;
+      setTag("Checking...", "loading");
+      progress.style.width = "35%";
+      try {
+        const url = statusTemplate.replace(
+          "00000000-0000-0000-0000-000000000000",
+          modal.dataset.domainUuid,
+        );
+        const response = await fetch(url, {
+          headers: { Accept: "application/json" },
+        });
+        if (!response.ok) throw new Error("DNS check failed.");
+        const result = await response.json();
+        const verified = Boolean(result.verified);
+        records =
+          result.records ||
+          records.map((record) => ({
+            ...record,
+            status: verified ? "verified" : "missing",
+          }));
+        render(records);
+        progress.style.width = verified ? "100%" : "60%";
+        setTag(
+          verified ? "All verified" : "Records missing",
+          verified ? "success" : "warning",
+        );
+      } catch (error) {
+        setTag(error.message, "error");
+      } finally {
+        check.disabled = false;
+      }
+    });
+    exportButton.addEventListener("click", () => {
+      const zone = [
+        `;; Cloudflare Zone File for ${domain}`,
+        `$ORIGIN ${domain}.`,
+        "$TTL 1",
+        "",
+      ];
+      records.forEach((record) =>
+        zone.push(
+          `${record.cf_host || "@"}\tIN\t${record.type}\t${record.type === "MX" ? `${record.priority}\t${record.value}.` : record.value}`,
+        ),
+      );
+      const url = URL.createObjectURL(
+        new Blob([`${zone.join("\n")}\n`], {
+          type: "text/plain;charset=utf-8",
+        }),
+      );
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `${domain}-cloudflare-dns.txt`;
+      link.click();
+      URL.revokeObjectURL(url);
+    });
+    search?.addEventListener("input", () => {
+      const query = search.value.trim().toLowerCase();
+      let visible = 0;
+      rows.forEach((row) => {
+        const shown = row.dataset.searchText.toLowerCase().includes(query);
+        row.hidden = !shown;
+        if (shown) visible += 1;
+      });
+      count.textContent = `${visible} domain${visible === 1 ? "" : "s"}`;
+    });
+  }
+
   function init() {
     loadNotified();
     if ("BroadcastChannel" in window) {
@@ -800,6 +1124,8 @@ const VibMail = (() => {
     setupUserMenu();
     setupMailboxCreateModal();
     setupUserForm();
+    setupDomainForm();
+    setupDomainsPage();
 
     document.querySelectorAll(".status-form").forEach((form) => {
       form.addEventListener("submit", (event) => {

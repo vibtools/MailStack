@@ -8,7 +8,7 @@
   <meta name="theme-color" content="#ffffff">
   <title>{% block title %}MailStack{% endblock %}</title>
   <!--{% load static %}-->
-  <link rel="icon" href="{% static 'brand/mailstack-logo.svg' %}" type="image/svg+xml">
+  <link rel="icon" href="{% if site_settings.favicon %}{{ site_settings.favicon.url }}{% else %}{% static 'brand/mailstack-logo.svg' %}{% endif %}">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap">
@@ -23,9 +23,9 @@
   <div class="app-shell" data-app-shell>
     <aside id="app-sidebar" class="app-sidebar" aria-label="Application navigation" data-app-sidebar>
       <div class="sidebar-header">
-        <a class="brand-lockup" href="{% url 'dashboard:index' %}" aria-label="MailStack dashboard">
-          <img class="brand-mark" src="{% static 'brand/mailstack-logo.svg' %}" alt="" width="28" height="28">
-          <span class="brand-name">MailStack</span>
+        <a class="brand-lockup" href="{% url 'dashboard:index' %}" aria-label="{{ app_name }} dashboard">
+          <img class="brand-mark" src="{% if site_settings.logo %}{{ site_settings.logo.url }}{% else %}{% static 'brand/mailstack-logo.svg' %}{% endif %}" alt="" width="28" height="28">
+          <span class="brand-name">{{ app_name }}</span>
         </a>
         <button class="icon-button sidebar-collapse" type="button" aria-label="Collapse navigation" aria-pressed="false"
           data-sidebar-collapse>
@@ -93,6 +93,11 @@
               <use href="{% static 'icons/mailstack-icons.svg' %}#icon-refresh-cw"></use>
             </svg>
             <span class="nav-label">System Update</span>
+          </a>
+          <a class="nav-item{% if request.resolver_match and request.resolver_match.namespace == 'dashboard' and request.resolver_match.url_name == 'site_settings' %} is-active{% endif %}"
+            href="{% url 'dashboard:site_settings' %}"{% if request.resolver_match and request.resolver_match.namespace == 'dashboard' and request.resolver_match.url_name == 'site_settings' %} aria-current="page"{% endif %}>
+            <svg class="ui-icon" aria-hidden="true"><use href="{% static 'icons/mailstack-icons.svg' %}#icon-settings"></use></svg>
+            <span class="nav-label">Site Settings</span>
           </a>
         </div>
         {% endif %}
@@ -163,8 +168,8 @@
           <div class="auth-shell">
             <header class="auth-brand-header">
               <a class="brand-lockup" href="{% url 'accounts:login' %}" aria-label="MailStack sign in">
-                <img class="brand-mark" src="{% static 'brand/mailstack-logo.svg' %}" alt="" width="40" height="40">
-                <span class="brand-name">MailStack</span>
+                <img class="brand-mark" src="{% if site_settings.logo %}{{ site_settings.logo.url }}{% else %}{% static 'brand/mailstack-logo.svg' %}{% endif %}" alt="" width="40" height="40">
+                <span class="brand-name">{{ app_name }}</span>
               </a>
             </header>
             <main id="main-content" class="auth-main">
@@ -184,8 +189,7 @@
 
             <footer class="app-footer">
               <div class="app-footer-inner">
-                <span>© {% now "Y" %} MailStack by <a href="{{ company_url }}" rel="noopener noreferrer">Vib Tools</a>.
-                  Authorized team use only.</span>
+                <span>{% if site_settings.copyright_text %}{{ site_settings.copyright_text }}{% else %}© {% now "Y" %} {{ app_name }}{% endif %}</span>
                 <span class="footer-links">
                   <a href="{{ source_code_url }}" rel="noopener noreferrer">Source code</a>
                 </span>
@@ -196,8 +200,7 @@
         {% else %}
     </div>
     </main>
-    <footer class="auth-footer">© {% now "Y" %} MailStack by <a href="{{ company_url }}" rel="noopener noreferrer">Vib
-        Tools</a>. Authorized team use only.</footer>
+    <footer class="auth-footer">{% if site_settings.copyright_text %}{{ site_settings.copyright_text }}{% else %}© {% now "Y" %} {{ app_name }}{% endif %}</footer>
   </div>
   {% endif %}
   <div id="toast-region" class="toast-region" role="status" aria-live="polite" aria-atomic="false"></div>

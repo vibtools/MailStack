@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ app_name }} - Site Settings{% endblock %}
+
+{% block content %}
+<section class="site-settings-page" aria-labelledby="site-settings-title">
+  <div class="site-settings-heading">
+    <div>
+      <p class="site-settings-kicker">System Configuration</p>
+      <h1 id="site-settings-title">Site Settings</h1>
+    </div>
+    <button class="button button-primary" type="submit" form="site-settings-form">
+      <svg class="ui-icon" aria-hidden="true"><use href="{% static 'icons/mailstack-icons.svg' %}#icon-check"></use></svg>
+      Save Changes
+    </button>
+  </div>
+  {% if form.errors %}<div class="alert alert-error" role="alert">Please correct the highlighted fields.</div>{% endif %}
+  <form id="site-settings-form" method="post" enctype="multipart/form-data" class="site-settings-form">
+    {% csrf_token %}
+    <fieldset class="settings-card">
+      <legend>Brand</legend>
+      <div class="settings-grid settings-grid-two">
+        <div class="settings-field"><label for="{{ form.site_name.id_for_label }}">Site Name</label>{{ form.site_name }}{{ form.site_name.errors }}</div>
+        <div class="settings-field"><label for="{{ form.site_tagline.id_for_label }}">Site Tagline</label>{{ form.site_tagline }}{{ form.site_tagline.errors }}</div>
+      </div>
+      <div class="settings-grid settings-grid-two settings-assets">
+        <div class="settings-field"><label for="{{ form.logo.id_for_label }}">Site Logo</label><div class="settings-upload">{% if site_settings.logo %}<img src="{{ site_settings.logo.url }}" alt="Current logo" class="settings-preview">{% else %}<span class="settings-placeholder">SVG</span>{% endif %}{{ form.logo }}</div>{{ form.logo.errors }}</div>
+        <div class="settings-field"><label for="{{ form.favicon.id_for_label }}">Favicon</label><div class="settings-upload">{% if site_settings.favicon %}<img src="{{ site_settings.favicon.url }}" alt="Current favicon" class="settings-preview settings-favicon-preview">{% else %}<span class="settings-placeholder">ICO</span>{% endif %}{{ form.favicon }}</div>{{ form.favicon.errors }}</div>
+      </div>
+    </fieldset>
+    <fieldset class="settings-card">
+      <legend>Contact Details</legend>
+      <div class="settings-grid settings-grid-two">
+        <div class="settings-field"><label for="{{ form.support_email.id_for_label }}">Support Email</label>{{ form.support_email }}{{ form.support_email.errors }}</div>
+        <div class="settings-field"><label for="{{ form.contact_phone.id_for_label }}">Contact Phone</label>{{ form.contact_phone }}{{ form.contact_phone.errors }}</div>
+      </div>
+      <div class="settings-field"><label for="{{ form.office_address.id_for_label }}">Office Address</label>{{ form.office_address }}{{ form.office_address.errors }}</div>
+    </fieldset>
+    <fieldset class="settings-card">
+      <legend>Footer</legend>
+      <div class="settings-field"><label for="{{ form.footer_description.id_for_label }}">Public Footer description</label>{{ form.footer_description }}{{ form.footer_description.errors }}</div>
+      <div class="settings-field"><label for="{{ form.copyright_text.id_for_label }}">Copyright Text</label>{{ form.copyright_text }}{{ form.copyright_text.errors }}</div>
+      <div class="settings-grid settings-grid-two">
+        <div class="settings-field"><label for="{{ form.source_code_url.id_for_label }}">Source Code URL</label>{{ form.source_code_url }}{{ form.source_code_url.errors }}</div>
+        <div class="settings-field"><label for="{{ form.privacy_url.id_for_label }}">Privacy / Terms URL</label>{{ form.privacy_url }}{{ form.privacy_url.errors }}</div>
+      </div>
+    </fieldset>
+  </form>
+</section>
+{% endblock %}

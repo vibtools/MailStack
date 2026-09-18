@@ -30,6 +30,9 @@ class ProvisioningError(RuntimeError):
 
 
 def default_domain() -> Domain:
+    domain = Domain.objects.filter(is_default=True).first()
+    if domain:
+        return domain
     domain, _created = Domain.objects.get_or_create(
         name=settings.MAIL_DOMAIN.strip().lower(),
         defaults={

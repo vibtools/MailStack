@@ -397,6 +397,7 @@ install -d -o root -g vmail -m 0750 /opt/vibmail /etc/vibmail
 install -d -o vmail -g vmail -m 0750 \
   /var/vmail "/var/vmail/$MAIL_DOMAIN"
 install -d -o vmail -g www-data -m 0755 /var/lib/vibmail/static
+install -d -o vmail -g www-data -m 0755 /var/lib/vibmail/media
 install -d -o vmail -g vmail -m 0700 /var/lib/vibmail/attachments
 install -d -o vmail -g adm -m 0750 /var/log/vibmail
 install -d -o vmail -g vmail -m 0750 /run/vibmail
@@ -511,6 +512,9 @@ run_as_vmail /opt/vibmail/venv/bin/python /opt/vibmail/app/manage.py collectstat
 chown -R vmail:www-data /var/lib/vibmail/static
 find /var/lib/vibmail/static -type d -exec chmod 0755 {} +
 find /var/lib/vibmail/static -type f -exec chmod 0644 {} +
+chown -R vmail:www-data /var/lib/vibmail/media
+find /var/lib/vibmail/media -type d -exec chmod 0755 {} +
+find /var/lib/vibmail/media -type f -exec chmod 0644 {} +
 run_as_vmail /opt/vibmail/venv/bin/python /opt/vibmail/app/manage.py check --deploy
 
 CREDENTIALS_FILE="not-created-existing-admin"

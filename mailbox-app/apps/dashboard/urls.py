@@ -5,6 +5,7 @@ from . import views
 app_name = "dashboard"
 urlpatterns = [
     path("", views.index, name="index"),
+    path("settings/", views.site_settings, name="site_settings"),
     path("system-update/", views.system_update_page, name="system_update_page"),
     path("api/update/check/", views.check_update, name="check_update"),
     path("api/update/preflight/", views.update_preflight, name="update_preflight"),

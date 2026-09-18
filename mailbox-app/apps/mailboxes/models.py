@@ -30,6 +30,7 @@ class Domain(models.Model):
     )
     last_checked_at = models.DateTimeField(null=True, blank=True)
     verification_details = models.JSONField(default=dict, blank=True)
+    is_default = models.BooleanField(default=False, db_index=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

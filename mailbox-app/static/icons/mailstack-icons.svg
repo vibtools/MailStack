@@ -52,4 +52,20 @@
     <rect x="8" y="8" width="11" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="1.7"/>
     <path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2" fill="none" stroke="currentColor" stroke-width="1.7"/>
   </symbol>
+  <symbol id="icon-star" viewBox="0 0 24 24">
+    <path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-2.9-5.6 2.9 1.1-6.2L3 9.6l6.2-.9L12 3Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+  </symbol>
+  <symbol id="icon-edit" viewBox="0 0 24 24">
+    <path d="m4 16.5-.7 4.2 4.2-.7L19 8.5 15.5 5 4 16.5Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="m13.5 7 3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.7"/>
+  </symbol>
+  <symbol id="icon-trash" viewBox="0 0 24 24">
+    <path d="M4 7h16M9 7V4h6v3m-9 0 1 14h10l1-14M10 11v6m4-6v6" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+  </symbol>
+  <symbol id="icon-close" viewBox="0 0 24 24">
+    <path d="m6 6 12 12M18 6 6 18" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+  </symbol>
+  <symbol id="icon-settings" viewBox="0 0 24 24">
+    <path d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7Z" fill="none" stroke="currentColor" stroke-width="1.7"/>
+    <path d="m19 13.5 1.2 1-.9 1.6-1.5-.4a7.7 7.7 0 0 1-1.4 1.4l.4 1.5-1.6.9-1-1.2a7.2 7.2 0 0 1-1.8.2l-.6 1.4h-1.8l-.6-1.4a7.2 7.2 0 0 1-1.8-.2l-1 1.2-1.6-.9.4-1.5a7.7 7.7 0 0 1-1.4-1.4l-1.5.4-.9-1.6 1.2-1a7.2 7.2 0 0 1-.2-1.8l-1.4-.6v-1.8l1.4-.6a7.2 7.2 0 0 1 .2-1.8l-1.2-1 .9-1.6 1.5.4a7.7 7.7 0 0 1 1.4-1.4L6.1 3.2l1.6-.9 1 1.2a7.2 7.2 0 0 1 1.8-.2l.6-1.4h1.8l.6 1.4a7.2 7.2 0 0 1 1.8.2l1-1.2 1.6.9-.4 1.5a7.7 7.7 0 0 1 1.4 1.4l1.5-.4.9 1.6-1.2 1a7.2 7.2 0 0 1 .2 1.8l1.4.6v1.8l-1.4.6a7.2 7.2 0 0 1-.2 1.8Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+  </symbol>
 </svg>

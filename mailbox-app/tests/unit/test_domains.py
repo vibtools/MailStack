@@ -8,7 +8,7 @@ from django import forms
 from django.core.exceptions import ValidationError
 from django.urls import reverse
 
-from apps.mailboxes.dns import _decode_name, verify_domain
+from apps.mailboxes.dns import _decode_name, verify_dns_records, verify_domain
 from apps.mailboxes.forms import DomainForm, MailboxCreateForm
 from apps.mailboxes.mailserver import MailServerContractError
 from apps.mailboxes.models import Domain, Mailbox
@@ -32,6 +32,23 @@ def test_dns_verification_normalizes_records(settings):
     assert result["verified"] is True
     assert result["mx_ok"] is True
     assert result["target_ok"] is True
+
+
+def test_dns_record_verification_reports_each_record(settings):
+    records = [
+        {"type": "MX", "host": "example.test", "value": "mail.example.test", "copyable": True},
+        {"type": "TXT", "host": "example.test", "value": "v=spf1 -all", "copyable": True},
+    ]
+    with patch("apps.mailboxes.dns.build_dns_records", return_value=records):
+        result = verify_dns_records(
+            "example.test",
+            resolver=lambda name, record_type: (
+                ["mail.example.test."] if record_type == 15 else ["unexpected"]
+            ),
+        )
+    assert result["verified"] is False
+    verified_records = cast(list[dict[str, object]], result["records"])
+    assert [record["status"] for record in verified_records] == ["verified", "missing"]
 
 
 def test_dns_compressed_name_decodes_without_pointer_offset_bug():
@@ -75,6 +92,34 @@ def test_domain_list_requires_admin(client, admin_user):
     response = client.get(reverse("mailboxes:domains"))
     assert response.status_code == 200
     assert b"Domains" in response.content
+
+
+@pytest.mark.django_db
+def test_domain_create_starts_with_empty_dns_table(client, admin_user):
+    client.force_login(admin_user)
+    response = client.get(reverse("mailboxes:domain_create"))
+    assert response.status_code == 200
+    assert b"No DNS records generated yet" in response.content
+
+
+@pytest.mark.django_db
+def test_domain_dns_preview_returns_records_for_valid_domain(client, admin_user):
+    client.force_login(admin_user)
+    response = client.get(reverse("mailboxes:domain_dns_preview"), {"domain": "example.test"})
+    assert response.status_code == 200
+    assert response.json()["records"][0]["type"] == "MX"
+
+
+@pytest.mark.django_db
+def test_domain_create_requires_dns_confirmation(client, admin_user):
+    client.force_login(admin_user)
+    response = client.post(
+        reverse("mailboxes:domain_create"),
+        {"name": "unconfirmed.test", "status": Domain.Status.DISABLED},
+    )
+    assert response.status_code == 200
+    assert not Domain.objects.filter(name="unconfirmed.test").exists()
+    assert b"Confirm that all DNS records" in response.content
 
 
 @pytest.mark.django_db
@@ -124,12 +169,29 @@ def test_empty_secondary_domain_can_be_removed(client, admin_user):
 
 
 @pytest.mark.django_db
+def test_default_domain_cannot_be_removed(client, admin_user):
+    client.force_login(admin_user)
+    domain = Domain.objects.create(
+        name="default.test",
+        is_default=True,
+        verification_status=Domain.VerificationStatus.VERIFIED,
+    )
+    response = client.post(reverse("mailboxes:domain_delete", args=[domain.uuid]))
+    assert response.status_code == 302
+    assert Domain.objects.filter(pk=domain.pk).exists()
+
+
+@pytest.mark.django_db
 def test_domain_create_propagates_disabled_status_to_mailserver(client, admin_user):
     client.force_login(admin_user)
     with patch("apps.mailboxes.views.ensure_mailserver_domain") as ensure_domain:
         response = client.post(
             reverse("mailboxes:domain_create"),
-            {"name": "disabled.test", "status": Domain.Status.DISABLED},
+            {
+                "name": "disabled.test",
+                "status": Domain.Status.DISABLED,
+                "dns_confirmed": "1",
+            },
         )
     assert response.status_code == 302
     ensure_domain.assert_called_once_with(domain_name="disabled.test", active=False)

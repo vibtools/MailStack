@@ -176,8 +176,17 @@ This repository expects AI agents to maintain durable context across sessions ra
 
 ## 7) Known Reality Checks
 
-- Release version currently tracked in project metadata: `1.3.5.3` (four-component revision releases are supported alongside legacy three-component versions)
+- Release version currently tracked in project metadata: `1.3.5.4` (four-component revision releases are supported alongside legacy three-component versions)
+- Active release metadata and managed documentation are synchronized to `1.3.5.4`; historical `.3`
+  release evidence remains immutable and forensic auditing exempts recognized release-note versions.
 - CI and release workflows run `forensic_audit.py --profile repository --full`, so documentation, design, inventory, release, deployment, and full application gates are blocking on push, pull request, and release validation.
+- The Windows development workspace uses the repository root `.venv`; its development dependencies are installed and VS Code is configured to add `mailbox-app/` to Python analysis paths.
+- The admin Add Domain flow uses an empty initial DNS table, an authenticated GET-only backend DNS preview, per-record copy, Cloudflare-compatible zone export, and a required DNS confirmation before creation.
+- The admin Domains page now supports server-backed search filtering, compact icon actions, a DNS records dialog with copy/Cloudflare export, live aggregate DNS verification, and a persistent `Domain.is_default` selected by mailbox creation.
+- Persistent default-domain behavior is implemented by migration `mailbox-app/apps/mailboxes/migrations/0007_domain_default.py`; the configured `MAIL_DOMAIN` is seeded as default and active verified domains can be promoted through the domain list.
+- Domain DNS status now parses TXT answers and returns independent statuses for MX, A/AAAA, SPF, DKIM, and DMARC records; the UI renders those backend results instead of assigning one aggregate status to every row.
+- Persisted default domains are protected from deletion, and the domain list retains the existing enable/disable action as a compact CSRF-protected control.
+- Fixed the Pylance diagnostic in `mailbox-app/tests/unit/test_domains.py` by narrowing the DNS result records with an explicit `cast` before iteration; no runtime test behavior changed.
 - Deployment is designed for Ubuntu 24.04 with native package installation, not Docker-first packaging
 - The application is intentionally receive-only and not a general outbound marketing mail platform
 - Security and audit compliance are treated as first-class project constraints
@@ -211,6 +220,26 @@ This memory file should be treated as the canonical context snapshot for future 
   escalation rule. Existing upgrade archive/checksum/backup/migration/rollback logic is unchanged.
 - Focused System Update regression coverage is 6 passing tests; full repository validation remains
   pending after the final implementation edits.
+
+### [2026-09-18] Site Settings forensic fixes
+
+- Restricted the public Site Settings API CORS response to the configured public origin.
+- Added MIME allowlists and browser `accept` attributes for logo and favicon uploads.
+- Added public runtime propagation for tagline, metadata, source URL, privacy URL, and 404 branding.
+- Added `/media/` storage, Nginx serving, Gunicorn sandbox access, installer/deploy provisioning, and
+  backup/restore handling for persisted branding uploads.
+- Added regression coverage for rejected origins and non-image uploads.
+- Removed fixed SVG favicon MIME hints so uploaded PNG/ICO assets remain browser-compatible.
+
+### [2026-09-18] Admin Site Settings and public branding bridge
+
+- Added singleton `SiteSettings` persistence with migrations `0002_sitesettings` and
+  `0003_privacy_url_charfield` for branding, contact, footer, source, and privacy values.
+- Added admin-only `/settings/` UI with validated uploads, compact responsive styling, save feedback,
+  shared 403 handling, dynamic app shell branding, and footer values.
+- Added public read-only `/health/site-settings/` API with configured-origin CORS and runtime public-site
+  hydration for site name, contact values, footer content, logo, and favicon.
+- Focused regression suite passes: 14 tests; Django checks report zero errors.
 
 ### [2026-09-18] System Update audit correction
 

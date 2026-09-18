@@ -41,5 +41,6 @@ TRUST_PROXY_HEADERS=true
 LOG_LEVEL=INFO
 LOG_DIRECTORY=/var/log/vibmail
 STATIC_ROOT=/var/lib/vibmail/static
+MEDIA_ROOT=/var/lib/vibmail/media
 USE_X_ACCEL_REDIRECT=false
 LIVE_UPDATE_VISIBLE_MAILBOX_LIMIT=50

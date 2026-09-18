@@ -14,13 +14,16 @@ from pathlib import Path
 
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 from django.db import connection, models
 from django.http import JsonResponse
-from django.shortcuts import render
-from django.views.decorators.http import require_GET, require_POST
+from django.shortcuts import redirect, render
+from django.views.decorators.http import require_GET, require_http_methods, require_POST
 
 from apps.core.access import accessible_mailboxes, accessible_messages, is_admin
 from apps.core.models import ServiceHeartbeat
+from apps.core.forms import SiteSettingsForm
+from apps.core.models import SiteSettings
 from apps.mailboxes.models import Mailbox
 
 logger = logging.getLogger(__name__)
@@ -177,6 +180,20 @@ def index(request):
             }
         )
     return render(request, "dashboard/index.html", context)
+
+
+@login_required
+@require_http_methods(["GET", "POST"])
+def site_settings(request):
+    if not is_admin(request.user):
+        return render(request, "errors/403.html", status=403)
+    settings_object = SiteSettings.get_solo()
+    form = SiteSettingsForm(request.POST or None, request.FILES or None, instance=settings_object)
+    if request.method == "POST" and form.is_valid():
+        form.save()
+        messages.success(request, "Settings saved successfully.")
+        return redirect("dashboard:site_settings")
+    return render(request, "dashboard/site_settings.html", {"form": form, "site_settings": settings_object})
 
 
 @login_required

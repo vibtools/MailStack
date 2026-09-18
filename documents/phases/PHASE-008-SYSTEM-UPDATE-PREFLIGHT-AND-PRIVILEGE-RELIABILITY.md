@@ -4,7 +4,7 @@ title: System Update Preflight and Privilege Reliability
 document_type: phase
 audience: mailstack-administrators-and-maintainers
 status: active
-version: 1.3.5.3
+version: 1.3.5
 last_reviewed: 2026-09-18
 phase_id: PHASE-008
 ---

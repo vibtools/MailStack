@@ -8,7 +8,7 @@
   <meta name="robots" content="index,follow">
   <meta name="theme-color" content="#07111f">
   <link rel="canonical" href="https://__PUBLIC_HOSTNAME__/privacy/">
-  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="/assets/favicon.svg">
   <link rel="stylesheet" href="/assets/styles.css">
 </head>
 <body class="inner-page">
@@ -63,13 +63,14 @@
 
   <footer class="site-footer">
     <div class="container footer-main">
-      <div class="footer-brand"><a class="brand" href="/"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 48 48"><path d="M8 13.5A5.5 5.5 0 0 1 13.5 8h21A5.5 5.5 0 0 1 40 13.5v21a5.5 5.5 0 0 1-5.5 5.5h-21A5.5 5.5 0 0 1 8 34.5z"/><path class="brand-mark-line" d="m12.5 15 11.5 9 11.5-9M12.5 33V17m23 16V17"/></svg></span><span>MailStack</span></a><p>Private and team mailbox services for focused business communication.</p></div>
+      <div class="footer-brand"><a class="brand" href="/"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 48 48"><path d="M8 13.5A5.5 5.5 0 0 1 13.5 8h21A5.5 5.5 0 0 1 40 13.5v21a5.5 5.5 0 0 1-5.5 5.5h-21A5.5 5.5 0 0 1 8 34.5z"/><path class="brand-mark-line" d="m12.5 15 11.5 9 11.5-9M12.5 33V17m23 16V17"/></svg></span><span data-site-name>MailStack</span></a><p data-footer-description>Private and team mailbox services for focused business communication.</p></div>
       <div class="footer-column"><h3>Services</h3><a href="/#services">Private mailbox</a><a href="/#services">Team mailbox</a><a href="/#services">Business setup</a></div>
-      <div class="footer-column"><h3>Company</h3><a href="/contact/">Contact us</a><a href="/privacy/">Privacy</a><a href="https://__APP_HOSTNAME__/accounts/login/">Client login</a></div>
-      <div class="footer-column"><h3>Resources</h3><a href="https://github.com/vibtools/MailStack" rel="noopener noreferrer">Source code</a><a href="https://dev.vib.tools/" rel="noopener noreferrer">More open source</a><a href="https://ygit.net/" rel="noopener noreferrer">Free subdomains</a><a class="footer-login" href="https://__APP_HOSTNAME__/accounts/login/">Client portal <span>↗</span></a></div>
+      <div class="footer-column"><h3>Company</h3><a href="/contact/">Contact us</a><a data-privacy-url href="/privacy/">Privacy</a><a href="https://__APP_HOSTNAME__/accounts/login/">Client login</a></div>
+      <div class="footer-column"><h3>Resources</h3><a data-source-code-url href="https://github.com/vibtools/MailStack" rel="noopener noreferrer">Source code</a><a href="https://dev.vib.tools/" rel="noopener noreferrer">More open source</a><a href="https://ygit.net/" rel="noopener noreferrer">Free subdomains</a><a class="footer-login" href="https://__APP_HOSTNAME__/accounts/login/">Client portal <span>↗</span></a></div>
     </div>
-    <div class="container footer-bottom"><p>© <span data-year></span> MailStack by <a href="https://vib.tools/" rel="noopener noreferrer">Vib Tools</a>. AGPL-3.0-or-later.</p><p>Private mailbox infrastructure for professionals and teams.</p></div>
+    <div class="container footer-bottom"><p data-footer-copyright>© <span data-year></span> MailStack by <a href="https://vib.tools/" rel="noopener noreferrer">Vib Tools</a>. AGPL-3.0-or-later.</p><p>Private mailbox infrastructure for professionals and teams.</p></div>
   </footer>
+  <script>window.MAILSTACK_SETTINGS_ENDPOINT = "https://__APP_HOSTNAME__/health/site-settings/";</script>
   <script src="/assets/app.js" defer></script>
 </body>
 </html>

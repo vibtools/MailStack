@@ -8,6 +8,8 @@ from django.db.migrations.executor import MigrationExecutor
 from django.http import JsonResponse
 from django.views.decorators.http import require_GET
 
+from .models import SiteSettings
+
 
 def _path_check(path: Path) -> dict[str, object]:
     try:
@@ -52,6 +54,29 @@ def ready(_request):
     return JsonResponse(
         {"status": "ready" if ok else "not_ready", "checks": checks}, status=200 if ok else 503
     )
+
+
+@require_GET
+def site_settings_api(request):
+    site_settings = SiteSettings.get_solo()
+    response = JsonResponse({
+        "site_name": site_settings.site_name,
+        "site_tagline": site_settings.site_tagline,
+        "logo_url": request.build_absolute_uri(site_settings.logo.url) if site_settings.logo else "",
+        "favicon_url": request.build_absolute_uri(site_settings.favicon.url) if site_settings.favicon else "",
+        "support_email": site_settings.support_email,
+        "contact_phone": site_settings.contact_phone,
+        "office_address": site_settings.office_address,
+        "footer_description": site_settings.footer_description,
+        "copyright_text": site_settings.copyright_text,
+        "source_code_url": site_settings.source_code_url,
+        "privacy_url": site_settings.privacy_url,
+    })
+    public_origin = getattr(settings, "PUBLIC_SITE_ORIGIN", "").strip()
+    if public_origin and request.headers.get("Origin", "").rstrip("/") == public_origin.rstrip("/"):
+        response["Access-Control-Allow-Origin"] = public_origin
+        response["Vary"] = "Origin"
+    return response
 
 
 def error_404(request, exception):

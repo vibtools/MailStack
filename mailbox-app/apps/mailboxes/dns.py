@@ -4,6 +4,7 @@ import re
 import secrets
 import socket
 import struct
+import ipaddress
 from collections.abc import Callable
 from pathlib import Path
 
@@ -30,23 +31,24 @@ def _dkim_record(domain: str) -> tuple[str, bool]:
 
 def build_dns_records(domain: str) -> list[dict[str, str | bool]]:
     dkim_value, dkim_copyable = _dkim_record(domain)
+    address_type = "AAAA" if ipaddress.ip_address(settings.SERVER_IP).version == 6 else "A"
     return [
-        {"type": "MX", "host": domain, "value": settings.MAIL_HOSTNAME, "priority": "10", "copyable": True},
+        {"type": "MX", "host": domain, "cf_host": "@", "value": settings.MAIL_HOSTNAME, "priority": "10", "copyable": True},
         {
-            "type": "A / AAAA", "host": settings.MAIL_HOSTNAME,
+            "type": address_type, "host": settings.MAIL_HOSTNAME, "cf_host": "mail",
             "value": settings.SERVER_IP, "priority": "-", "copyable": True,
         },
         {
-            "type": "TXT (SPF)", "host": domain,
+            "type": "TXT", "host": domain, "cf_host": "@",
             "value": f"v=spf1 a:{settings.MAIL_HOSTNAME} -all",
             "priority": "-", "copyable": True,
         },
         {
-            "type": "TXT (DKIM)", "host": f"mail._domainkey.{domain}",
+            "type": "TXT", "host": f"mail._domainkey.{domain}", "cf_host": "mail._domainkey",
             "value": dkim_value, "priority": "-", "copyable": dkim_copyable,
         },
         {
-            "type": "TXT (DMARC)", "host": f"_dmarc.{domain}",
+            "type": "TXT", "host": f"_dmarc.{domain}", "cf_host": "_dmarc",
             "value": f"v=DMARC1; p=none; rua=mailto:postmaster@{domain}",
             "priority": "-", "copyable": True,
         },
@@ -110,6 +112,17 @@ def _query(name: str, record_type: int, *, timeout: float = 2.0) -> list[str]:
             records.append(_decode_name(response, offset - length + 2).lower())
         elif record_type == 1 and length == 4:
             records.append(socket.inet_ntoa(data))
+        elif record_type == 16:
+            position = 0
+            fragments: list[str] = []
+            while position < len(data):
+                chunk_length = data[position]
+                position += 1
+                if position + chunk_length > len(data):
+                    raise DNSVerificationError("DNS response was malformed")
+                fragments.append(data[position : position + chunk_length].decode("utf-8"))
+                position += chunk_length
+            records.append("".join(fragments))
         elif record_type == 28 and length == 16:
             records.append(socket.inet_ntop(socket.AF_INET6, data))
     return records
@@ -176,3 +189,34 @@ def verify_domain(
             "message": "DNS verification could not complete safely.",
             "error": type(exc).__name__,
         }
+
+
+def verify_dns_records(
+    domain: str,
+    *,
+    resolver: Callable[[str, int], list[str]] | None = None,
+) -> dict[str, object]:
+    lookup = resolver or _query
+    records = build_dns_records(domain)
+    results: list[dict[str, object]] = []
+    for record in records:
+        expected = str(record["value"])
+        record_type = str(record["type"])
+        if not bool(record.get("copyable", True)):
+            status = "missing"
+        else:
+            query_type = {"MX": 15, "A": 1, "AAAA": 28, "TXT": 16}[record_type]
+            answers = lookup(str(record["host"]), query_type)
+            if record_type == "MX":
+                status = "verified" if expected.rstrip(".").lower() in {
+                    answer.rstrip(".").lower() for answer in answers
+                } else "missing"
+            else:
+                status = "verified" if expected in answers else "missing"
+        results.append({**record, "status": status})
+    verified = bool(results) and all(record["status"] == "verified" for record in results)
+    return {
+        "verified": verified,
+        "records": results,
+        "message": "All DNS records match." if verified else "One or more DNS records are missing or incorrect.",
+    }
