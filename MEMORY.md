@@ -203,6 +203,12 @@ This memory file should be treated as the canonical context snapshot for future 
 - Regenerated `documents/DOCUMENTATION_MANIFEST.json` after the Admin Guide workflow update so the
   repository forensic documentation gate sees current hashes and metadata.
 
+### [2026-09-18] Forensic inventory CI synchronization
+
+- Regenerated `docs/FORENSIC_FILE_INVENTORY.json` with `scripts/generate_inventory.py` after the
+  repository metadata changes made the generated inventory stale.
+- Validation: `generate_inventory.py --check` passed with 475 maintained files and 41,057 text lines.
+
 ### [2026-09-17] System Update production-readiness scope
 
 - Fixed the System Update page CSP mismatch by adding a per-response nonce to the page's inline script and existing inline styles.
