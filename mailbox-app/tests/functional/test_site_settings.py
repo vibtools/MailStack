@@ -1,5 +1,6 @@
-from django.core.files.uploadedfile import SimpleUploadedFile
+import pytest
 from django.contrib.auth import get_user_model
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django.urls import reverse
 
 from apps.core.models import SiteSettings
@@ -38,6 +39,7 @@ def test_site_settings_persists_and_is_available_in_public_api(client, admin_use
     assert api_response["Access-Control-Allow-Origin"] == settings.PUBLIC_SITE_ORIGIN
 
 
+@pytest.mark.django_db
 def test_site_settings_api_rejects_unconfigured_cors_origin(client, settings):
     response = client.get(reverse("core:site_settings_api"), HTTP_ORIGIN="https://untrusted.example")
     assert "Access-Control-Allow-Origin" not in response

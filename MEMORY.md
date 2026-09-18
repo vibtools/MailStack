@@ -339,6 +339,13 @@ This memory file should be treated as the canonical context snapshot for future 
 
 ### [2026-09-17] CI stale documentation-contract correction
 
+### [2026-09-18] CI Site Settings database test correction
+
+- Marked the untrusted-origin Site Settings API regression test with `pytest.mark.django_db`.
+- The API reads the database-backed `SiteSettings` singleton, so the marker is required for
+  pytest-django's database access guard.
+- Focused Site Settings tests pass (4), and the full repository forensic gate reports no blocking findings.
+
 ### [2026-09-17] CI inventory freshness follow-up
 
 - GitHub Action run `35252391632` failed because a later `AGENTS.md` edit was pushed without regenerating `docs/FORENSIC_FILE_INVENTORY.json`; the forensic gate reported `INVENTORY_OUT_OF_DATE` with one blocking finding.
