@@ -198,10 +198,10 @@
       "audience": "users-operators-and-maintainers",
       "document_id": "phase-004-release-upgrade-and-operational-reliability",
       "document_type": "phase",
-      "last_reviewed": "2026-08-18",
+      "last_reviewed": "2026-09-18",
       "path": "documents/phases/PHASE-004-RELEASE-UPGRADE-AND-OPERATIONAL-RELIABILITY.md",
       "phase_id": "PHASE-004",
-      "sha256": "407559ca84178cb96667f676472f9b575f2822f551d6185688019d7e7f35e7bc",
+      "sha256": "ad7cb03b349335b3f20f50862dbb93474be403efe43b387718e31f92c7ce8062",
       "status": "active",
       "title": "Release, Upgrade and Operational Reliability",
       "version": "1.3.5.5"

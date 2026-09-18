@@ -203,6 +203,15 @@ This memory file should be treated as the canonical context snapshot for future 
 - Regenerated `documents/DOCUMENTATION_MANIFEST.json` after the Admin Guide workflow update so the
   repository forensic documentation gate sees current hashes and metadata.
 
+### [2026-09-18] Documentation policy gate repair for release verification maintenance
+
+- CI `quality-and-security` failed because `scripts/verify_release.py` and its focused test changed
+  without the required maintained-document updates.
+- Added synchronized maintenance entries in `CHANGELOG.md` and
+  `documents/phases/PHASE-004-RELEASE-UPGRADE-AND-OPERATIONAL-RELIABILITY.md` so the
+  documentation-policy gate records the changelog-heading false-positive correction in release
+  verification.
+
 ### [2026-09-18] Forensic inventory CI synchronization
 
 - Regenerated `docs/FORENSIC_FILE_INVENTORY.json` with `scripts/generate_inventory.py` after the
