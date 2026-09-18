@@ -244,6 +244,8 @@ This memory file should be treated as the canonical context snapshot for future 
   records visibly non-copyable; no reference sample data or fake server actions were introduced.
 - Corrected generated toggle labels to name the domain and aligned the verified DNS status class with
   its green visual treatment.
+- Expanded `documents/ADMIN_GUIDE.md` with the live Domains/Add Domain search, DNS copy/export/check,
+  default-domain, edit, and verification workflow required by the documentation policy gate.
 - Focused validation: 22 domain tests passed and JavaScript syntax validation passed.
 
 ### [2026-09-18] Site Settings forensic fixes

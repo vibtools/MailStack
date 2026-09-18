@@ -39,10 +39,18 @@ and leaves the local part permanently reserved.
 
 ## Domain administration
 
-Open **Domains** under **Management** to add a DNS hostname. MailStack rejects IP literals,
-unsafe labels, and duplicate names. Publish an MX record for the domain pointing to the configured
-mail host and ensure that host has an A or AAAA record; SPF is recommended but is not required for
-receive-only provisioning. Use **Check DNS** to run the bounded resolver and review the safe result.
+Open **Domains** under **Management** to add a DNS hostname. The table can be searched by domain or
+status and shows delivery state, DNS state, mailbox count, and the last recorded check. MailStack
+rejects IP literals, unsafe labels, and duplicate names. On **Add domain**, enter the hostname and
+select **Get DNS** to load the server-generated records. Review the MX, A/AAAA, SPF, DKIM, and DMARC
+values, copy individual values when available, or use **Export for Cloudflare**; confirm that the
+records were published before saving. New domains remain disabled until DNS verification permits
+delivery. Publish an MX record for the domain pointing to the configured mail host and ensure that
+host has an A or AAAA record; SPF is recommended but is not required for receive-only provisioning.
+From a domain row, open the DNS records dialog to review per-record results and use **Check DNS** to
+run the bounded resolver. The current default domain is shown with a disabled star; only an active,
+DNS-verified domain can be selected as the default. **Edit domain** changes delivery status only;
+domain names cannot be renamed after creation.
 
 Only active, verified domains appear in **Create mailbox**. Mailbox local parts are unique within a
 domain, and Maildir data is stored below `<mail-storage-root>/<domain>/<local-part>/Maildir/`.
