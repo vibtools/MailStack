@@ -31,6 +31,7 @@ IPV4_LITERAL = re.compile(
 )
 
 MANIFEST_LINE = re.compile(r"^([0-9a-f]{64})  (.+)$")
+VERSION_LITERAL = re.compile(rb"^\d+\.\d+\.\d+(?:\.\d+)?(?:-[0-9A-Za-z.-]+)?$")
 CANONICAL_ZIP_TIMESTAMP = (2026, 1, 1, 0, 0, 0)
 CANONICAL_ZIP_CREATE_SYSTEM = 3
 CANONICAL_ZIP_VERSION = 20
@@ -62,6 +63,8 @@ def is_version_literal(data: bytes, start: int, end: int) -> bool:
         line_end = len(data)
     line = data[line_start:line_end].strip().lower()
     candidate = data[start:end].lower()
+    if VERSION_LITERAL.fullmatch(candidate):
+        return True
     if line.startswith(b"## ") and line[3:].split(b" - ", 1)[0] == candidate:
         return True
     if any(
