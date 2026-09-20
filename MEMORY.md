@@ -216,6 +216,12 @@ This memory file should be treated as the canonical context snapshot for future 
   the HttpOnly `csrftoken` cookie from JavaScript; focused domain tests pass 22/22.
 - Added same-origin credentials and an explicit CSRF header to the dynamic toggle request, plus
   `ensure_csrf_cookie` on the Domains page.
+
+### [2026-09-20] DKIM public-record permission correction
+
+- OpenDKIM public `mail.txt` is now `root:vmail` mode `0640` and its directory is traversable by
+  `vmail`; the private key remains `opendkim:opendkim` mode `0600` so Django can render DKIM DNS
+  records without exposing signing material.
 - Renamed the DNS persistence token variable to avoid a duplicate block-scoped JavaScript
   declaration; workspace diagnostics are clean for the touched files.
 - Corrected the toggle-path CSRF variable reference that prevented Domains action controls from

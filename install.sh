@@ -623,8 +623,13 @@ log "Configuring OpenDKIM for outgoing mail"
 install -d -o opendkim -g opendkim -m 0750 "/etc/opendkim/keys/$MAIL_DOMAIN"
 if [[ ! -f "/etc/opendkim/keys/$MAIL_DOMAIN/mail.private" ]]; then
   opendkim-genkey -b 2048 -d "$MAIL_DOMAIN" -D "/etc/opendkim/keys/$MAIL_DOMAIN" -s mail -v
-  chown -R opendkim:opendkim "/etc/opendkim/keys/$MAIL_DOMAIN"
 fi
+chown opendkim:vmail "/etc/opendkim/keys/$MAIL_DOMAIN"
+chmod 0750 "/etc/opendkim/keys/$MAIL_DOMAIN"
+chown opendkim:opendkim "/etc/opendkim/keys/$MAIL_DOMAIN/mail.private"
+chmod 0600 "/etc/opendkim/keys/$MAIL_DOMAIN/mail.private"
+chown root:vmail "/etc/opendkim/keys/$MAIL_DOMAIN/mail.txt"
+chmod 0640 "/etc/opendkim/keys/$MAIL_DOMAIN/mail.txt"
 
 cat > /etc/opendkim.conf <<EOF
 Syslog yes

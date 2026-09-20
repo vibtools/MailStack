@@ -30,6 +30,8 @@ All notable repository-level changes are recorded here. Application history befo
 
 ### Changed
 
+- Corrected OpenDKIM public-key permissions so the Django `vmail` process can read `mail.txt`
+  while the private signing key remains restricted to `opendkim`.
 - Fixed the Domains active/disabled toggle to use the server-rendered CSRF token when the
   production CSRF cookie is HttpOnly.
 - Hardened the toggle request with an explicit same-origin CSRF header and ensured the Domains page
