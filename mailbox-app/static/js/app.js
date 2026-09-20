@@ -968,6 +968,20 @@ const VibMail = (() => {
         "aria-label",
         `${active ? "Disable" : "Enable"} ${row.querySelector("[data-dns-open]")?.dataset.domainName || "domain"}`,
       );
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        button.disabled = true;
+        const response = await fetch(form.action, {
+          method: "POST",
+          headers: {
+            Accept: "text/html",
+            "X-CSRFToken": csrfToken || "",
+          },
+          credentials: "same-origin",
+        });
+        if (response.ok) window.location.reload();
+        else button.disabled = false;
+      });
       const iconHref = row
         .querySelector("[data-dns-open] use")
         ?.getAttribute("href")

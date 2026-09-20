@@ -11,6 +11,7 @@ from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils import timezone
+from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.decorators.http import require_GET, require_http_methods, require_POST
 
 from apps.audit.services import record_audit
@@ -92,6 +93,7 @@ def mailbox_create(request):
 
 
 @login_required
+@ensure_csrf_cookie
 def domain_list(request):
     require_admin(request.user)
     query = request.GET.get("q", "").strip()

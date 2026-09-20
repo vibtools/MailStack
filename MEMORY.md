@@ -214,6 +214,8 @@ This memory file should be treated as the canonical context snapshot for future 
 
 - Fixed the Domains active/disabled toggle to use the server-rendered CSRF token instead of reading
   the HttpOnly `csrftoken` cookie from JavaScript; focused domain tests pass 22/22.
+- Added same-origin credentials and an explicit CSRF header to the dynamic toggle request, plus
+  `ensure_csrf_cookie` on the Domains page.
 
 ### [2026-09-18] Documentation policy gate repair for release verification maintenance
 
