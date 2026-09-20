@@ -935,7 +935,7 @@ const VibMail = (() => {
     const search = page.querySelector("[data-domain-search]");
     const count = page.querySelector("[data-domain-count]");
     const toggleTemplate = page.dataset.dnsToggleTemplate;
-    const dnsCsrfToken = page.querySelector(
+    const csrfToken = page.querySelector(
       "[data-domain-csrf-token] input[name=csrfmiddlewaretoken]",
     )?.value;
     rows.forEach((row) => {
@@ -1031,7 +1031,7 @@ const VibMail = (() => {
     const body = modal.querySelector("[data-dns-modal-rows]");
     const statusTemplate = page.dataset.dnsStatusTemplate;
     const checkTemplate = page.dataset.dnsCheckTemplate;
-    const csrfToken = page.querySelector(
+    const dnsCsrfToken = page.querySelector(
       "[data-domain-csrf-token] input[name=csrfmiddlewaretoken]",
     )?.value;
     const progress = modal.querySelector("[data-dns-progress]");

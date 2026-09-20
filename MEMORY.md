@@ -218,6 +218,8 @@ This memory file should be treated as the canonical context snapshot for future 
   `ensure_csrf_cookie` on the Domains page.
 - Renamed the DNS persistence token variable to avoid a duplicate block-scoped JavaScript
   declaration; workspace diagnostics are clean for the touched files.
+- Corrected the toggle-path CSRF variable reference that prevented Domains action controls from
+  rendering at runtime; JavaScript syntax and focused domain tests pass.
 
 ### [2026-09-18] Documentation policy gate repair for release verification maintenance
 

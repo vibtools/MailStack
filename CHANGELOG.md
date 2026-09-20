@@ -36,6 +36,8 @@ All notable repository-level changes are recorded here. Application history befo
   sets the CSRF cookie before dynamic actions are created.
 - Removed the duplicate JavaScript CSRF token declaration that caused a VS Code block-scoped
   redeclaration diagnostic.
+- Corrected the CSRF variable reference that caused a browser runtime error and prevented the
+  Domains DNS and Active/Deactive action controls from being created.
 - Matched Domains and Add Domain routes to the supplied compact reference shell, including the
   reference typography, spacing, palette, icon controls, current DNS status, and progressive DNS check display.
 - Corrected Cloudflare/BIND export labels and TXT quoting, protected the DNS status endpoint from resolver
