@@ -935,7 +935,7 @@ const VibMail = (() => {
     const search = page.querySelector("[data-domain-search]");
     const count = page.querySelector("[data-domain-count]");
     const toggleTemplate = page.dataset.dnsToggleTemplate;
-    const csrfToken = page.querySelector(
+    const dnsCsrfToken = page.querySelector(
       "[data-domain-csrf-token] input[name=csrfmiddlewaretoken]",
     )?.value;
     rows.forEach((row) => {
@@ -1139,7 +1139,7 @@ const VibMail = (() => {
         if (!response.ok) throw new Error("DNS check failed.");
         const result = await response.json();
         const verified = Boolean(result.verified);
-        if (verified && checkTemplate && csrfToken) {
+        if (verified && checkTemplate && dnsCsrfToken) {
           const persistUrl = checkTemplate.replace(
             "00000000-0000-0000-0000-000000000000",
             modal.dataset.domainUuid,
@@ -1148,7 +1148,7 @@ const VibMail = (() => {
             method: "POST",
             headers: {
               Accept: "text/html",
-              "X-CSRFToken": csrfToken,
+              "X-CSRFToken": dnsCsrfToken,
             },
             credentials: "same-origin",
           });

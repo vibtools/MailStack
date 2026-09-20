@@ -34,6 +34,8 @@ All notable repository-level changes are recorded here. Application history befo
   production CSRF cookie is HttpOnly.
 - Hardened the toggle request with an explicit same-origin CSRF header and ensured the Domains page
   sets the CSRF cookie before dynamic actions are created.
+- Removed the duplicate JavaScript CSRF token declaration that caused a VS Code block-scoped
+  redeclaration diagnostic.
 - Matched Domains and Add Domain routes to the supplied compact reference shell, including the
   reference typography, spacing, palette, icon controls, current DNS status, and progressive DNS check display.
 - Corrected Cloudflare/BIND export labels and TXT quoting, protected the DNS status endpoint from resolver

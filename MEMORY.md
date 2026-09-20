@@ -216,6 +216,8 @@ This memory file should be treated as the canonical context snapshot for future 
   the HttpOnly `csrftoken` cookie from JavaScript; focused domain tests pass 22/22.
 - Added same-origin credentials and an explicit CSRF header to the dynamic toggle request, plus
   `ensure_csrf_cookie` on the Domains page.
+- Renamed the DNS persistence token variable to avoid a duplicate block-scoped JavaScript
+  declaration; workspace diagnostics are clean for the touched files.
 
 ### [2026-09-18] Documentation policy gate repair for release verification maintenance
 
