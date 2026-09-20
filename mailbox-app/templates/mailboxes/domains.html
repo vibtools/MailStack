@@ -2,7 +2,8 @@
 {% load static %}
 {% block title %}Domains · MailStack{% endblock %}
 {% block content %}
-<div class="domains-page" data-domains-page data-dns-preview-url="{% url 'mailboxes:domain_dns_preview' %}" data-dns-status-template="{% url 'mailboxes:domain_dns_status' '00000000-0000-0000-0000-000000000000' %}" data-dns-toggle-template="{% url 'mailboxes:domain_toggle' '00000000-0000-0000-0000-000000000000' %}">
+<div class="domains-page" data-domains-page data-dns-preview-url="{% url 'mailboxes:domain_dns_preview' %}" data-dns-status-template="{% url 'mailboxes:domain_dns_status' '00000000-0000-0000-0000-000000000000' %}" data-dns-check-template="{% url 'mailboxes:domain_check' '00000000-0000-0000-0000-000000000000' %}" data-dns-toggle-template="{% url 'mailboxes:domain_toggle' '00000000-0000-0000-0000-000000000000' %}">
+	<div hidden data-domain-csrf-token>{% csrf_token %}</div>
 	<div class="domains-heading"><h1>Domains</h1><a class="domains-add" href="{% url 'mailboxes:domain_create' %}"><svg class="ui-icon" aria-hidden="true"><use href="{% static 'icons/mailstack-icons.svg' %}#icon-plus"></use></svg><span>Add domain</span></a></div>
 	<section class="domains-card">
 		<div class="domains-toolbar"><label class="domains-search"><svg class="ui-icon" aria-hidden="true"><use href="{% static 'icons/mailstack-icons.svg' %}#icon-search"></use></svg><input type="search" placeholder="Search domain or status..." value="{{ domain_query }}" data-domain-search aria-label="Search domains"></label><span class="domains-count" data-domain-count>{{ domains|length }} domain{{ domains|length|pluralize }}</span></div>

@@ -935,7 +935,9 @@ const VibMail = (() => {
     const search = page.querySelector("[data-domain-search]");
     const count = page.querySelector("[data-domain-count]");
     const toggleTemplate = page.dataset.dnsToggleTemplate;
-    const csrfToken = document.cookie.match(/(?:^|; )csrftoken=([^;]+)/)?.[1];
+    const csrfToken = page.querySelector(
+      "[data-domain-csrf-token] input[name=csrfmiddlewaretoken]",
+    )?.value;
     rows.forEach((row) => {
       const actions = row.querySelector(".domain-row-actions");
       const uuid = row.querySelector("[data-domain-uuid]")?.dataset.domainUuid;
@@ -1014,6 +1016,10 @@ const VibMail = (() => {
     const title = modal.querySelector("[data-dns-title]");
     const body = modal.querySelector("[data-dns-modal-rows]");
     const statusTemplate = page.dataset.dnsStatusTemplate;
+    const checkTemplate = page.dataset.dnsCheckTemplate;
+    const csrfToken = page.querySelector(
+      "[data-domain-csrf-token] input[name=csrfmiddlewaretoken]",
+    )?.value;
     const progress = modal.querySelector("[data-dns-progress]");
     const tag = modal.querySelector("[data-dns-tag]");
     const check = modal.querySelector("[data-dns-check]");
@@ -1119,6 +1125,22 @@ const VibMail = (() => {
         if (!response.ok) throw new Error("DNS check failed.");
         const result = await response.json();
         const verified = Boolean(result.verified);
+        if (verified && checkTemplate && csrfToken) {
+          const persistUrl = checkTemplate.replace(
+            "00000000-0000-0000-0000-000000000000",
+            modal.dataset.domainUuid,
+          );
+          const persistResponse = await fetch(persistUrl, {
+            method: "POST",
+            headers: {
+              Accept: "text/html",
+              "X-CSRFToken": csrfToken,
+            },
+            credentials: "same-origin",
+          });
+          if (!persistResponse.ok)
+            throw new Error("DNS verification could not be saved.");
+        }
         const checkedRecords =
           result.records ||
           records.map((record) => ({
@@ -1149,6 +1171,7 @@ const VibMail = (() => {
             verified ? "success" : "warning",
           );
           check.disabled = false;
+          if (verified) window.setTimeout(() => window.location.reload(), 500);
         };
         renderNextRecord();
       } catch (error) {

@@ -30,6 +30,8 @@ All notable repository-level changes are recorded here. Application history befo
 
 ### Changed
 
+- Fixed the Domains active/disabled toggle to use the server-rendered CSRF token when the
+  production CSRF cookie is HttpOnly.
 - Matched Domains and Add Domain routes to the supplied compact reference shell, including the
   reference typography, spacing, palette, icon controls, current DNS status, and progressive DNS check display.
 - Corrected Cloudflare/BIND export labels and TXT quoting, protected the DNS status endpoint from resolver
