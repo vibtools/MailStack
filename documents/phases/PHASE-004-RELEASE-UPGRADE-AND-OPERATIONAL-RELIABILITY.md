@@ -149,6 +149,12 @@ section headings.
 
 ## Documentation impact
 
+## 2026-09-20 release publication readiness correction
+
+The deterministic source-release verifier now recognizes semver-style historical version literals
+without weakening its rejection of actual global IPv4 literals. The publishing guide is synchronized
+to release 1.3.5.5 so the tag workflow can build and verify the current archive.
+
 PHASE-004A updated the root/application changelogs, build/release examples, README status wording,
 dependency/performance evidence, forensic/test reports, canonical baseline, UI implementation
 status, active managed-document version metadata, generated manifests, and this phase record.

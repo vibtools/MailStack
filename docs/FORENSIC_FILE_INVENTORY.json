@@ -910,7 +910,7 @@
       "kind": "text",
       "lines": 269,
       "path": "documents/DOCUMENTATION_MANIFEST.json",
-      "sha256": "78945e290a073ccc46563a692390ac2fdebaba98130d23703246918067dce1cf",
+      "sha256": "116b8b9c439a7059514f5700d0f9e630ec0309e93b39fe8b27930a76757c8ff2",
       "size_bytes": 10580
     },
     {
@@ -1020,10 +1020,10 @@
     },
     {
       "kind": "text",
-      "lines": 160,
+      "lines": 166,
       "path": "documents/phases/PHASE-004-RELEASE-UPGRADE-AND-OPERATIONAL-RELIABILITY.md",
-      "sha256": "ad7cb03b349335b3f20f50862dbb93474be403efe43b387718e31f92c7ce8062",
-      "size_bytes": 10439
+      "sha256": "2017f3a5c0dff5a63f4c8574ed038a9736c629948c8263050fc64d28a96441bb",
+      "size_bytes": 10776
     },
     {
       "kind": "text",
@@ -6250,7 +6250,7 @@
     "shell_files": 15,
     "shell_functions": 42,
     "text_files": 450,
-    "total_bytes": 32270261,
-    "total_text_lines": 41112
+    "total_bytes": 32270598,
+    "total_text_lines": 41118
   }
 }
