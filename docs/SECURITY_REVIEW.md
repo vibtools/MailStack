@@ -10,7 +10,7 @@ The reference deployment is receive-only for hosted team mailboxes. It does not 
 
 - No real production identifier, secret, private key, database, Maildir, attachment, log, backup, or generated credential is permitted in source releases.
 - Installer secrets and environment files are generated with root-restricted permissions.
-- Source and ZIP verifiers fail closed on unsafe paths, private-key material, disallowed email domains/global IP literals, and blocked file types.
+- Source and ZIP verifiers fail closed on unsafe paths, private-key material, disallowed email domains, and blocked file types.
 
 ### Authentication and authorization
 

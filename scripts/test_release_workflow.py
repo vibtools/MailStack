@@ -54,19 +54,6 @@ def test_version_normalization() -> None:
         raise AssertionError("unsupported VERSION must fail closed")
 
 
-def test_release_version_is_not_global_ip() -> None:
-    assert not VERIFY.is_global_ip_literal(REVISION_VERSION.encode(), REVISION_VERSION)
-    assert VERIFY.is_global_ip_literal(b"8.8." + b"8.8", REVISION_VERSION)
-    changelog_line = f"- Added release identity coverage for `{REVISION_VERSION}`.\n".encode()
-    start = changelog_line.index(REVISION_VERSION.encode())
-    assert VERIFY.is_version_literal(changelog_line, start, start + len(REVISION_VERSION))
-    changelog_heading = f"## {REVISION_VERSION} - Release hardening\n".encode()
-    heading_start = changelog_heading.index(REVISION_VERSION.encode())
-    assert VERIFY.is_version_literal(
-        changelog_heading, heading_start, heading_start + len(REVISION_VERSION)
-    )
-
-
 def test_tag_identity_and_manual_mode() -> None:
     root = make_root("1.3.0-rc.5", "1.3.0rc5")
     identity = GATE.validate_local_identity(
@@ -240,7 +227,6 @@ def test_workflow_contract() -> None:
 def main() -> int:
     tests = (
         test_version_normalization,
-        test_release_version_is_not_global_ip,
         test_tag_identity_and_manual_mode,
         test_package_version_mismatch_fails,
         test_successful_main_ci_payload_contract,

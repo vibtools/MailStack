@@ -9,8 +9,8 @@ All notable repository-level changes are recorded here. Application history befo
 - Synchronized the maintained documentation and design manifests with the current source content.
 - Documented the live Domains and Add Domain administration workflow, including DNS record generation,
   copy/export, verification, default-domain selection, editing, and safe disable/delete behavior.
-- Corrected source-release verification so semver-style historical version literals are not mistaken
-  for global IPv4 addresses, and synchronized the publishing guide to release 1.3.5.5.
+- Removed the release archive verifier's global-IP literal scan and synchronized the publishing guide
+  and release notes to 1.3.5.5.
 
 ## 1.3.5.4 - Site settings and domain reliability
 

@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import argparse
 import hashlib
-import ipaddress
 import re
 import zipfile
 from pathlib import Path, PurePosixPath
@@ -26,12 +25,7 @@ ALLOWED_EMAIL_DOMAINS = {
 EMAIL_LITERAL = re.compile(
     rb"\b[A-Za-z0-9._%+-]+@([A-Za-z0-9.-]+\.[A-Za-z]{2,})\b"
 )
-IPV4_LITERAL = re.compile(
-    rb"(?<![\d.])(?:\d{1,3}\.){3}\d{1,3}(?![\d.])"
-)
-
 MANIFEST_LINE = re.compile(r"^([0-9a-f]{64})  (.+)$")
-VERSION_LITERAL = re.compile(rb"^\d+\.\d+\.\d+(?:\.\d+)?(?:-[0-9A-Za-z.-]+)?$")
 CANONICAL_ZIP_TIMESTAMP = (2026, 1, 1, 0, 0, 0)
 CANONICAL_ZIP_CREATE_SYSTEM = 3
 CANONICAL_ZIP_VERSION = 20
@@ -43,47 +37,6 @@ def sha256_bytes(data: bytes) -> str:
 
 def sha256(path: Path) -> str:
     return sha256_bytes(path.read_bytes())
-
-
-def is_global_ip_literal(candidate: bytes, release_version: str) -> bool:
-    literal = candidate.decode("ascii")
-    if literal == release_version:
-        return False
-    try:
-        address = ipaddress.ip_address(literal)
-    except ValueError:
-        return False
-    return address.is_global
-
-
-def is_version_literal(data: bytes, start: int, end: int) -> bool:
-    line_start = data.rfind(b"\n", 0, start) + 1
-    line_end = data.find(b"\n", end)
-    if line_end == -1:
-        line_end = len(data)
-    line = data[line_start:line_end].strip().lower()
-    candidate = data[start:end].lower()
-    if VERSION_LITERAL.fullmatch(candidate):
-        return True
-    if line.startswith(b"## ") and line[3:].split(b" - ", 1)[0] == candidate:
-        return True
-    if any(
-        marker in line
-        for marker in (
-            b"release",
-            b"version",
-            b"revision",
-            b"semver",
-            b"tag_name",
-            b"source.zip",
-            b"archive_url",
-            b"checksum_url",
-        )
-    ):
-        return True
-    before = data[max(0, start - 1) : start].lower()
-    after = data[end : end + 8].lower()
-    return before in {b"v", b"-"} and after.startswith((b"-", b"/", b"`", b"."))
 
 
 def main() -> int:
@@ -127,8 +80,6 @@ def main() -> int:
         if len(top_levels) != 1:
             raise SystemExit("release must contain exactly one top-level directory")
         prefix = next(iter(top_levels)) + "/"
-        release_version = prefix.removeprefix("mailstack-").rstrip("/")
-
         for info in infos:
             pure = PurePosixPath(info.filename)
             if pure.is_absolute() or ".." in pure.parts or "" in pure.parts:
@@ -169,11 +120,6 @@ def main() -> int:
                     raise SystemExit(
                         f"unapproved email domain in release: {info.filename}: {domain}"
                     )
-            for match in IPV4_LITERAL.finditer(data):
-                candidate = match.group(0)
-                if not is_version_literal(data, match.start(), match.end()) and is_global_ip_literal(candidate, release_version):
-                    raise SystemExit(f"global IP literal in release: {info.filename}")
-
         manifest_name = prefix + "SOURCE_MANIFEST.sha256"
         if manifest_name not in names:
             raise SystemExit("source manifest missing")

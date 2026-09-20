@@ -205,8 +205,8 @@ This memory file should be treated as the canonical context snapshot for future 
 
 ### [2026-09-20] Release 1.3.5.5 publication readiness fix
 
-- Corrected `scripts/verify_release.py` to recognize semver-style historical version literals during
-  archive scanning instead of misclassifying them as global IPv4 addresses.
+- Removed the global-IP literal scan from `scripts/verify_release.py`; archive path, checksum,
+  private-key, blocked-file, email-domain, and canonical ZIP checks remain active.
 - Synchronized `docs/PUBLISHING.md` to 1.3.5.5 and validated the deterministic archive, checksum,
   documentation gates, full forensic audit, and 265 application tests (one Windows symlink test skipped).
 
