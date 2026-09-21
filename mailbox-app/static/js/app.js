@@ -727,6 +727,51 @@ const VibMail = (() => {
     });
   }
 
+  function setupBulkMailboxActions() {
+    const form = document.querySelector("[data-bulk-mailbox-form]");
+    if (!form) return;
+    const selectAll = form.querySelector("[data-bulk-select-all]");
+    const count = form.querySelector("[data-bulk-count]");
+    const deleteButton = form.querySelector("[data-bulk-delete]");
+    const checkboxes = [
+      ...document.querySelectorAll("[data-live-mailbox-row]"),
+    ].map((row) => {
+      const checkbox = document.createElement("input");
+      checkbox.type = "checkbox";
+      checkbox.name = "mailbox_uuid";
+      checkbox.value = row.dataset.liveMailboxRow;
+      checkbox.setAttribute("aria-label", "Select mailbox");
+      checkbox.dataset.bulkMailbox = "true";
+      checkbox.setAttribute("form", form.id);
+      row.querySelector("td")?.prepend(checkbox);
+      return checkbox;
+    });
+    const update = () => {
+      const selected = checkboxes.filter((checkbox) => checkbox.checked);
+      count.textContent = `${selected.length} selected`;
+      deleteButton.disabled = selected.length === 0;
+      selectAll.checked =
+        checkboxes.length > 0 && selected.length === checkboxes.length;
+    };
+    selectAll.addEventListener("change", () => {
+      checkboxes.forEach((checkbox) => {
+        checkbox.checked = selectAll.checked;
+      });
+      update();
+    });
+    checkboxes.forEach((checkbox) =>
+      checkbox.addEventListener("change", update),
+    );
+    form.addEventListener("submit", (event) => {
+      if (!checkboxes.some((checkbox) => checkbox.checked)) {
+        event.preventDefault();
+        return;
+      }
+      if (!window.confirm("Delete the selected mailboxes?"))
+        event.preventDefault();
+    });
+  }
+
   function setupUserForm() {
     const form = document.querySelector("[data-user-form]");
     if (!form) return;
@@ -1255,6 +1300,7 @@ const VibMail = (() => {
     });
 
     setupNotifications();
+    setupBulkMailboxActions();
     if (document.body.dataset.liveUrl) schedule(250);
     document.addEventListener("visibilitychange", () =>
       schedule(document.hidden ? 15000 : 500),

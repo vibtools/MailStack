@@ -17,4 +17,5 @@ urlpatterns = [
     path("domains/<uuid:domain_uuid>/delete/", views.domain_delete, name="domain_delete"),
     path("<uuid:mailbox_uuid>/status/", views.mailbox_toggle, name="toggle"),
     path("<uuid:mailbox_uuid>/delete/", views.mailbox_delete, name="delete"),
+    path("bulk-delete/", views.mailbox_bulk_delete, name="bulk_delete"),
 ]

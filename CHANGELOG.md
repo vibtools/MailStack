@@ -30,6 +30,8 @@ All notable repository-level changes are recorded here. Application history befo
 
 ### Changed
 
+- Added mailbox bulk selection and bulk soft-delete controls for users with mailbox-delete
+  permission, including select-all, selected-count, confirmation, and permission-aware processing.
 - Mailbox list ordering now places newly created mailboxes first, while preserving search,
   status filtering, and pagination behavior.
 - Corrected OpenDKIM public-key permissions so the Django `vmail` process can read `mail.txt`

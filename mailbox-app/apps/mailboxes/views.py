@@ -339,3 +339,25 @@ def mailbox_delete(request, mailbox_uuid):
                 messages.success(request, f"Mailbox {mailbox.email_address} deleted and reserved.")
                 return redirect("mailboxes:list")
     return render(request, "mailboxes/confirm_delete.html", {"mailbox": mailbox})
+
+
+@login_required
+@require_POST
+def mailbox_bulk_delete(request):
+    selected = request.POST.getlist("mailbox_uuid")
+    if not selected:
+        messages.error(request, "Select at least one mailbox to delete.")
+        return redirect("mailboxes:list")
+    deleted = 0
+    for mailbox_uuid in selected:
+        mailbox = get_object_or_404(accessible_mailboxes(request.user), uuid=mailbox_uuid)
+        if not user_can_delete_mailbox(request.user, mailbox):
+            continue
+        try:
+            soft_delete_mailbox(mailbox, actor=request.user, request=request)
+        except ProvisioningError as exc:
+            messages.error(request, str(exc))
+            return redirect("mailboxes:list")
+        deleted += 1
+    messages.success(request, f"{deleted} mailbox{'s' if deleted != 1 else ''} deleted and reserved.")
+    return redirect("mailboxes:list")

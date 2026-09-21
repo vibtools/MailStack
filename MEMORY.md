@@ -227,6 +227,11 @@ This memory file should be treated as the canonical context snapshot for future 
 
 - Mailbox list now orders by `created_at` descending, then `id` descending, so newly created
   mailboxes appear at the top of the first page.
+
+### [2026-09-21] Mailbox bulk actions
+
+- Added permission-aware bulk mailbox selection and soft deletion from the Mailboxes page with
+  select-all, selected count, confirmation, and existing audit/cleanup behavior.
 - Renamed the DNS persistence token variable to avoid a duplicate block-scoped JavaScript
   declaration; workspace diagnostics are clean for the touched files.
 - Corrected the toggle-path CSRF variable reference that prevented Domains action controls from
