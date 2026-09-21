@@ -39,6 +39,28 @@ def test_site_settings_persists_and_is_available_in_public_api(client, admin_use
     assert api_response["Access-Control-Allow-Origin"] == settings.PUBLIC_SITE_ORIGIN
 
 
+def test_site_settings_accepts_reasonable_png_logo_upload(client, admin_user):
+    client.force_login(admin_user)
+    logo = SimpleUploadedFile(
+        "logo.png",
+        b"\x89PNG\r\n\x1a\n" + (b"A" * (3 * 1024 * 1024)),
+        content_type="image/png",
+    )
+
+    response = client.post(reverse("dashboard:site_settings"), {
+        "site_name": "MailStack",
+        "site_tagline": "Inbound mail",
+        "support_email": "support@example.test",
+        "copyright_text": "Copyright",
+        "source_code_url": "https://github.com/vibtools/MailStack",
+        "privacy_url": "/privacy/",
+        "logo": logo,
+    })
+
+    assert response.status_code == 302
+    assert SiteSettings.objects.get().logo.name
+
+
 @pytest.mark.django_db
 def test_site_settings_api_rejects_unconfigured_cors_origin(client, settings):
     response = client.get(reverse("core:site_settings_api"), HTTP_ORIGIN="https://untrusted.example")

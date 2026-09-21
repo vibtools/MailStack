@@ -33,6 +33,10 @@ MIDDLEWARE = [
     if item != "whitenoise.middleware.WhiteNoiseMiddleware"  # noqa: F405
 ]
 STORAGES = {
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+        "OPTIONS": {"location": MEDIA_ROOT, "base_url": MEDIA_URL},
+    },
     "staticfiles": {"BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage"},
 }
 

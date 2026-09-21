@@ -196,6 +196,12 @@ This repository expects AI agents to maintain durable context across sessions ra
 
 This memory file should be treated as the canonical context snapshot for future AI-assisted work in this repository. If the project direction, deployment architecture, or feature set materially changes, update this document immediately.
 
+### [2026-09-21] Site settings logo upload issue
+
+- Root cause: Django's `STORAGES` configuration omitted the required `default` file storage backend, so saving a SiteSettings logo or favicon raised a storage-handler exception and rendered the generic 500 page.
+- Added an explicit `FileSystemStorage` default backend using `MEDIA_ROOT` and `MEDIA_URL` in both base and test settings.
+- The upload ceiling is now 10 MB, with logo validation limited to 5 MB for realistic branding assets.
+
 ### [2026-09-18] Release 1.3.5.5 documentation synchronization
 
 - Bumped the canonical release revision from `1.3.5.4` to `1.3.5.5` across `VERSION`, Django package

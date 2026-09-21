@@ -24,8 +24,8 @@ class SiteSettingsForm(forms.ModelForm):
 
     def clean_logo(self):
         logo = self.cleaned_data.get("logo")
-        if logo and logo.size > 2 * 1024 * 1024:
-            raise forms.ValidationError("Logo must be 2 MB or smaller.")
+        if logo and logo.size > 5 * 1024 * 1024:
+            raise forms.ValidationError("Logo must be 5 MB or smaller.")
         if logo and logo.content_type not in {
             "image/gif", "image/jpeg", "image/png", "image/svg+xml", "image/webp"
         }:
