@@ -201,6 +201,7 @@ This memory file should be treated as the canonical context snapshot for future 
 - Root cause: Django's `STORAGES` configuration omitted the required `default` file storage backend, so saving a SiteSettings logo or favicon raised a storage-handler exception and rendered the generic 500 page.
 - Added an explicit `FileSystemStorage` default backend using `MEDIA_ROOT` and `MEDIA_URL` in both base and test settings.
 - The upload ceiling is now 10 MB, with logo validation limited to 5 MB for realistic branding assets.
+- Nginx application upload limits were aligned to 10 MB; both the deployment template and bundled app config must be reloaded on the VPS after this change.
 
 ### [2026-09-18] Release 1.3.5.5 documentation synchronization
 
