@@ -268,9 +268,26 @@ def test_deleted_message_is_not_reingested(mailbox, message, settings):
 
 
 @pytest.mark.django_db
-def test_mailbox_delete_requires_permission_and_preserves_data(
-    client, ordinary_user, assigned_mailbox, message
+def test_mailbox_delete_requires_permission_and_purges_storage_and_database(
+    client, ordinary_user, assigned_mailbox, message, settings
 ):
+    stored = store_attachment(b"secret bytes", "secret.txt")
+    attachment = Attachment.objects.create(
+        message=message,
+        safe_filename="secret.txt",
+        stored_filename=str(stored["stored_filename"]),
+        size_bytes=int(stored["size_bytes"]),
+        sha256=str(stored["sha256"]),
+        storage_relative_path=str(stored["storage_relative_path"]),
+    )
+    mailbox_root = settings.MAIL_STORAGE_ROOT / assigned_mailbox.domain.name / assigned_mailbox.local_part
+    maildir_file = mailbox_root / "Maildir" / "new" / "purge-test"
+    maildir_file.parent.mkdir(parents=True, exist_ok=True)
+    maildir_file.write_bytes(b"maildir payload")
+    attachment_path = settings.ATTACHMENT_STORAGE_ROOT / stored["storage_relative_path"]
+    attachment_path.parent.mkdir(parents=True, exist_ok=True)
+    attachment_path.write_bytes(b"secret bytes")
+
     client.force_login(ordinary_user)
     url = reverse("mailboxes:delete", args=[assigned_mailbox.uuid])
     assert client.get(url).status_code == 404
@@ -281,10 +298,11 @@ def test_mailbox_delete_requires_permission_and_preserves_data(
     assert client.get(url).status_code == 200
     response = client.post(url, {"confirmation": assigned_mailbox.email_address})
     assert response.status_code == 302
-    assigned_mailbox.refresh_from_db()
-    assert assigned_mailbox.status == Mailbox.Status.DELETED
-    assert assigned_mailbox.deleted_at is not None
-    assert Message.objects.filter(pk=message.pk).exists()
+    assert not Mailbox.objects.filter(pk=assigned_mailbox.pk).exists()
+    assert not Message.objects.filter(pk=message.pk).exists()
+    assert not Attachment.objects.filter(pk=attachment.pk).exists()
+    assert not mailbox_root.exists()
+    assert not attachment_path.exists()
     assert client.get(reverse("messages:inbox", args=[assigned_mailbox.uuid])).status_code == 404
 
 

@@ -31,7 +31,13 @@ from .mailserver import (
     set_mailserver_domain_active,
 )
 from .models import Domain, Mailbox
-from .services import ProvisioningError, provision_mailbox, set_mailbox_status, soft_delete_mailbox
+from .services import (
+    ProvisioningError,
+    provision_mailbox,
+    purge_mailbox,
+    set_mailbox_status,
+    soft_delete_mailbox,
+)
 
 
 @login_required
@@ -332,11 +338,11 @@ def mailbox_delete(request, mailbox_uuid):
             messages.error(request, "Type the full mailbox address to confirm deletion.")
         else:
             try:
-                soft_delete_mailbox(mailbox, actor=request.user, request=request)
+                purge_mailbox(mailbox, actor=request.user, request=request)
             except ProvisioningError as exc:
                 messages.error(request, str(exc))
             else:
-                messages.success(request, f"Mailbox {mailbox.email_address} deleted and reserved.")
+                messages.success(request, f"Mailbox {mailbox.email_address} permanently deleted.")
                 return redirect("mailboxes:list")
     return render(request, "mailboxes/confirm_delete.html", {"mailbox": mailbox})
 
@@ -354,10 +360,10 @@ def mailbox_bulk_delete(request):
         if not user_can_delete_mailbox(request.user, mailbox):
             continue
         try:
-            soft_delete_mailbox(mailbox, actor=request.user, request=request)
+            purge_mailbox(mailbox, actor=request.user, request=request)
         except ProvisioningError as exc:
             messages.error(request, str(exc))
             return redirect("mailboxes:list")
         deleted += 1
-    messages.success(request, f"{deleted} mailbox{'s' if deleted != 1 else ''} deleted and reserved.")
+    messages.success(request, f"{deleted} mailbox{'s' if deleted != 1 else ''} permanently deleted.")
     return redirect("mailboxes:list")

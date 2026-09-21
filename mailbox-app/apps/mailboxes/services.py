@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import logging
 import os
+import shutil
 from pathlib import Path
 
 from django.conf import settings
@@ -11,6 +12,8 @@ from django.utils import timezone
 from filelock import FileLock, Timeout
 
 from apps.audit.services import record_audit
+from apps.ingestion.storage import delete_stored
+from apps.messages.models import Attachment
 
 from .mailserver import (
     MailServerContractError,
@@ -281,6 +284,52 @@ def soft_delete_mailbox(mailbox: Mailbox, *, actor=None, request=None) -> Mailbo
         details={"data_preserved": True, "address_reserved": True},
     )
     return locked
+
+
+def purge_mailbox(mailbox: Mailbox, *, actor=None, request=None) -> Mailbox:
+    mailbox_root, _, _relative = mailbox_paths(mailbox.local_part, domain=mailbox.domain, allow_reserved=True)
+    attached_paths = list(
+        Attachment.objects.filter(message__mailbox=mailbox).values_list("storage_relative_path", flat=True)
+    )
+    try:
+        with transaction.atomic():
+            locked = Mailbox.objects.select_for_update().get(pk=mailbox.pk)
+            for relative_path in attached_paths:
+                if relative_path:
+                    delete_stored(relative_path)
+            try:
+                delete_mailserver_mailbox(email=locked.email_address)
+            except MailServerContractError:
+                logger.warning(
+                    "Mailbox mail-server row was already missing during purge; continuing with app-level deletion.",
+                    extra={"event": "mailbox_remote_purge_missing", "mailbox": locked.email_address},
+                )
+            locked.delete()
+    except (DatabaseError, IntegrityError) as exc:
+        raise ProvisioningError(str(exc) or "Unable to purge mailbox database records.") from exc
+
+    try:
+        if mailbox_root.exists() and not mailbox_root.is_symlink():
+            shutil.rmtree(mailbox_root, ignore_errors=True)
+    except OSError:
+        logger.exception(
+            "Mailbox storage cleanup failed during purge",
+            extra={"event": "mailbox_storage_purge_failed", "mailbox": mailbox.email_address},
+        )
+
+    record_audit(
+        "mailbox_purged",
+        request=request,
+        actor=actor,
+        target_type="mailbox",
+        target_identifier=mailbox.email_address,
+        details={
+            "storage_deleted": True,
+            "attachment_count": len(attached_paths),
+            "maildir_deleted": not mailbox_root.exists(),
+        },
+    )
+    return mailbox
 
 
 def ensure_maildir(mailbox: Mailbox) -> Path:

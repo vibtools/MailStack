@@ -767,7 +767,11 @@ const VibMail = (() => {
         event.preventDefault();
         return;
       }
-      if (!window.confirm("Delete the selected mailboxes?"))
+      if (
+        !window.confirm(
+          "Permanently delete the selected mailboxes and remove their stored data?",
+        )
+      )
         event.preventDefault();
     });
   }

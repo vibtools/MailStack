@@ -219,6 +219,12 @@ This memory file should be treated as the canonical context snapshot for future 
 
 ### [2026-09-20] DKIM public-record permission correction
 
+### [2026-09-21] Permanent mailbox purge delete flow
+
+- Implemented a true destructive mailbox delete path in `mailbox-app/apps/mailboxes/services.py` that removes the Django mailbox record, cascades away message and attachment rows, deletes attachment files from the configured storage root, and removes the mailbox Maildir directory from the live filesystem.
+- Updated the delete confirmation and bulk delete action to advertise and execute permanent deletion rather than the previous soft-delete/reserve behavior.
+- Added a focused Django regression proving the mailbox row, message row, attachment row, attachment file, and Maildir directory all disappear after the confirmation flow.
+
 - OpenDKIM public `mail.txt` is now `root:vmail` mode `0640` and its directory is traversable by
   `vmail`; the private key remains `opendkim:opendkim` mode `0600` so Django can render DKIM DNS
   records without exposing signing material.
