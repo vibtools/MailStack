@@ -36,7 +36,7 @@ from .services import ProvisioningError, provision_mailbox, set_mailbox_status, 
 
 @login_required
 def mailbox_list(request):
-    queryset = accessible_mailboxes(request.user)
+    queryset = accessible_mailboxes(request.user).order_by("-created_at", "-id")
     query = request.GET.get("q", "").strip()
     status = request.GET.get("status", "").strip()
     if query:

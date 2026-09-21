@@ -30,6 +30,8 @@ All notable repository-level changes are recorded here. Application history befo
 
 ### Changed
 
+- Mailbox list ordering now places newly created mailboxes first, while preserving search,
+  status filtering, and pagination behavior.
 - Corrected OpenDKIM public-key permissions so the Django `vmail` process can read `mail.txt`
   while the private signing key remains restricted to `opendkim`.
 - Fixed the Domains active/disabled toggle to use the server-rendered CSRF token when the
