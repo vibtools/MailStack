@@ -34,7 +34,7 @@ def test_gunicorn_25_control_socket_is_disabled_for_hardened_runtime():
     config = read("gunicorn.conf.py")
     gunicorn = read("deployment/systemd/vibmail-gunicorn.service")
     assert "control_socket_disable = True" in config
-    assert "WorkingDirectory=/opt/vibmail/app" in gunicorn
+    assert "WorkingDirectory=/opt/vibmail/app/mailbox-app" in gunicorn
     assert "ProtectSystem=strict" in gunicorn
 
 

@@ -2,13 +2,13 @@
 Description=MailStack Maildir ingestion worker
 After=network-online.target mariadb.service vibmail-gunicorn.service
 Wants=network-online.target
-RequiresMountsFor=/opt/vibmail/app /var/vmail /var/lib/vibmail/attachments /var/log/vibmail
+RequiresMountsFor=/opt/vibmail/app /opt/vibmail/app/mailbox-app /var/vmail /var/lib/vibmail/attachments /var/log/vibmail
 
 [Service]
 Type=simple
 User=vmail
 Group=vmail
-WorkingDirectory=/opt/vibmail/app
+WorkingDirectory=/opt/vibmail/app/mailbox-app
 EnvironmentFile=/etc/vibmail/vibmail.env
 RuntimeDirectory=vibmail-ingestion
 RuntimeDirectoryMode=0750

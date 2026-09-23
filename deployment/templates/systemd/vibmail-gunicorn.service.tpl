@@ -2,14 +2,14 @@
 Description=MailStack Gunicorn application
 After=network-online.target mariadb.service
 Wants=network-online.target
-RequiresMountsFor=/opt/vibmail/app /var/log/vibmail /var/vmail /var/lib/vibmail/attachments /var/lib/vibmail/media
+RequiresMountsFor=/opt/vibmail/app /opt/vibmail/app/mailbox-app /var/log/vibmail /var/vmail /var/lib/vibmail/attachments /var/lib/vibmail/media
 
 [Service]
 Type=simple
 User=vmail
 Group=www-data
 SupplementaryGroups=vmail
-WorkingDirectory=/opt/vibmail/app
+WorkingDirectory=/opt/vibmail/app/mailbox-app
 EnvironmentFile=/etc/vibmail/vibmail.env
 RuntimeDirectory=vibmail
 RuntimeDirectoryMode=0750

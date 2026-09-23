@@ -203,6 +203,12 @@ This memory file should be treated as the canonical context snapshot for future 
 - The upload ceiling is now 10 MB, with logo validation limited to 5 MB for realistic branding assets.
 - Nginx application upload limits were aligned to 10 MB; both the deployment template and bundled app config must be reloaded on the VPS after this change.
 
+### [2026-09-23] Mail UI stopped showing newly received messages
+
+- Root cause: the deployed systemd units used `/opt/vibmail/app` as the Django working directory, but the actual project root is `/opt/vibmail/app/mailbox-app`.
+- `vibmail-ingestion.service` therefore exited with `status=2/INVALIDARGUMENT` in a rapid restart loop, leaving messages in Maildir while they were never imported into the application database.
+- Corrected Gunicorn and ingestion systemd definitions plus the updater template to use the actual project root and updater script path.
+
 ### [2026-09-18] Release 1.3.5.5 documentation synchronization
 
 - Bumped the canonical release revision from `1.3.5.4` to `1.3.5.5` across `VERSION`, Django package

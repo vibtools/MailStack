@@ -2,14 +2,14 @@
 Description=MailStack root update worker
 After=network-online.target
 Wants=network-online.target
-RequiresMountsFor=/opt/vibmail/app /run/vibmail
+RequiresMountsFor=/opt/vibmail/app /opt/vibmail/app/mailbox-app /run/vibmail
 
 [Service]
 Type=simple
 User=root
 Group=root
-WorkingDirectory=/opt/vibmail/app
-ExecStart=/opt/vibmail/venv/bin/python /opt/vibmail/app/scripts/update_worker.py
+WorkingDirectory=/opt/vibmail/app/mailbox-app
+ExecStart=/opt/vibmail/venv/bin/python /opt/vibmail/app/mailbox-app/scripts/update_worker.py
 Restart=on-failure
 RestartSec=2
 PrivateTmp=false
